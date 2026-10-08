@@ -1,5 +1,25 @@
+/**
+ * ============================================================================
+ *  FRONTEND: pages/property/detail.tsx   →   URL: localhost:3000/property/detail?id=6512ab...
+ *  141-DARS: Property Detail Screen
+ * ============================================================================
+ *
+ *  BU SAHIFA NIMA?
+ *  BITTA UYNING ko'rgazma xonasi. Mijoz kartani bosdi → shu yerga keldi.
+ *  Agent uch xil papkani ochadi:
+ *    1) GET_PROPERTY    → shu kvartiraning hujjatlari (sarlavha, narx, rasmlar, agent)
+ *    2) GET_PROPERTIES  → shu shahardagi boshqa variantlar ("Destination Property")
+ *    3) GET_COMMENTS    → oldingi mijozlarning fikrlari (reviews)
+ *  Va ikkita harakat: like bosish (LIKE_TARGET_PROPERTY), sharh yozish (CREATE_COMMENT).
+ *
+ *  OQIM:
+ *  URL'dagi ?id= → useEffect([router]) → setPropertyId(id) → skip: false bo'ladi →
+ *  GET_PROPERTY ketadi → property keladi → skip: false bo'ladi → GET_PROPERTIES (shu shahar) ketadi
+ */
+
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Box, Button, Checkbox, CircularProgress, Stack, Typography } from '@mui/material';
+// ⚠️ REVIEW: Checkbox va CircularProgress ishlatilmagan — o'chirsa bo'ladi.
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { NextPage } from 'next';
@@ -12,56 +32,92 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
+// useReactiveVar — HOOK: global userVar'ni o'qiydi (hozir kim login qilgan). Burak'dagi Redux useSelector'ga o'xshaydi.
 import { useRouter } from 'next/router';
 import { Property } from '../../libs/types/property/property';
 import moment from 'moment';
+// moment — sana bilan ishlash kutubxonasi ("5 days ago", "2024").
 import { formatterStr } from '../../libs/utils';
+// formatterStr — 550000 → "550,000".
 import { REACT_APP_API_URL } from '../../libs/config';
+// REACT_APP_API_URL — backend manzili (http://localhost:3007). Rasmlar shu manzildan olinadi: 3007/uploads/property/abc.jpg
 import { userVar } from '../../apollo/store';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentGroup } from '../../libs/enums/comment.enum';
 import { Pagination as MuiPagination } from '@mui/material';
+// "as" — qayta nomlash: Swiper'ning Pagination'i bilan nomi to'qnashmasin.
 import Link from 'next/link';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import 'swiper/css';
 import 'swiper/css/pagination';
+// Swiper slayder stillari. TypeScript bu import'lar uchun xato bermasligi uchun swiper.d.ts yaratdik.
+// ─── BUGUN QO'SHILGAN IMPORT'LAR ─────────────────────────────────────────────
 import { GET_COMMENTS, GET_PROPERTIES, GET_PROPERTY } from '../../apollo/user/query';
+// GET_PROPERTY   — BITTA uy (propertyId bo'yicha). Backend: getProperty.
+// GET_PROPERTIES — uylar ro'yxati (list sahifasidagi o'sha query, bu yerda "shu shahardagilar" uchun).
+// GET_COMMENTS   — sharhlar ro'yxati.
 import { T } from '../../libs/types/common';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { CREATE_COMMENT, LIKE_TARGET_PROPERTY } from '../../apollo/user/mutation';
+// ─────────────────────────────────────────────────────────────────────────────
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
+// Swiper'ga modullarni ulash: avtomatik aylanish, strelkalar, nuqtalar.
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
 	},
 });
+// Faqat tarjimalar (SSG). Uy ma'lumoti brauzerda keladi (CSR).
 
 const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
+	// initialComment — PROP (defaultProps'dan): sharhlar uchun boshlang'ich chek { page: 1, limit: 5, ... }.
+
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
+	// user — OBYEKT: hozirgi foydalanuvchi. Login qilmagan bo'lsa user._id === ''.
+
 	const [propertyId, setPropertyId] = useState<string | null>(null);
+	// propertyId — STATE: URL'dagi ?id= qiymati. Boshida null (router hali tayyor emas).
+
 	const [property, setProperty] = useState<Property | null>(null);
+	// property — STATE: GET_PROPERTY javobi — sahifadagi HAMMA ma'lumot shu obyektdan chiqadi.
+
 	const [slideImage, setSlideImage] = useState<string>('');
+	// slideImage — STATE: katta rasmda hozir qaysi rasm turibdi. Kichik rasm bosilsa almashadi.
+
 	const [destinationProperty, setDestinationProperty] = useState<Property[]>([]);
+	// destinationProperty — STATE: pastdagi "Destination Property" slayderidagi uylar.
+
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
+	// commentInquiry — STATE: sharhlar uchun chek (qaysi uy, qaysi sahifa).
+
 	const [propertyComments, setPropertyComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
+	// Sharhlar ro'yxati va jami soni ("12 reviews").
+
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
 		commentGroup: CommentGroup.PROPERTY,
 		commentContent: '',
 		commentRefId: '',
 	});
+	// insertCommentData — STATE: YANGI sharh uchun forma.
+	// commentGroup: PROPERTY — bu sharh UYGA yozilyapti (maqolaga yoki a'zoga emas).
+	// commentContent — textarea'ga yozilgan matn. commentRefId — qaysi uyga (propertyId).
 
 	/** APOLLO REQUESTS **/
+	// ─── BUGUN YOZILGAN QISM ─────────────────────────────────────────────────
+
 	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
 	const [createComment] = useMutation(CREATE_COMMENT);
+	// Ikkita "tayyor tugma": like bosish va sharh yuborish. Pastdagi handler'larda chaqiriladi.
 
+	// ── 1-PAPKA: SHU KVARTIRANING HUJJATLARI ──
 	const {
 		loading: getPropertyLoading,
 		data: getPropertyData,
@@ -69,15 +125,27 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		refetch: getPropertyRefetch,
 	} = useQuery(GET_PROPERTY, {
 		fetchPolicy: 'network-only',
+		// KESHGA QARAMA, HAR DOIM SERVERGA BOR. Nega?
+		// Backend getProperty har chaqirilganda: 1) recordView → propertyViews +1, 2) meLiked tekshiradi.
+		// Keshdan olsak: ko'rish yozilmaydi → batch'dagi reyting (views + likes×2) buziladi → ⚡TOP noto'g'ri chiqadi.
+
 		variables: { input: propertyId },
+		// $input o'rniga propertyId. Backend: getProperty(propertyId).
+
 		skip: !propertyId,
+		// skip — "hozircha yuborma". propertyId null bo'lsa (router hali URL'ni o'qimagan) so'rov KUTIB turadi.
+		// Busiz: sahifa ochilishi bilan input: null yuborilardi → backend xato.
+
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			if (data?.getProperty) setProperty(data?.getProperty);
+			// Kelgan uyni state'ga yozamiz → sahifa to'ladi.
 			if (data?.getProperty) setSlideImage(data?.getProperty?.propertyImages[0]);
+			// Katta rasmga BIRINCHI rasmni qo'yamiz.
 		},
 	});
 
+	// ── 2-PAPKA: SHU SHAHARDAGI BOSHQA VARIANTLAR ──
 	const {
 		loading: getPropertiesLoading,
 		data: getPropertiesData,
@@ -85,24 +153,34 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		refetch: getPropertiesRefetch,
 	} = useQuery(GET_PROPERTIES, {
 		fetchPolicy: 'cache-and-network',
+		// Bu yerda tezlik muhimroq: keshdan darhol, orqa fonda yangilanadi.
 		variables: {
 			input: {
 				page: 1,
 				limit: 4,
+				// 4 ta o'xshash uy.
 				sort: 'createdAt',
 				direction: Direction.DESC,
 				search: {
 					locationList: property?.propertyLocation ? [property?.propertyLocation] : [],
+					// Shu uyning shahri. Seuldagi uy ochilsa → locationList: ['SEOUL'].
+					// DO'STINGIZDA: search: { propertyLocation } edi — backend PISearch'da bunday maydon YO'Q →
+					// GraphQL validation xatosi. Backend faqat locationList (massiv) qabul qiladi.
 				},
 			},
 		},
 		skip: !propertyId || !property,
+		// Asosiy uy YUKLANMAGUNCHA kutadi — chunki qaysi shahar ekanini hali bilmaymiz.
+		// Zanjir: propertyId → GET_PROPERTY → property → shu query.
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			if (data?.getProperties?.list) setDestinationProperty(data?.getProperties?.list);
+			// ⚠️ REVIEW: ro'yxatda joriy uyning O'ZI ham bor. Yaxshiroq:
+			// setDestinationProperty(data.getProperties.list.filter((p: Property) => p._id !== propertyId));
 		},
 	});
 
+	// ── 3-PAPKA: MIJOZLAR FIKRLARI ──
 	const {
 		loading: getCommentsLoading,
 		data: getCommentsData,
@@ -111,32 +189,42 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	} = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialComment },
+		// Birinchi so'rov initialComment bilan, keyingilari useEffect ichida refetch({ input: commentInquiry }) bilan.
 		skip: !commentInquiry.search.commentRefId,
+		// Qaysi uy ekanini bilmaguncha kutadi.
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			if (data?.getComments?.list) setPropertyComments(data?.getComments?.list);
 			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
+			// ?? 0 — sharh yo'q bo'lsa metaCounter bo'sh keladi → undefined o'rniga 0.
 		},
 	});
+	// ─────────────────────────────────────────────────────────────────────────
 
 	/** LIFECYCLES **/
 	useEffect(() => {
+		// URL tayyor bo'lganda ishlaydi. Next.js'da birinchi render'da router.query bo'sh bo'lishi mumkin,
+		// shuning uchun ID'ni useState boshlang'ich qiymatida emas, shu yerda olamiz.
 		if (router.query.id) {
 			setPropertyId(router.query.id as string);
+			// → GET_PROPERTY'ning skip'i false bo'ladi → so'rov ketadi.
 			setCommentInquiry({
 				...commentInquiry,
 				search: {
 					commentRefId: router.query.id as string,
 				},
 			});
+			// → sharhlar cheki: "shu uyning sharhlari".
 			setInsertCommentData({
 				...insertCommentData,
 				commentRefId: router.query.id as string,
 			});
+			// → yangi sharh formasi: "shu uyga yoziladi".
 		}
 	}, [router]);
 
 	useEffect(() => {
+		// BUGUN YOZILDI (oldin bo'sh edi). Sharhlar cheki o'zgarganda (uy tanlandi yoki sharh sahifasi almashdi) qayta so'raydi.
 		if (commentInquiry.search.commentRefId) {
 			getCommentsRefetch({ input: commentInquiry });
 		}
@@ -146,14 +234,22 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const changeImageHandler = (image: string) => {
 		setSlideImage(image);
 	};
+	// Kichik rasm bosilganda → katta rasm almashadi.
 
+	// ─── BUGUN YOZILGAN HANDLER'LAR ──────────────────────────────────────────
 	const likePropertyHandler = async (user: T, id: string) => {
+		// ⚠️ REVIEW: "user" parametri tashqaridagi user o'zgaruvchisini "yopib" qo'yadi (shadowing). Ishlaydi, lekin chalkash.
+		// Bu handler IKKI joyda ishlatiladi: 1) asosiy uyning yurakchasi, 2) pastdagi PropertyBigCard'lar.
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
 			await likeTargetProperty({ variables: { input: id } });
+			// Backend: toggleLike → like qo'shiladi yoki olib tashlanadi.
+
 			await getPropertyRefetch({ input: propertyId });
+			// Asosiy uyni qayta olish → yurakcha rangi va like soni yangilanadi.
+
 			await getPropertiesRefetch({
 				input: {
 					page: 1,
@@ -165,6 +261,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 					},
 				},
 			});
+			// Pastdagi kartalarni ham qayta olish (u yerda ham like bosilgan bo'lishi mumkin).
 
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
@@ -176,20 +273,27 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const commentPaginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		commentInquiry.page = value;
 		setCommentInquiry({ ...commentInquiry });
+		// Sharhlar sahifasi almashdi → yangi obyekt → useEffect([commentInquiry]) → refetch.
+		// ⚠️ REVIEW: yuqori qator mutatsiya; toza usul: setCommentInquiry({ ...commentInquiry, page: value }).
 	};
 
 	const createCommentHandler = async () => {
+		// "Submit Review" tugmasi bosilganda.
 		try {
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 			await createComment({ variables: { input: insertCommentData } });
+			// Backend: createComment → Comment kolleksiyasiga yoziladi, propertyComments +1.
 
 			setInsertCommentData({ ...insertCommentData, commentContent: '' });
+			// Textarea tozalanadi.
 
 			await getCommentsRefetch({ input: commentInquiry });
+			// Yangi sharh ro'yxatda paydo bo'ladi.
 		} catch (err: any) {
 			await sweetErrorHandling(err);
 		}
 	};
+	// ─────────────────────────────────────────────────────────────────────────
 
 	if (device === 'mobile') {
 		return <div>PROPERTY DETAIL PAGE</div>;
@@ -201,6 +305,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 						<Stack className={'property-info-config'}>
 							<Stack className={'info'}>
 								<Stack className={'left-box'}>
+									{/* ↓ Hamma ma'lumot property state'idan (GET_PROPERTY javobi). property null bo'lsa ?. tufayli xato bermaydi, shunchaki bo'sh. */}
 									<Typography className={'title-main'}>{property?.propertyTitle}</Typography>
 									<Stack className={'top-box'}>
 										<Typography className={'city'}>{property?.propertyLocation}</Typography>
@@ -267,6 +372,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<Typography>{property?.propertyViews}</Typography>
 										</Stack>
 										<Stack className="button-box">
+											{/* meLiked — backend'dagi checkLikeExistence natijasi: [ { myFavorite: true } ] bo'lsa, qizil yurakcha. */}
 											{property?.meLiked && property?.meLiked[0]?.myFavorite ? (
 												<FavoriteIcon color="primary" fontSize={'medium'} />
 											) : (
@@ -283,12 +389,14 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 								</Stack>
 							</Stack>
 							<Stack className={'images'}>
+								{/* KATTA RASM: slideImage bor bo'lsa backend'dan (3007/uploads/...), bo'lmasa zaxira rasm. */}
 								<Stack className={'main-image'}>
 									<img
 										src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/property/bigImage.png'}
 										alt={'main-image'}
 									/>
 								</Stack>
+								{/* KICHIK RASMLAR: har biri bosilganda changeImageHandler → katta rasm almashadi. */}
 								<Stack className={'sub-images'}>
 									{property?.propertyImages.map((subImg: string) => {
 										const imagePath: string = `${REACT_APP_API_URL}/${subImg}`;
@@ -454,6 +562,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										></iframe>
 									</Stack>
 								</Stack>
+								{/* SHARHLAR: faqat kamida bitta sharh bo'lsa ko'rinadi. */}
 								{commentTotal !== 0 && (
 									<Stack className={'reviews-config'}>
 										<Stack className={'filter-box'}>
@@ -503,7 +612,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										<Button
 											className={'submit-review'}
 											disabled={insertCommentData.commentContent === '' || user?._id === ''}
+											// Matn bo'sh yoki login qilinmagan bo'lsa tugma o'chiq.
 											onClick={createCommentHandler}
+											// BUGUN QO'SHILDI: tugma createCommentHandler'ga ulandi (oldin bosilsa hech narsa bo'lmasdi).
 										>
 											<Typography className={'title'}>Submit Review</Typography>
 											<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -595,6 +706,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 								</Stack>
 							</Stack>
 						</Stack>
+						{/* "DESTINATION PROPERTY": shu shahardagi 4 ta uy (2-papka). Bo'sh bo'lsa blok umuman chiqmaydi. */}
 						{destinationProperty.length !== 0 && (
 							<Stack className={'similar-properties-config'}>
 								<Stack className={'title-pagination-box'}>
@@ -623,11 +735,13 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 										}}
 									>
 										{destinationProperty.map((property: Property) => {
+											// ⚠️ REVIEW: SwiperSlide'da key={property._id} bo'lishi kerak — ikki uyning nomi bir xil bo'lishi mumkin.
 											return (
 												<SwiperSlide className={'similar-homes-slide'} key={property.propertyTitle}>
 													<PropertyBigCard
 														property={property}
 														likePropertyHandler={likePropertyHandler}
+														// BUGUN QO'SHILDI: kichik kartadagi yurakcha ham ishlaydi.
 														key={property?._id}
 													/>
 												</SwiperSlide>
@@ -644,6 +758,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	}
 };
 
+// initialComment: sharhlar uchun boshlang'ich chek — 1-sahifa, 5 ta, eng yangilari birinchi.
 PropertyDetail.defaultProps = {
 	initialComment: {
 		page: 1,
