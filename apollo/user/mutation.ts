@@ -19,7 +19,7 @@ export const SIGN_UP = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberShipments
 			memberRank
 			memberArticles
 			memberPoints
@@ -48,7 +48,7 @@ export const LOGIN = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberShipments
 			memberRank
 			memberPoints
 			memberLikes
@@ -74,7 +74,7 @@ export const UPDATE_MEMBER = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
+			memberShipments
 			memberRank
 			memberArticles
 			memberPoints
@@ -105,7 +105,7 @@ export const LIKE_TARGET_MEMBER = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberShipments
 			memberRank
 			memberPoints
 			memberLikes
@@ -119,90 +119,121 @@ export const LIKE_TARGET_MEMBER = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        SHIPMENT        *
  *************************/
 
-export const CREATE_PROPERTY = gql`
-	mutation CreateProperty($input: PropertyInput!) {
-		createProperty(input: $input) {
+export const CREATE_SHIPMENT = gql`
+	mutation CreateShipment($input: ShipmentInput!) {
+		createShipment(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			lastEventHash
+			deliveredAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const UPDATE_PROPERTY = gql`
-	mutation UpdateProperty($input: PropertyUpdate!) {
-		updateProperty(input: $input) {
+export const UPDATE_SHIPMENT = gql`
+	mutation UpdateShipment($input: ShipmentUpdate!) {
+		updateShipment(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			lastEventHash
+			deliveredAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty($input: String!) {
-		likeTargetProperty(propertyId: $input) {
+export const LIKE_TARGET_SHIPMENT = gql`
+	mutation LikeTargetShipment($input: String!) {
+		likeTargetShipment(shipmentId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			deliveredAt
 			deletedAt
-			constructedAt
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const CLAIM_SHIPMENT = gql`
+	mutation ClaimShipment($input: String!) {
+		claimShipment(shipmentId: $input) {
+			_id
+			shipmentStatus
+			shipmentTrackingCode
+			memberId
+			carrierId
+			updatedAt
+		}
+	}
+`;
+
+/**************************
+ *     TRACKING-EVENT     *
+ *************************/
+
+export const CREATE_TRACKING_EVENT = gql`
+	mutation CreateTrackingEvent($input: TrackingEventInput!) {
+		createTrackingEvent(input: $input) {
+			_id
+			shipmentId
+			memberId
+			eventStatus
+			eventLocation
+			eventNote
+			prevHash
+			eventHash
+			eventTxHash
 			createdAt
 			updatedAt
 		}

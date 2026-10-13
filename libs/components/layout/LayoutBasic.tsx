@@ -28,19 +28,19 @@ const withLayoutBasic = (Component: any) => {
 				bgImage = '';
 
 			switch (router.pathname) {
-				case '/property':
-					title = 'Property Search';
+				case '/shipment':
+					title = 'Shipment Search';
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
 					break;
-				case '/agent':
-					title = 'Agents';
-					desc = 'Home / For Rent';
+				case '/carrier':
+					title = 'Carriers';
+					desc = 'Home / Carriers';
 					bgImage = '/img/banner/agents.webp';
 					break;
-				case '/agent/detail':
-					title = 'Agent Page';
-					desc = 'Home / For Rent';
+				case '/carrier/detail':
+					title = 'Carrier Page';
+					desc = 'Home / Carriers';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/mypage':

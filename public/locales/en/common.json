@@ -18,5 +18,13 @@
   "my page": "my page",
   "Community Detail": "Community Detail",
   "Login/Signup": "Login/Signup",
-  "Member Page": "Member Page"
+  "Member Page": "Member Page",
+  "Shipments": "Shipments",
+  "Carriers": "Carriers",
+  "Shipment type": "Shipment type",
+  "Shipment Search": "Shipment Search",
+  "Carrier Page": "Carrier Page",
+  "Origin": "Origin",
+  "Destination": "Destination",
+  "Weight": "Weight"
 }

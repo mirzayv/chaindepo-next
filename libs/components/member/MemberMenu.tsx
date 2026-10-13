@@ -8,6 +8,7 @@ import { REACT_APP_API_URL } from '../../config';
 import { GET_MEMBER } from '../../../apollo/user/query';
 import { useQuery } from '@apollo/client';
 import { T } from '../../types/common';
+import { MemberType } from '../../enums/member.enum';
 
 interface MemberMenuProps {
 	subscribeHandler: any;
@@ -87,27 +88,27 @@ const MemberMenu = (props: MemberMenuProps) => {
 							Details
 						</Typography>
 						<List className={'sub-section'}>
-							{member?.memberType === 'AGENT' && (
-								<ListItem className={category === 'properties' ? 'focus' : ''}>
+							{member?.memberType === MemberType.USER && (
+								<ListItem className={category === 'shipments' ? 'focus' : ''}>
 									<Link
 										href={{
 											pathname: '/member',
-											query: { ...router.query, category: 'properties' },
+											query: { ...router.query, category: 'shipments' },
 										}}
 										scroll={false}
 										style={{ width: '100%' }}
 									>
 										<div className={'flex-box'}>
-											{category === 'properties' ? (
+											{category === 'shipments' ? (
 												<img className={'com-icon'} src={'/img/icons/homeWhite.svg'} alt={'com-icon'} />
 											) : (
 												<img className={'com-icon'} src={'/img/icons/home.svg'} alt={'com-icon'} />
 											)}
 											<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-												Properties
+												Shipments
 											</Typography>
 											<Typography className="count-title" variant="subtitle1">
-												{member?.memberProperties}
+												{member?.memberShipments}
 											</Typography>
 										</div>
 									</Link>

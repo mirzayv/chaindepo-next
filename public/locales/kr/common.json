@@ -18,5 +18,13 @@
   "my page": "마이 페이지",
   "Community Detail": "커뮤니티 디테일",
   "Login/Signup": "로그인/가입",
-  "Member Page": "멤버 페이지"
+  "Member Page": "멤버 페이지",
+  "Shipments": "화물",
+  "Carriers": "운송사",
+  "Shipment type": "화물 유형",
+  "Shipment Search": "화물 찾기",
+  "Carrier Page": "운송사 페이지",
+  "Origin": "출발지",
+  "Destination": "도착지",
+  "Weight": "무게"
 }

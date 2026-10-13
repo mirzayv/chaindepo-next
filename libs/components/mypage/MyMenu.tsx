@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import { REACT_APP_API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
+import { MemberType } from '../../enums/member.enum';
 
 const MyMenu = () => {
 	const device = useDeviceDetect();
@@ -55,29 +56,35 @@ const MyMenu = () => {
 					</Stack>
 				</Stack>
 				<Stack className={'sections'}>
-					<Stack className={'section'} style={{ height: user.memberType === 'AGENT' ? '228px' : '153px' }}>
+					<Stack
+						className={'section'}
+						style={{
+							height:
+								user.memberType === MemberType.USER || user.memberType === MemberType.CARRIER ? '228px' : '153px',
+						}}
+					>
 						<Typography className="title" variant={'h5'}>
-							MANAGE LISTINGS
+							MANAGE SHIPMENTS
 						</Typography>
 						<List className={'sub-section'}>
-							{user.memberType === 'AGENT' && (
+							{user.memberType === MemberType.USER && (
 								<>
-									<ListItem className={pathname === 'addProperty' ? 'focus' : ''}>
+									<ListItem className={pathname === 'addShipment' ? 'focus' : ''}>
 										<Link
 											href={{
 												pathname: '/mypage',
-												query: { category: 'addProperty' },
+												query: { category: 'addShipment' },
 											}}
 											scroll={false}
 										>
 											<div className={'flex-box'}>
-												{category === 'addProperty' ? (
+												{category === 'addShipment' ? (
 													<img className={'com-icon'} src={'/img/icons/whiteTab.svg'} alt={'com-icon'} />
 												) : (
 													<img className={'com-icon'} src={'/img/icons/newTab.svg'} alt={'com_icon'} />
 												)}
 												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-													Add Property
+													Create Shipment
 												</Typography>
 												<IconButton aria-label="delete" sx={{ ml: '40px' }}>
 													<PortraitIcon style={{ color: 'red' }} />
@@ -85,26 +92,70 @@ const MyMenu = () => {
 											</div>
 										</Link>
 									</ListItem>
-									<ListItem className={pathname === 'myProperties' ? 'focus' : ''}>
+									<ListItem className={pathname === 'myShipments' ? 'focus' : ''}>
 										<Link
 											href={{
 												pathname: '/mypage',
-												query: { category: 'myProperties' },
+												query: { category: 'myShipments' },
 											}}
 											scroll={false}
 										>
 											<div className={'flex-box'}>
-												{category === 'myProperties' ? (
+												{category === 'myShipments' ? (
 													<img className={'com-icon'} src={'/img/icons/homeWhite.svg'} alt={'com-icon'} />
 												) : (
 													<img className={'com-icon'} src={'/img/icons/home.svg'} alt={'com-icon'} />
 												)}
 												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-													My Properties
+													My Shipments
 												</Typography>
 												<IconButton aria-label="delete" sx={{ ml: '36px' }}>
 													<PortraitIcon style={{ color: 'red' }} />
 												</IconButton>
+											</div>
+										</Link>
+									</ListItem>
+								</>
+							)}
+							{user.memberType === MemberType.CARRIER && (
+								<>
+									<ListItem className={pathname === 'availableShipments' ? 'focus' : ''}>
+										<Link
+											href={{
+												pathname: '/mypage',
+												query: { category: 'availableShipments' },
+											}}
+											scroll={false}
+										>
+											<div className={'flex-box'}>
+												{category === 'availableShipments' ? (
+													<img className={'com-icon'} src={'/img/icons/whiteTab.svg'} alt={'com-icon'} />
+												) : (
+													<img className={'com-icon'} src={'/img/icons/newTab.svg'} alt={'com_icon'} />
+												)}
+												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+													Available Shipments
+												</Typography>
+											</div>
+										</Link>
+									</ListItem>
+									<ListItem className={pathname === 'carrierShipments' ? 'focus' : ''}>
+										<Link
+											href={{
+												pathname: '/mypage',
+												query: { category: 'carrierShipments' },
+											}}
+											scroll={false}
+										>
+											<div className={'flex-box'}>
+												{category === 'carrierShipments' ? (
+													<img className={'com-icon'} src={'/img/icons/homeWhite.svg'} alt={'com-icon'} />
+												) : (
+													<img className={'com-icon'} src={'/img/icons/home.svg'} alt={'com-icon'} />
+												)}
+												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+													Assigned Shipments
+												</Typography>
 											</div>
 										</Link>
 									</ListItem>

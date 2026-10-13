@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
-import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/property/property';
+import ShipmentCard from '../shipment/ShipmentCard';
+import { Shipment } from '../../types/shipment/shipment';
 import { T } from '../../types/common';
 import { useMutation, useQuery } from '@apollo/client';
-import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { LIKE_TARGET_SHIPMENT } from '../../../apollo/user/mutation';
 import { GET_FAVORITES } from '../../../apollo/user/query';
 import { Message } from '../../enums/common.enum';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
 const MyFavorites: NextPage = () => {
 	const device = useDeviceDetect();
-	const [myFavorites, setMyFavorites] = useState<Property[]>([]);
+	const [myFavorites, setMyFavorites] = useState<Shipment[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchFavorites, setSearchFavorites] = useState<T>({ page: 1, limit: 6 });
 
 	/** APOLLO REQUESTS **/
 
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const [likeTargetShipment] = useMutation(LIKE_TARGET_SHIPMENT);
 
 	const {
 		loading: getFavoritiesLoading,
@@ -41,12 +41,12 @@ const MyFavorites: NextPage = () => {
 		setSearchFavorites({ ...searchFavorites, page: value });
 	};
 
-	const likePropertyHandler = async (user: T, id: string) => {
+	const likeShipmentHandler = async (user: T, id: string) => {
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
-			await likeTargetProperty({
+			await likeTargetShipment({
 				variables: { input: id },
 			});
 
@@ -54,13 +54,13 @@ const MyFavorites: NextPage = () => {
 
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			console.log('ERROR, likeShipmentHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR MY FAVORITES MOBILE</div>;
+		return <div>MY FAVORITES MOBILE</div>;
 	} else {
 		return (
 			<div id="my-favorites-page">
@@ -72,13 +72,13 @@ const MyFavorites: NextPage = () => {
 				</Stack>
 				<Stack className="favorites-list-box">
 					{myFavorites?.length ? (
-						myFavorites?.map((property: Property) => {
+						myFavorites?.map((shipment: Shipment) => {
 							return (
-								<PropertyCard
-									property={property}
-									likePropertyHandler={likePropertyHandler}
+								<ShipmentCard
+									shipment={shipment}
+									likeShipmentHandler={likeShipmentHandler}
 									myFavorites={true}
-									key={property?._id}
+									key={shipment?._id}
 								/>
 							);
 						})
@@ -102,7 +102,7 @@ const MyFavorites: NextPage = () => {
 						</Stack>
 						<Stack className="total-result">
 							<Typography>
-								Total {total} favorite propert{total > 1 ? 'ies' : 'y'}
+								Total {total} favorite shipment{total > 1 ? 's' : ''}
 							</Typography>
 						</Stack>
 					</Stack>

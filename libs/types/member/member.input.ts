@@ -14,16 +14,16 @@ export interface LoginInput {
 	memberPassword: string;
 }
 
-interface AISearch {
+interface CarrierISearch {
 	text?: string;
 }
 
-export interface AgentsInquiry {
+export interface CarriersInquiry {
 	page: number;
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: AISearch;
+	search: CarrierISearch;
 }
 
 interface MISearch {

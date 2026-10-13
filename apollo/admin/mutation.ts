@@ -17,7 +17,7 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
+			memberShipments
 			memberRank
 			memberArticles
 			memberPoints
@@ -34,61 +34,57 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        SHIPMENT        *
  *************************/
 
-export const UPDATE_PROPERTY_BY_ADMIN = gql`
-	mutation UpdatePropertyByAdmin($input: PropertyUpdate!) {
-		updatePropertyByAdmin(input: $input) {
+export const UPDATE_SHIPMENT_BY_ADMIN = gql`
+	mutation UpdateShipmentByAdmin($input: ShipmentUpdate!) {
+		updateShipmentByAdmin(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			deliveredAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const REMOVE_PROPERTY_BY_ADMIN = gql`
-	mutation RemovePropertyByAdmin($input: String!) {
-		removePropertyByAdmin(propertyId: $input) {
+export const REMOVE_SHIPMENT_BY_ADMIN = gql`
+	mutation RemoveShipmentByAdmin($input: String!) {
+		removeShipmentByAdmin(shipmentId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			deliveredAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}

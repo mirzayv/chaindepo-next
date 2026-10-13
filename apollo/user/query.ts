@@ -4,44 +4,6 @@ import { gql } from '@apollo/client';
  *         MEMBER         *
  *************************/
 
-export const GET_AGENTS = gql`
-	query GetAgents($input: AgentsInquiry!) {
-		getAgents(input: $input) {
-			list {
-				_id
-				memberType
-				memberStatus
-				memberAuthType
-				memberPhone
-				memberNick
-				memberFullName
-				memberImage
-				memberAddress
-				memberDesc
-				memberWarnings
-				memberBlocks
-				memberProperties
-				memberRank
-				memberPoints
-				memberLikes
-				memberViews
-				deletedAt
-				createdAt
-				updatedAt
-				accessToken
-				meLiked {
-					memberId
-					likeRefId
-					myFavorite
-				}
-			}
-			metaCounter {
-				total
-			}
-		}
-	}
-`;
-
 export const GET_MEMBER = gql(`
 query GetMember($input: String!) {
     getMember(memberId: $input) {
@@ -55,7 +17,7 @@ query GetMember($input: String!) {
         memberImage
         memberAddress
         memberDesc
-        memberProperties
+        memberShipments
         memberArticles
         memberPoints
         memberLikes
@@ -79,32 +41,75 @@ query GetMember($input: String!) {
 `);
 
 /**************************
- *        PROPERTY        *
+ *        CARRIER         *
  *************************/
 
-export const GET_PROPERTY = gql`
-	query GetProperty($input: String!) {
-		getProperty(propertyId: $input) {
+export const GET_CARRIERS = gql`
+	query GetCarriers($input: CarriersInquiry!) {
+		getCarriers(input: $input) {
+			list {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberWarnings
+				memberBlocks
+				memberShipments
+				memberRank
+				memberPoints
+				memberLikes
+				memberViews
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+/**************************
+ *        SHIPMENT        *
+ *************************/
+
+export const GET_SHIPMENT = gql`
+	query GetShipment($input: String!) {
+		getShipment(shipmentId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentComments
+			shipmentRank
+			shipmentImages
+			shipmentDesc
 			memberId
-			soldAt
+			carrierId
+			lastEventHash
+			deliveredAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 			memberData {
@@ -137,31 +142,61 @@ export const GET_PROPERTY = gql`
 	}
 `;
 
-export const GET_PROPERTIES = gql`
-	query GetProperties($input: PropertiesInquiry!) {
-		getProperties(input: $input) {
+export const GET_SHIPMENT_BY_TRACKING_CODE = gql`
+	query GetShipmentByTrackingCode($input: String!) {
+		getShipmentByTrackingCode(trackingCode: $input) {
+			_id
+			shipmentType
+			shipmentStatus
+			shipmentOrigin
+			shipmentDestination
+			shipmentAddress
+			shipmentTitle
+			shipmentPrice
+			shipmentWeight
+			shipmentTrackingCode
+			shipmentViews
+			shipmentLikes
+			shipmentComments
+			shipmentRank
+			shipmentImages
+			shipmentDesc
+			memberId
+			carrierId
+			lastEventHash
+			deliveredAt
+			deletedAt
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const GET_SHIPMENTS = gql`
+	query GetShipments($input: ShipmentsInquiry!) {
+		getShipments(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				shipmentType
+				shipmentStatus
+				shipmentOrigin
+				shipmentDestination
+				shipmentAddress
+				shipmentTitle
+				shipmentPrice
+				shipmentWeight
+				shipmentTrackingCode
+				shipmentViews
+				shipmentLikes
+				shipmentComments
+				shipmentRank
+				shipmentImages
+				shipmentDesc
 				memberId
-				soldAt
+				carrierId
+				lastEventHash
+				deliveredAt
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
 				memberData {
@@ -177,7 +212,7 @@ export const GET_PROPERTIES = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberShipments
 					memberRank
 					memberPoints
 					memberLikes
@@ -199,30 +234,64 @@ export const GET_PROPERTIES = gql`
 	}
 `;
 
-export const GET_AGENT_PROPERTIES = gql`
-	query GetAgentProperties($input: AgentPropertiesInquiry!) {
-		getAgentProperties(input: $input) {
+export const GET_MY_SHIPMENTS = gql`
+	query GetMyShipments($input: MyShipmentsInquiry!) {
+		getMyShipments(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				shipmentType
+				shipmentStatus
+				shipmentOrigin
+				shipmentDestination
+				shipmentAddress
+				shipmentTitle
+				shipmentPrice
+				shipmentWeight
+				shipmentTrackingCode
+				shipmentViews
+				shipmentLikes
+				shipmentComments
+				shipmentImages
+				shipmentDesc
 				memberId
-				soldAt
+				carrierId
+				lastEventHash
+				deliveredAt
 				deletedAt
-				constructedAt
+				createdAt
+				updatedAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+export const GET_CARRIER_SHIPMENTS = gql`
+	query GetCarrierShipments($input: MyShipmentsInquiry!) {
+		getCarrierShipments(input: $input) {
+			list {
+				_id
+				shipmentType
+				shipmentStatus
+				shipmentOrigin
+				shipmentDestination
+				shipmentAddress
+				shipmentTitle
+				shipmentPrice
+				shipmentWeight
+				shipmentTrackingCode
+				shipmentViews
+				shipmentLikes
+				shipmentComments
+				shipmentImages
+				shipmentDesc
+				memberId
+				carrierId
+				lastEventHash
+				deliveredAt
+				deletedAt
 				createdAt
 				updatedAt
 			}
@@ -238,27 +307,25 @@ export const GET_FAVORITES = gql`
 		getFavorites(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyComments
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				shipmentType
+				shipmentStatus
+				shipmentOrigin
+				shipmentDestination
+				shipmentAddress
+				shipmentTitle
+				shipmentPrice
+				shipmentWeight
+				shipmentTrackingCode
+				shipmentViews
+				shipmentLikes
+				shipmentComments
+				shipmentRank
+				shipmentImages
+				shipmentDesc
 				memberId
-				soldAt
+				carrierId
+				deliveredAt
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
 				memberData {
@@ -272,7 +339,7 @@ export const GET_FAVORITES = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberShipments
 					memberArticles
 					memberPoints
 					memberLikes
@@ -301,27 +368,25 @@ export const GET_VISITED = gql`
 		getVisited(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyComments
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				shipmentType
+				shipmentStatus
+				shipmentOrigin
+				shipmentDestination
+				shipmentAddress
+				shipmentTitle
+				shipmentPrice
+				shipmentWeight
+				shipmentTrackingCode
+				shipmentViews
+				shipmentLikes
+				shipmentComments
+				shipmentRank
+				shipmentImages
+				shipmentDesc
 				memberId
-				soldAt
+				carrierId
+				deliveredAt
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
 				memberData {
@@ -335,7 +400,7 @@ export const GET_VISITED = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberShipments
 					memberArticles
 					memberPoints
 					memberLikes
@@ -355,6 +420,51 @@ export const GET_VISITED = gql`
 			metaCounter {
 				total
 			}
+		}
+	}
+`;
+
+/**************************
+ *     TRACKING-EVENT     *
+ *************************/
+
+export const GET_TRACKING_EVENTS = gql`
+	query GetTrackingEvents($input: String!) {
+		getTrackingEvents(shipmentId: $input) {
+			_id
+			shipmentId
+			memberId
+			eventStatus
+			eventLocation
+			eventNote
+			prevHash
+			eventHash
+			eventTxHash
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const VERIFY_SHIPMENT_CHAIN = gql`
+	query VerifyShipmentChain($input: String!) {
+		verifyShipmentChain(shipmentId: $input) {
+			valid
+			totalEvents
+			brokenAtIndex
+			lastEventHash
+			anchoredEvents
+		}
+	}
+`;
+
+export const GET_EVENT_ANCHOR_STATUSES = gql`
+	query GetEventAnchorStatuses($input: String!) {
+		getEventAnchorStatuses(shipmentId: $input) {
+			eventId
+			eventHash
+			eventTxHash
+			anchored
 		}
 	}
 `;
@@ -391,7 +501,7 @@ export const GET_BOARD_ARTICLE = gql`
 				memberDesc
 				memberWarnings
 				memberBlocks
-				memberProperties
+				memberShipments
 				memberRank
 				memberPoints
 				memberLikes
@@ -443,7 +553,7 @@ export const GET_BOARD_ARTICLES = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberShipments
 					memberRank
 					memberPoints
 					memberLikes
@@ -489,7 +599,7 @@ export const GET_COMMENTS = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberShipments
 					memberRank
 					memberPoints
 					memberLikes
@@ -540,7 +650,7 @@ export const GET_MEMBER_FOLLOWERS = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberShipments
 					memberArticles
 					memberPoints
 					memberLikes
@@ -583,7 +693,7 @@ export const GET_MEMBER_FOLLOWINGS = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberShipments
 					memberArticles
 					memberPoints
 					memberLikes
