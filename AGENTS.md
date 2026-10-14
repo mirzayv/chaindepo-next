@@ -26,9 +26,16 @@ Backend: ../chaindepo (NestJS GraphQL), running at http://localhost:3007/graphql
 
 ## Design
 
-- Dark navy #0A1628, accent orange #FF7A1A, white text
-- Headings: bold condensed (Barlow Condensed), body: Inter, hashes and tracking codes: JetBrains Mono
-- No teal/purple, no glow blobs, no gradients behind text, no fake numbers, no real company names
+- Light and calm: white background #FFFFFF, section background #F5F7F9, white cards with a 1px border #E3E8EE, radius 6px, almost no shadow
+- Text navy #0B2236, secondary #5A6B7B; accent teal-blue #2F8FB5 for buttons and links (hover #26789A)
+- Status colors: verified/delivered #1E8E5A, in transit #E0A100, broken/cancelled #C62828
+- Font: Inter for everything (next/font/google), JetBrains Mono only for tracking codes and hashes
+- Tokens live in tailwind.config.js (preflight off, content limited to the new Tailwind folders)
+- Large real photography (ports, containers, trucks in Korea) from Unsplash via next/image, no logos on photos
+- Logo: lowercase "chaindepo" in Inter Bold after a small solid #2F8FB5 square (libs/components/ui/Logo.tsx)
+- Motion: CSS transitions under 200ms, respect prefers-reduced-motion, no framer-motion
+- No gradients, no glow, no dark hero, no orange, max one small uppercase label per page, no fake statistics, no real company names
+- Prices in KRW (₩, no decimals) via formatKRW in libs/utils.ts
 - Responsive desktop and mobile
 
 ## Rules

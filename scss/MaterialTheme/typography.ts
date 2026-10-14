@@ -1,4 +1,5 @@
 export default {
+	fontFamily: 'var(--font-inter), system-ui, sans-serif',
 	h1: {
 		fontSize: 36,
 		fontWeight: 700,

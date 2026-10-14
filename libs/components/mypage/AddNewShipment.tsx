@@ -4,7 +4,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ShipmentLocation, ShipmentStatus, ShipmentType } from '../../enums/shipment.enum';
 import { MemberType } from '../../enums/member.enum';
-import { REACT_APP_API_URL } from '../../config';
+import { Messages, REACT_APP_API_URL } from '../../config';
 import { ShipmentInput } from '../../types/shipment/shipment.input';
 import { Member } from '../../types/member/member';
 import axios from 'axios';
@@ -16,10 +16,13 @@ import { CREATE_SHIPMENT, UPDATE_SHIPMENT } from '../../../apollo/user/mutation'
 import { GET_CARRIERS, GET_SHIPMENT } from '../../../apollo/user/query';
 import { T } from '../../types/common';
 
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+
 const AddShipment = ({ initialValues, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const inputRef = useRef<any>(null);
+	const [dragging, setDragging] = useState<boolean>(false);
 	const [insertShipmentData, setInsertShipmentData] = useState<ShipmentInput>(initialValues);
 	const [shipmentTypes] = useState<ShipmentType[]>(Object.values(ShipmentType));
 	const [shipmentLocations] = useState<ShipmentLocation[]>(Object.values(ShipmentLocation));
@@ -72,15 +75,23 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 	}, [getShipmentLoading, getShipmentData]);
 
 	/** HANDLERS **/
-	async function uploadImages() {
+	async function uploadImages(selectedFiles: File[]) {
 		try {
 			const formData = new FormData();
-			const selectedFiles = inputRef.current.files;
 			const currentCount = insertShipmentData.shipmentImages.length;
 
-			if (selectedFiles.length == 0) return false;
-			if (currentCount + selectedFiles.length > 5)
+			// only real, non-empty jpeg/png files are sent
+			const files = selectedFiles.filter((file: File) => file.size > 0);
+			if (files.length == 0) return false;
+			if (files.some((file: File) => !ALLOWED_IMAGE_TYPES.includes(file.type))) throw new Error(Messages.error5);
+			if (currentCount + files.length > 5)
 				throw new Error(`Cannot upload more than 5 images! You can add ${5 - currentCount} more.`);
+
+			// the multipart map declares exactly as many slots as there are files
+			const map: Record<string, string[]> = {};
+			files.forEach((_file: File, index: number) => {
+				map[`${index}`] = [`variables.files.${index}`];
+			});
 
 			formData.append(
 				'operations',
@@ -89,24 +100,15 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 						imagesUploader(files: $files, target: $target)
 				  }`,
 					variables: {
-						files: [null, null, null, null, null],
+						files: files.map(() => null),
 						target: 'shipment',
 					},
 				}),
 			);
-			formData.append(
-				'map',
-				JSON.stringify({
-					'0': ['variables.files.0'],
-					'1': ['variables.files.1'],
-					'2': ['variables.files.2'],
-					'3': ['variables.files.3'],
-					'4': ['variables.files.4'],
-				}),
-			);
-			for (const key in selectedFiles) {
-				if (/^\d+$/.test(key)) formData.append(`${key}`, selectedFiles[key]);
-			}
+			formData.append('map', JSON.stringify(map));
+			files.forEach((file: File, index: number) => {
+				formData.append(`${index}`, file);
+			});
 
 			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
 				headers: {
@@ -129,6 +131,24 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 			if (inputRef.current) inputRef.current.value = '';
 		}
 	}
+
+	const dragOverHandler = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault(); // required, otherwise the browser opens the dropped file
+		e.dataTransfer.dropEffect = 'copy';
+		if (!dragging) setDragging(true);
+	};
+
+	const dragLeaveHandler = (e: React.DragEvent<HTMLDivElement>) => {
+		// ignore leave events fired when moving over child elements
+		if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+		setDragging(false);
+	};
+
+	const dropHandler = async (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		setDragging(false);
+		await uploadImages(Array.from(e.dataTransfer.files));
+	};
 
 	const removeImageHandler = (image: string) => {
 		setInsertShipmentData((prev) => ({
@@ -396,7 +416,13 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 						<Typography className="upload-title">Upload photos of your cargo</Typography>
 						<Stack className="images-box">
-							<Stack className="upload-box">
+							<Stack
+								className={`upload-box ${dragging ? 'dragging' : ''}`}
+								onDragEnter={dragOverHandler}
+								onDragOver={dragOverHandler}
+								onDragLeave={dragLeaveHandler}
+								onDrop={dropHandler}
+							>
 								<svg xmlns="http://www.w3.org/2000/svg" width="121" height="120" viewBox="0 0 121 120" fill="none">
 									<g clipPath="url(#clip0_7037_5336)">
 										<path
@@ -453,7 +479,9 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 										ref={inputRef}
 										type="file"
 										hidden={true}
-										onChange={uploadImages}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+											uploadImages(Array.from(e.target.files ?? []))
+										}
 										multiple={true}
 										accept="image/jpg, image/jpeg, image/png"
 									/>

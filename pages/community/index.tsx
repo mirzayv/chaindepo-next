@@ -16,6 +16,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Message } from '../../libs/enums/common.enum';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import Logo from '../../libs/components/ui/Logo';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -115,9 +116,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 						<Stack className="main-box">
 							<Stack className="left-config">
 								<Stack className={'image-info'}>
-									<img src={'/img/logo/logoText.svg'} />
+									<Logo size={24} />
 									<Stack className={'community-name'}>
-										<Typography className={'name'}>Nestar Community</Typography>
+										<Typography className={'name'}>ChainDepo Community</Typography>
 									</Stack>
 								</Stack>
 

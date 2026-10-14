@@ -38,8 +38,8 @@ import { useRouter } from 'next/router';
 import { Shipment } from '../../libs/types/shipment/shipment';
 import { Member } from '../../libs/types/member/member';
 import moment from 'moment';
-import { formatterStr } from '../../libs/utils';
-import { REACT_APP_API_URL } from '../../libs/config';
+import { formatKRW } from '../../libs/utils';
+import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../libs/config';
 // REACT_APP_API_URL — backend manzili. Rasmlar shu manzildan olinadi: .../uploads/shipment/abc.jpg
 import { userVar } from '../../apollo/store';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
@@ -303,13 +303,13 @@ const ShipmentDetail: NextPage = ({ initialComment, ...props }: any) => {
 											<Typography>{shipment?.shipmentLikes}</Typography>
 										</Stack>
 									</Stack>
-									<Typography>${formatterStr(shipment?.shipmentPrice)}</Typography>
+									<Typography>{formatKRW(shipment?.shipmentPrice)}</Typography>
 								</Stack>
 							</Stack>
 							<Stack className={'images'}>
 								<Stack className={'main-image'}>
 									<img
-										src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/property/bigImage.png'}
+										src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : IMAGE_PLACEHOLDER}
 										alt={'main-image'}
 									/>
 								</Stack>
@@ -384,7 +384,7 @@ const ShipmentDetail: NextPage = ({ initialComment, ...props }: any) => {
 												</Box>
 												<Box component={'div'} className={'info'}>
 													<Typography className={'title'}>Price</Typography>
-													<Typography className={'data'}>${formatterStr(shipment?.shipmentPrice)}</Typography>
+													<Typography className={'data'}>{formatKRW(shipment?.shipmentPrice)}</Typography>
 												</Box>
 												<Box component={'div'} className={'info'}>
 													<Typography className={'title'}>Weight</Typography>

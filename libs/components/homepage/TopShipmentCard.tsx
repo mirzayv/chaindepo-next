@@ -4,7 +4,8 @@ import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Shipment } from '../../types/shipment/shipment';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { REACT_APP_API_URL } from '../../config';
+import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../config';
+import { formatKRW } from '../../utils';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
@@ -29,12 +30,16 @@ const TopShipmentCard = (props: TopShipmentCardProps) => {
 			<Box
 				component={'div'}
 				className={'card-img'}
-				style={{ backgroundImage: `url(${REACT_APP_API_URL}/${shipment?.shipmentImages[0]})` }}
+				style={{
+					backgroundImage: `url(${
+						shipment?.shipmentImages?.[0] ? `${REACT_APP_API_URL}/${shipment.shipmentImages[0]}` : IMAGE_PLACEHOLDER
+					})`,
+				}}
 				onClick={() => {
 					pushDetailHandler(shipment._id);
 				}}
 			>
-				<div>${shipment?.shipmentPrice}</div>
+				<div>{formatKRW(shipment?.shipmentPrice)}</div>
 			</Box>
 			<Box component={'div'} className={'info'}>
 				<strong

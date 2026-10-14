@@ -5,7 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Shipment } from '../../types/shipment/shipment';
-import { formatterStr } from '../../utils';
+import { formatKRW } from '../../utils';
+import { IMAGE_PLACEHOLDER } from '../../config';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
 import { ShipmentStatus } from '../../enums/shipment.enum';
@@ -57,7 +58,14 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 		return (
 			<Stack className="property-card-box">
 				<Stack className="image-box" onClick={() => pushShipmentDetail(shipment?._id)}>
-					<img src={`${process.env.REACT_APP_API_URL}/${shipment.shipmentImages[0]}`} alt="" />
+					<img
+						src={
+							shipment.shipmentImages?.[0]
+								? `${process.env.REACT_APP_API_URL}/${shipment.shipmentImages[0]}`
+								: IMAGE_PLACEHOLDER
+						}
+						alt=""
+					/>
 				</Stack>
 				<Stack className="information-box" onClick={() => pushShipmentDetail(shipment?._id)}>
 					<Typography className="name">{shipment.shipmentTitle}</Typography>
@@ -65,7 +73,7 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 						{shipment.shipmentTrackingCode} · {shipment.shipmentOrigin} → {shipment.shipmentDestination}
 					</Typography>
 					<Typography className="price">
-						<strong>${formatterStr(shipment?.shipmentPrice)}</strong>
+						<strong>{formatKRW(shipment?.shipmentPrice)}</strong>
 					</Typography>
 				</Stack>
 				<Stack className="date-box">

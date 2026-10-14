@@ -15,7 +15,7 @@ import {
 import Avatar from '@mui/material/Avatar';
 import { Stack } from '@mui/material';
 import { Shipment } from '../../../types/shipment/shipment';
-import { REACT_APP_API_URL } from '../../../config';
+import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../../config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { ShipmentStatus } from '../../../enums/shipment.enum';
@@ -147,7 +147,9 @@ export const ShipmentPanelList = (props: ShipmentPanelListType) => {
 
 						{shipments.length !== 0 &&
 							shipments.map((shipment: Shipment, index: number) => {
-								const shipmentImage = `${REACT_APP_API_URL}/${shipment?.shipmentImages[0]}`;
+								const shipmentImage = shipment?.shipmentImages?.[0]
+									? `${REACT_APP_API_URL}/${shipment.shipmentImages[0]}`
+									: IMAGE_PLACEHOLDER;
 
 								return (
 									<TableRow hover key={shipment?._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

@@ -312,7 +312,7 @@ const Filter = (props: FilterType) => {
 					<Stack className="square-year-input">
 						<input
 							type="number"
-							placeholder="$ min"
+							placeholder="₩ min"
 							min={0}
 							value={searchFilter?.search?.pricesRange?.start ?? 0}
 							onChange={(e: any) => {
@@ -324,7 +324,7 @@ const Filter = (props: FilterType) => {
 						<div className="central-divider"></div>
 						<input
 							type="number"
-							placeholder="$ max"
+							placeholder="₩ max"
 							value={searchFilter?.search?.pricesRange?.end ?? 0}
 							onChange={(e: any) => {
 								if (e.target.value >= 0) {

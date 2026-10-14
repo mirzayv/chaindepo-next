@@ -93,8 +93,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>{memoizedValues.title ? `${memoizedValues.title} · ChainDepo` : 'ChainDepo'}</title>
+						<meta name={'title'} content={`ChainDepo`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -115,8 +115,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>{memoizedValues.title ? `${memoizedValues.title} · ChainDepo` : 'ChainDepo'}</title>
+						<meta name={'title'} content={`ChainDepo`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>

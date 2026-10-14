@@ -5,8 +5,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Shipment } from '../../types/shipment/shipment';
 import Link from 'next/link';
-import { formatterStr } from '../../utils';
-import { REACT_APP_API_URL, topShipmentRank } from '../../config';
+import { formatKRW } from '../../utils';
+import { IMAGE_PLACEHOLDER, REACT_APP_API_URL, topShipmentRank } from '../../config';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import IconButton from '@mui/material/IconButton';
@@ -25,7 +25,7 @@ const ShipmentCard = (props: ShipmentCardType) => {
 	const user = useReactiveVar(userVar);
 	const imagePath: string = shipment?.shipmentImages[0]
 		? `${REACT_APP_API_URL}/${shipment?.shipmentImages[0]}`
-		: '/img/banner/header1.svg';
+		: IMAGE_PLACEHOLDER;
 
 	if (device === 'mobile') {
 		return <div>SHIPMENT CARD</div>;
@@ -48,7 +48,7 @@ const ShipmentCard = (props: ShipmentCardType) => {
 						</Box>
 					)}
 					<Box component={'div'} className={'price-box'}>
-						<Typography>${formatterStr(shipment?.shipmentPrice)}</Typography>
+						<Typography>{formatKRW(shipment?.shipmentPrice)}</Typography>
 					</Box>
 				</Stack>
 				<Stack className="bottom">
