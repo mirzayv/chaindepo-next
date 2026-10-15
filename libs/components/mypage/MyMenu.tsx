@@ -87,7 +87,7 @@ const MyMenu = () => {
 													Create Shipment
 												</Typography>
 												<IconButton aria-label="delete" sx={{ ml: '40px' }}>
-													<PortraitIcon style={{ color: 'red' }} />
+													<PortraitIcon className={'menu-badge-icon'} />
 												</IconButton>
 											</div>
 										</Link>
@@ -110,7 +110,7 @@ const MyMenu = () => {
 													My Shipments
 												</Typography>
 												<IconButton aria-label="delete" sx={{ ml: '36px' }}>
-													<PortraitIcon style={{ color: 'red' }} />
+													<PortraitIcon className={'menu-badge-icon'} />
 												</IconButton>
 											</div>
 										</Link>
@@ -214,7 +214,7 @@ const MyMenu = () => {
 									<div className={'flex-box'}>
 										<svg
 											className={'com-icon'}
-											fill={category === 'followers' ? 'white' : 'black'}
+											fill={category === 'followers' ? 'white' : '#0B2236'}
 											height="16px"
 											width="16px"
 											version="1.1"
@@ -261,7 +261,7 @@ const MyMenu = () => {
 									<div className={'flex-box'}>
 										<svg
 											className={'com-icon'}
-											fill={category === 'followings' ? 'white' : 'black'}
+											fill={category === 'followings' ? 'white' : '#0B2236'}
 											height="16px"
 											width="16px"
 											version="1.1"

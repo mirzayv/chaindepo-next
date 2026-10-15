@@ -50,12 +50,35 @@ hr {
 /** VERSION: PC **/
 #pc-wrap {
 	width: 100%;
+	max-width: 100%;
 	height: 100%;
 
 	.container {
 		position: relative;
 		width: 1300px;
+		max-width: 100%;
 		margin: 0 auto;
 		display: flex;
+	}
+
+	/* keep the fixed-width MUI layouts inside the window with a small gutter */
+	@media (max-width: 1332px) {
+		.container {
+			box-sizing: border-box;
+			padding-left: 16px;
+			padding-right: 16px;
+		}
+	}
+}
+
+/*
+ * No horizontal page scroll on narrow widths. `clip` (not `hidden`) so #main does not
+ * become a scroll container; the sticky header sits outside #main either way.
+ */
+#pc-wrap,
+#mobile-wrap {
+	#main {
+		max-width: 100%;
+		overflow-x: clip;
 	}
 }

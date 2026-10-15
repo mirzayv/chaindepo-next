@@ -6,23 +6,27 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
-import Chat from '../Chat';
+import FloatingWidget from '../widget/FloatingWidget';
 import { useTranslation } from 'next-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-/** page title band per route; routes without a title render no band **/
-const PAGE_HEADINGS: Record<string, { title: string; desc: string }> = {
-	'/shipment': { title: 'Shipments', desc: 'Browse shipments moving across Korea.' },
-	'/carrier': { title: 'Carriers', desc: 'Carriers who move shipments on ChainDepo.' },
-	'/carrier/detail': { title: 'Carrier', desc: '' },
-	'/mypage': { title: 'My Page', desc: '' },
-	'/community': { title: 'Community', desc: 'Questions, news and notes from shippers and carriers.' },
-	'/community/detail': { title: 'Community', desc: '' },
-	'/cs': { title: 'Help center', desc: 'Notices, FAQ and inquiries.' },
-	'/account/join': { title: 'Log in or sign up', desc: '' },
-	'/member': { title: 'Member', desc: '' },
+/**
+ * title per route. `band: true` renders the grey title band; it is only used on list pages
+ * that have no heading of their own (detail, profile and auth pages already show one).
+ **/
+const PAGE_HEADINGS: Record<string, { title: string; desc: string; band: boolean }> = {
+	'/shipment': { title: 'Shipments', desc: 'Browse shipments moving across Korea.', band: true },
+	'/carrier': { title: 'Carriers', desc: 'Carriers who move shipments on ChainDepo.', band: true },
+	'/community': { title: 'Community', desc: 'Questions, news and notes from shippers and carriers.', band: true },
+	'/cs': { title: 'Help center', desc: 'Notices, FAQ and inquiries.', band: true },
+	'/carrier/detail': { title: 'Carrier', desc: '', band: false },
+	'/mypage': { title: 'My Page', desc: '', band: false },
+	'/community/detail': { title: 'Community', desc: '', band: false },
+	'/account/join': { title: 'Log in or sign up', desc: '', band: false },
+	'/member': { title: 'Member', desc: '', band: false },
+	'/about': { title: 'About', desc: '', band: false },
 };
 
 const withLayoutBasic = (Component: any) => {
@@ -31,7 +35,10 @@ const withLayoutBasic = (Component: any) => {
 		const { t } = useTranslation('common');
 		const device = useDeviceDetect();
 
-		const heading = useMemo(() => PAGE_HEADINGS[router.pathname] ?? { title: '', desc: '' }, [router.pathname]);
+		const heading = useMemo(
+			() => PAGE_HEADINGS[router.pathname] ?? { title: '', desc: '', band: false },
+			[router.pathname],
+		);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -49,7 +56,7 @@ const withLayoutBasic = (Component: any) => {
 				<Stack id={device == 'mobile' ? 'mobile-wrap' : 'pc-wrap'}>
 					<Top />
 
-					{heading.title && (
+					{heading.band && heading.title && (
 						<section className="cd-ui w-full border-b border-line bg-surface">
 							<div className="mx-auto flex max-w-page flex-col gap-2 px-4 py-8 md:px-6 md:py-10">
 								<h1 className="m-0 text-h2 font-bold text-ink">{t(heading.title)}</h1>
@@ -62,7 +69,7 @@ const withLayoutBasic = (Component: any) => {
 						<Component {...props} />
 					</Stack>
 
-					{device !== 'mobile' && <Chat />}
+					<FloatingWidget />
 
 					<Footer />
 				</Stack>

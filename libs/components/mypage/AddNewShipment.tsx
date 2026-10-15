@@ -260,11 +260,12 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Stack className="config-row">
 								<Stack className="price-year-after-price">
-									<Typography className="title">Price ($)</Typography>
+									<Typography className="title">Price (₩)</Typography>
 									<input
 										type="text"
+										inputMode="numeric"
 										className="description-input"
-										placeholder={'Price'}
+										placeholder={'Price in won'}
 										value={insertShipmentData.shipmentPrice}
 										onChange={({ target: { value } }) =>
 											setInsertShipmentData({ ...insertShipmentData, shipmentPrice: parseInt(value) || 0 })

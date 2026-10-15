@@ -16,6 +16,7 @@ import Avatar from '@mui/material/Avatar';
 import { Stack } from '@mui/material';
 import { Shipment } from '../../../types/shipment/shipment';
 import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../../config';
+import { formatKRW } from '../../../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { ShipmentStatus } from '../../../enums/shipment.enum';
@@ -176,7 +177,7 @@ export const ShipmentPanelList = (props: ShipmentPanelListType) => {
 												</Stack>
 											)}
 										</TableCell>
-										<TableCell align="center">{shipment.shipmentPrice}</TableCell>
+										<TableCell align="center">{formatKRW(shipment.shipmentPrice)}</TableCell>
 										<TableCell align="center">{shipment.memberData?.memberNick}</TableCell>
 										<TableCell align="center">
 											{shipment.shipmentOrigin} → {shipment.shipmentDestination}

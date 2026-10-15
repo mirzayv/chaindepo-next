@@ -5,7 +5,7 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
-import Chat from '../Chat';
+import FloatingWidget from '../widget/FloatingWidget';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -34,7 +34,7 @@ const withLayoutFull = (Component: any) => {
 						<Component {...props} />
 					</Stack>
 
-					{device !== 'mobile' && <Chat />}
+					<FloatingWidget />
 
 					<Footer />
 				</Stack>

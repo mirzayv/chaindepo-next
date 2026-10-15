@@ -308,7 +308,7 @@ const Filter = (props: FilterType) => {
 					</Stack>
 				</Stack>
 				<Stack className={'find-your-home'}>
-					<Typography className={'title'}>Price Range</Typography>
+					<Typography className={'title'}>Price range (₩)</Typography>
 					<Stack className="square-year-input">
 						<input
 							type="number"
