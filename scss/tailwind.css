@@ -1,3 +1,51 @@
 /* No @tailwind base: preflight stays off so MUI/SCSS pages are untouched */
 @tailwind components;
+
+/*
+ * Minimal base for the new Tailwind UI only. Every new root (header, footer, widget, Tailwind pages)
+ * carries the .cd-ui class. These rules sit before the utilities, so at equal specificity utilities win.
+ * reset.scss sets `border: 0` on most elements, so border-style must be restored here for `border` utilities.
+ */
+.cd-ui,
+.cd-ui *,
+.cd-ui ::before,
+.cd-ui ::after {
+	box-sizing: border-box;
+	border-width: 0;
+	border-style: solid;
+	border-color: #e3e8ee;
+}
+
+/* zero specificity: beats browser defaults, loses to any utility class */
+:where(.cd-ui) {
+	font-family: var(--font-inter), system-ui, sans-serif;
+	color: #0b2236;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+}
+
+:where(.cd-ui) :where(button, input, select, textarea) {
+	font: inherit;
+	color: inherit;
+	letter-spacing: inherit;
+	background-color: transparent;
+	margin: 0;
+}
+
+:where(.cd-ui) :where(button, [role='button']) {
+	cursor: pointer;
+}
+
+:where(.cd-ui) :where(img, svg, video) {
+	display: block;
+	max-width: 100%;
+}
+
+/* note: app.scss `a { color }` and `span, p { line-height }` outrank :where(), so components set text color / leading explicitly */
+
+:where(.cd-ui) :where(:focus-visible) {
+	outline: 2px solid #2f8fb5;
+	outline-offset: 2px;
+}
+
 @tailwind utilities;

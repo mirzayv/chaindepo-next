@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
@@ -7,79 +7,31 @@ import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
-import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
+/** page title band per route; routes without a title render no band **/
+const PAGE_HEADINGS: Record<string, { title: string; desc: string }> = {
+	'/shipment': { title: 'Shipments', desc: 'Browse shipments moving across Korea.' },
+	'/carrier': { title: 'Carriers', desc: 'Carriers who move shipments on ChainDepo.' },
+	'/carrier/detail': { title: 'Carrier', desc: '' },
+	'/mypage': { title: 'My Page', desc: '' },
+	'/community': { title: 'Community', desc: 'Questions, news and notes from shippers and carriers.' },
+	'/community/detail': { title: 'Community', desc: '' },
+	'/cs': { title: 'Help center', desc: 'Notices, FAQ and inquiries.' },
+	'/account/join': { title: 'Log in or sign up', desc: '' },
+	'/member': { title: 'Member', desc: '' },
+};
+
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
 		const router = useRouter();
-		const { t, i18n } = useTranslation('common');
+		const { t } = useTranslation('common');
 		const device = useDeviceDetect();
-		const [authHeader, setAuthHeader] = useState<boolean>(false);
-		const user = useReactiveVar(userVar);
 
-		const memoizedValues = useMemo(() => {
-			let title = '',
-				desc = '',
-				bgImage = '';
-
-			switch (router.pathname) {
-				case '/shipment':
-					title = 'Shipment Search';
-					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/properties.png';
-					break;
-				case '/carrier':
-					title = 'Carriers';
-					desc = 'Home / Carriers';
-					bgImage = '/img/banner/agents.webp';
-					break;
-				case '/carrier/detail':
-					title = 'Carrier Page';
-					desc = 'Home / Carriers';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/mypage':
-					title = 'my page';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header1.svg';
-					break;
-				case '/community':
-					title = 'Community';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/community/detail':
-					title = 'Community Detail';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/cs':
-					title = 'CS';
-					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/account/join':
-					title = 'Login/Signup';
-					desc = 'Authentication Process';
-					bgImage = '/img/banner/header2.svg';
-					setAuthHeader(true);
-					break;
-				case '/member':
-					title = 'Member Page';
-					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header1.svg';
-					break;
-				default:
-					break;
-			}
-
-			return { title, desc, bgImage };
-		}, [router.pathname]);
+		const heading = useMemo(() => PAGE_HEADINGS[router.pathname] ?? { title: '', desc: '' }, [router.pathname]);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -87,69 +39,35 @@ const withLayoutBasic = (Component: any) => {
 			if (jwt) updateUserInfo(jwt);
 		}, []);
 
-		/** HANDLERS **/
+		return (
+			<>
+				<Head>
+					<title>{heading.title ? `${t(heading.title)} · ChainDepo` : 'ChainDepo'}</title>
+					<meta name={'title'} content={`ChainDepo`} />
+				</Head>
+				{/* the wrapper id keeps the existing pc/mobile SCSS scopes working */}
+				<Stack id={device == 'mobile' ? 'mobile-wrap' : 'pc-wrap'}>
+					<Top />
 
-		if (device == 'mobile') {
-			return (
-				<>
-					<Head>
-						<title>{memoizedValues.title ? `${memoizedValues.title} · ChainDepo` : 'ChainDepo'}</title>
-						<meta name={'title'} content={`ChainDepo`} />
-					</Head>
-					<Stack id="mobile-wrap">
-						<Stack id={'top'}>
-							<Top />
-						</Stack>
+					{heading.title && (
+						<section className="cd-ui w-full border-b border-line bg-surface">
+							<div className="mx-auto flex max-w-page flex-col gap-2 px-4 py-8 md:px-6 md:py-10">
+								<h1 className="m-0 text-h2 font-bold text-ink">{t(heading.title)}</h1>
+								{heading.desc && <p className="m-0 text-body leading-normal text-muted">{t(heading.desc)}</p>}
+							</div>
+						</section>
+					)}
 
-						<Stack id={'main'}>
-							<Component {...props} />
-						</Stack>
-
-						<Stack id={'footer'}>
-							<Footer />
-						</Stack>
+					<Stack id={'main'}>
+						<Component {...props} />
 					</Stack>
-				</>
-			);
-		} else {
-			return (
-				<>
-					<Head>
-						<title>{memoizedValues.title ? `${memoizedValues.title} · ChainDepo` : 'ChainDepo'}</title>
-						<meta name={'title'} content={`ChainDepo`} />
-					</Head>
-					<Stack id="pc-wrap">
-						<Stack id={'top'}>
-							<Top />
-						</Stack>
 
-						<Stack
-							className={`header-basic ${authHeader && 'auth'}`}
-							style={{
-								backgroundImage: `url(${memoizedValues.bgImage})`,
-								backgroundSize: 'cover',
-								boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
-							}}
-						>
-							<Stack className={'container'}>
-								<strong>{t(memoizedValues.title)}</strong>
-								<span>{t(memoizedValues.desc)}</span>
-							</Stack>
-						</Stack>
+					{device !== 'mobile' && <Chat />}
 
-						<Stack id={'main'}>
-							<Component {...props} />
-						</Stack>
-
-						<Chat />
-
-						<Stack id={'footer'}>
-							<Footer />
-						</Stack>
-					</Stack>
-				</>
-			);
-		}
+					<Footer />
+				</Stack>
+			</>
+		);
 	};
 };
 
