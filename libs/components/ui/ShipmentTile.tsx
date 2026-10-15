@@ -17,7 +17,7 @@ const ShipmentTile = ({ shipment }: ShipmentTileProps) => {
 	return (
 		<Link
 			href={`/shipment/detail?id=${shipment._id}`}
-			className="group flex w-full flex-col overflow-hidden rounded-card border border-line bg-white text-ink transition-colors duration-150 ease-out hover:border-accent"
+			className="group flex w-full min-w-0 flex-col overflow-hidden whitespace-normal rounded-card border border-line bg-white text-ink transition-colors duration-150 ease-out hover:border-accent"
 		>
 			<div className="aspect-[16/10] w-full overflow-hidden bg-surface">
 				<ImageWithFallback src={image} alt="" loading="lazy" className="h-full w-full object-cover" />

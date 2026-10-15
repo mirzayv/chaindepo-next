@@ -3,7 +3,7 @@ import { ShipmentStatus } from '../../enums/shipment.enum';
 import { labelOf } from '../../utils';
 
 /** dot colour per status; the label stays ink so it reads on white */
-const DOT_CLASS: Record<ShipmentStatus, string> = {
+export const DOT_CLASS: Record<ShipmentStatus, string> = {
 	[ShipmentStatus.CREATED]: 'bg-muted',
 	[ShipmentStatus.PICKED_UP]: 'bg-warn',
 	[ShipmentStatus.IN_TRANSIT]: 'bg-warn',

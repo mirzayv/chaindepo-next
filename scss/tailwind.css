@@ -48,4 +48,45 @@
 	outline-offset: 2px;
 }
 
+/* Leaflet maps (libs/components/ui/map): palette and font on top of leaflet.css */
+.cd-map .leaflet-container {
+	font-family: var(--font-inter), system-ui, sans-serif;
+	background: #f5f7f9;
+}
+.cd-map .leaflet-popup-content-wrapper {
+	border: 1px solid #e3e8ee;
+	border-radius: 6px;
+	box-shadow: 0 1px 2px rgba(11, 34, 54, 0.08);
+}
+.cd-map .leaflet-popup-tip {
+	box-shadow: none;
+}
+.cd-map .leaflet-popup-content {
+	margin: 10px 14px;
+	color: #0b2236;
+	font-size: 13px;
+	line-height: 1.45;
+}
+.cd-map .leaflet-popup-content p {
+	margin: 0;
+	line-height: 1.45;
+}
+.cd-map .leaflet-popup-content a {
+	color: #2f8fb5;
+	font-weight: 600;
+	text-decoration: none;
+}
+.cd-map .leaflet-popup-content a:hover {
+	color: #26789a;
+	text-decoration: underline;
+}
+.cd-map .leaflet-bar a {
+	color: #0b2236;
+}
+.cd-map .leaflet-control-attribution,
+.cd-map .leaflet-control-attribution a {
+	color: #5a6b7b;
+	font-size: 11px;
+}
+
 @tailwind utilities;

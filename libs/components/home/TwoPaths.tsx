@@ -49,7 +49,7 @@ const TwoPaths = () => {
 					<Link
 						key={card.title}
 						href={card.href}
-						className="group flex flex-col overflow-hidden rounded-card border border-line bg-white text-ink transition-colors duration-150 ease-out hover:border-accent"
+						className="group flex flex-col overflow-hidden whitespace-normal rounded-card border border-line bg-white text-ink transition-colors duration-150 ease-out hover:border-accent"
 					>
 						<div className="relative aspect-[16/9] w-full bg-surface">
 							<Image src={card.photo} alt="" fill sizes="(min-width: 768px) 600px, 100vw" className="object-cover" />

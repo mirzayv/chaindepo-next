@@ -76,7 +76,7 @@ const ShipmentTypes = () => {
 						<li key={item.type} className="flex">
 							<Link
 								href={shipmentListHref({ typeList: [item.type] })}
-								className="group flex w-full flex-col gap-3 rounded-card border border-line bg-white p-5 text-ink transition-colors duration-150 ease-out hover:border-accent"
+								className="group flex w-full min-w-0 flex-col gap-3 whitespace-normal rounded-card border border-line bg-white p-5 text-ink transition-colors duration-150 ease-out hover:border-accent"
 							>
 								<span className="text-accent">{item.icon}</span>
 								<h3 className="m-0 text-h3 font-semibold text-ink">{item.title}</h3>
