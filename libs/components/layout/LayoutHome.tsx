@@ -6,9 +6,6 @@ import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import FloatingWidget from '../widget/FloatingWidget';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 const withLayoutMain = (Component: any) => {
 	return (props: any) => {
