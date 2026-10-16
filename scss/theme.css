@@ -1,0 +1,192 @@
+/*
+ * ChainDepo color tokens, light and dark.
+ * html.dark is set before paint by the inline script in pages/_document.tsx (libs/hooks/useColorMode.ts toggles it).
+ *
+ * 1) --cd-*: Tailwind tokens as "R G B" channels, so opacity utilities (bg-accent/10) keep working.
+ * 2) --lg-*: legacy SCSS/MUI colors. The light value is the exact original literal, so light mode is unchanged;
+ *    only html.dark remaps them. Names follow the role and the original literal (bg / tx / ln = background / text / line).
+ */
+
+:root {
+	color-scheme: light;
+
+	/* Tailwind tokens */
+	--cd-ink: 11 34 54; /* #0B2236 */
+	--cd-muted: 90 107 123; /* #5A6B7B */
+	--cd-line: 227 232 238; /* #E3E8EE */
+	--cd-surface: 245 247 249; /* #F5F7F9 */
+	--cd-card: 255 255 255; /* #FFFFFF */
+	--cd-page: 255 255 255; /* #FFFFFF */
+	--cd-navy: 11 34 54; /* fixed navy: How it works band, hero overlay */
+	--cd-accent: 47 143 181; /* #2F8FB5 */
+	--cd-accent-hover: 38 120 154; /* #26789A */
+	--cd-ok: 30 142 90; /* #1E8E5A */
+	--cd-warn: 224 161 0; /* #E0A100 */
+	--cd-bad: 198 40 40; /* #C62828 */
+
+	/* legacy backgrounds */
+	--lg-bg-fff: #fff;
+	--lg-bg-fafafa: #fafafa;
+	--lg-bg-f5f5f5: #f5f5f5;
+	--lg-bg-f6f6f6: #f6f6f6;
+	--lg-bg-f5f7f9: #f5f7f9;
+	--lg-bg-f4f6f8: #f4f6f8;
+	--lg-bg-eee: #eee;
+	--lg-bg-ddd: #ddd;
+	--lg-bg-dfdfdf: #dfdfdf;
+	--lg-bg-181a20: #181a20;
+	--lg-bg-000: #000000;
+	--lg-bg-0b2236: #0b2236;
+
+	/* legacy text */
+	--lg-tx-212121: #212121;
+	--lg-tx-181a20: #181a20;
+	--lg-tx-000: #000;
+	--lg-tx-0b2236: #0b2236;
+	--lg-tx-374151: #374151;
+	--lg-tx-344767: #344767;
+	--lg-tx-717171: #717171;
+	--lg-tx-757575: #757575;
+	--lg-tx-616161: #616161;
+	--lg-tx-5a6b7b: #5a6b7b;
+	--lg-tx-7b809a: #7b809a;
+	--lg-tx-959595: #959595;
+	--lg-tx-bdbdbd: #bdbdbd;
+	--lg-tx-b9b9b9: #b9b9b9;
+	--lg-tx-c0c0c0: #c0c0c0;
+	--lg-tx-ddd: #ddd;
+	--lg-tx-bbb: rgb(187, 187, 187);
+	--lg-tx-8f8f8f54: rgba(143, 143, 143, 0.54);
+
+	/* legacy lines */
+	--lg-ln-ddd: #ddd;
+	--lg-ln-eee: #eee;
+	--lg-ln-efefef: #efefef;
+	--lg-ln-e3e8ee: #e3e8ee;
+	--lg-ln-c4c4c4: #c4c4c4;
+	--lg-ln-c4c4c4c9: rgba(196, 196, 196, 0.79);
+	--lg-ln-bdbdbd: #bdbdbd;
+	--lg-ln-b9b9b9: #b9b9b9;
+	--lg-ln-000-12: rgba(0, 0, 0, 0.12);
+	--lg-ln-000-125: rgba(0, 0, 0, 0.125);
+	--lg-ln-181a20: #181a20;
+	--lg-ln-0b2236: #0b2236;
+	--lg-ln-5a6b7b: #5a6b7b;
+	--lg-ln-black: black;
+}
+
+html.dark {
+	color-scheme: dark;
+
+	--cd-ink: 230 237 243; /* #E6EDF3 */
+	--cd-muted: 143 163 181; /* #8FA3B5 */
+	--cd-line: 31 47 63; /* #1F2F3F */
+	--cd-surface: 17 30 43; /* #111E2B */
+	--cd-card: 20 34 49; /* #142231, a step above the surface */
+	--cd-page: 11 21 32; /* #0B1520 */
+	/* navy and accent stay; status colors lighten to stay readable on dark */
+	--cd-ok: 63 191 127; /* #3FBF7F */
+	--cd-warn: 240 180 41; /* #F0B429 */
+	--cd-bad: 239 83 80; /* #EF5350 */
+
+	--lg-bg-fff: #142231;
+	--lg-bg-fafafa: #111e2b;
+	--lg-bg-f5f5f5: #111e2b;
+	--lg-bg-f6f6f6: #111e2b;
+	--lg-bg-f5f7f9: #111e2b;
+	--lg-bg-f4f6f8: #0b1520;
+	--lg-bg-eee: #1f2f3f;
+	--lg-bg-ddd: #1f2f3f;
+	--lg-bg-dfdfdf: #1f2f3f;
+	--lg-bg-181a20: #8fa3b5;
+	--lg-bg-000: #26394b;
+	--lg-bg-0b2236: #26394b;
+
+	--lg-tx-212121: #e6edf3;
+	--lg-tx-181a20: #e6edf3;
+	--lg-tx-000: #e6edf3;
+	--lg-tx-0b2236: #e6edf3;
+	--lg-tx-374151: #e6edf3;
+	--lg-tx-344767: #e6edf3;
+	--lg-tx-717171: #8fa3b5;
+	--lg-tx-757575: #8fa3b5;
+	--lg-tx-616161: #8fa3b5;
+	--lg-tx-5a6b7b: #8fa3b5;
+	--lg-tx-7b809a: #8fa3b5;
+	--lg-tx-959595: #8fa3b5;
+	--lg-tx-bdbdbd: #6f8396;
+	--lg-tx-b9b9b9: #6f8396;
+	--lg-tx-c0c0c0: #6f8396;
+	--lg-tx-ddd: #6f8396;
+	--lg-tx-bbb: #6f8396;
+	--lg-tx-8f8f8f54: #6f8396;
+
+	--lg-ln-ddd: #1f2f3f;
+	--lg-ln-eee: #1f2f3f;
+	--lg-ln-efefef: #1f2f3f;
+	--lg-ln-e3e8ee: #1f2f3f;
+	--lg-ln-c4c4c4: #1f2f3f;
+	--lg-ln-c4c4c4c9: #1f2f3f;
+	--lg-ln-bdbdbd: #2c4054;
+	--lg-ln-b9b9b9: #2c4054;
+	--lg-ln-000-12: #1f2f3f;
+	--lg-ln-000-125: #1f2f3f;
+	--lg-ln-181a20: #8fa3b5;
+	--lg-ln-0b2236: #8fa3b5;
+	--lg-ln-5a6b7b: #8fa3b5;
+	--lg-ln-black: #8fa3b5;
+}
+
+/* page background behind everything (light: unchanged white) */
+html.dark body {
+	background: #0b1520;
+	color: #e6edf3;
+}
+
+/* dark-on-transparent SVG icons still used by the MUI pages ("no data" alert) */
+html.dark img[src='/img/icons/icoAlert.svg'] {
+	filter: invert(0.85) hue-rotate(180deg);
+}
+
+/* SweetAlert2 popups */
+html.dark .swal2-popup {
+	background: #142231;
+	color: #e6edf3;
+}
+html.dark .swal2-title,
+html.dark .swal2-html-container {
+	color: #e6edf3;
+}
+
+/* Toast UI editor / viewer (community write and detail) */
+html.dark .toastui-editor-defaultUI,
+html.dark .toastui-editor-defaultUI .toastui-editor-toolbar,
+html.dark .toastui-editor-defaultUI .toastui-editor-md-container,
+html.dark .toastui-editor-defaultUI .toastui-editor-ww-container,
+html.dark .toastui-editor-defaultUI-toolbar,
+html.dark .toastui-editor-mode-switch {
+	background-color: #142231;
+	border-color: #1f2f3f;
+}
+html.dark .toastui-editor-defaultUI-toolbar button {
+	border-color: #142231;
+	filter: invert(0.85) hue-rotate(180deg);
+}
+html.dark .toastui-editor-contents,
+html.dark .toastui-editor-contents p,
+html.dark .toastui-editor-contents h1,
+html.dark .toastui-editor-contents h2,
+html.dark .toastui-editor-contents h3,
+html.dark .toastui-editor-contents li,
+html.dark .ProseMirror {
+	color: #e6edf3;
+}
+html.dark .toastui-editor-mode-switch .tab-item {
+	background: #111e2b;
+	color: #8fa3b5;
+	border-color: #1f2f3f;
+}
+html.dark .toastui-editor-mode-switch .tab-item.active {
+	background: #142231;
+	color: #e6edf3;
+}

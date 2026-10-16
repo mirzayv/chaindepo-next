@@ -23,7 +23,7 @@ const MEMBER_TYPES = [
 ];
 
 const inputClass =
-	'h-11 w-full rounded-card border border-line bg-white px-3 text-body text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted focus:border-accent';
+	'h-11 w-full rounded-card border border-line bg-card px-3 text-body text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted focus:border-accent';
 
 const Field = ({ id, label, children }: { id: string; label: string; children: React.ReactNode }) => (
 	<div className="flex flex-col gap-1.5">
@@ -84,7 +84,7 @@ const Join: NextPage = () => {
 	return (
 		<div className="cd-ui w-full bg-surface">
 			<div className="mx-auto grid max-w-page px-4 py-8 md:px-6 md:py-14">
-				<div className="grid overflow-hidden rounded-card border border-line bg-white md:grid-cols-2">
+				<div className="grid overflow-hidden rounded-card border border-line bg-card md:grid-cols-2">
 					<div className="flex flex-col gap-6 p-6 sm:p-10">
 						<Logo size={24} />
 						<div className="flex flex-col gap-1.5">

@@ -62,7 +62,7 @@ export const light = {
 		MuiLink: {
 			styleOverrides: {
 				root: {
-					color: '#757575',
+					color: 'var(--lg-tx-757575)',
 					textDecoration: 'none',
 				},
 			},
@@ -70,7 +70,7 @@ export const light = {
 		MuiDivider: {
 			styleOverrides: {
 				root: {
-					borderColor: '#eee',
+					borderColor: 'var(--lg-ln-eee)',
 				},
 			},
 		},
@@ -122,12 +122,12 @@ export const light = {
 		MuiButton: {
 			styleOverrides: {
 				root: {
-					color: '#212121',
+					color: 'var(--lg-tx-212121)',
 					minWidth: 'auto',
 					lineHeight: '1.2',
 					boxShadow: 'none',
 					ButtonText: {
-						color: '#212121',
+						color: 'var(--lg-tx-212121)',
 					},
 				},
 			},
@@ -195,13 +195,13 @@ export const light = {
 				root: {
 					height: '48px',
 					width: '100%',
-					backgroundColor: '#fff',
+					backgroundColor: 'var(--lg-bg-fff)',
 					input: {},
 				},
 				notchedOutline: {
 					padding: '8px',
 					top: '-9px',
-					border: '1px solid #eee',
+					border: '1px solid var(--lg-ln-eee)',
 				},
 			},
 		},
@@ -235,9 +235,9 @@ export const light = {
 		MuiStepIcon: {
 			styleOverrides: {
 				root: {
-					color: '#fff',
+					color: 'var(--lg-bg-fff)',
 					borderRadius: '50%',
-					border: '1px solid #eee',
+					border: '1px solid var(--lg-ln-eee)',
 				},
 				text: {
 					fill: '#bdbdbd',
@@ -247,7 +247,7 @@ export const light = {
 		MuiStepConnector: {
 			styleOverrides: {
 				line: {
-					borderColor: '#eee',
+					borderColor: 'var(--lg-ln-eee)',
 				},
 			},
 		},
@@ -272,11 +272,11 @@ export const light = {
 				root: {
 					width: '40px',
 					height: '40px',
-					background: '#fff',
-					color: '#212121',
+					background: 'var(--lg-bg-fff)',
+					color: 'var(--lg-tx-212121)',
 				},
 				hover: {
-					background: '#fff',
+					background: 'var(--lg-bg-fff)',
 				},
 			},
 		},
@@ -306,12 +306,47 @@ export const light = {
 		MuiChip: {
 			styleOverrides: {
 				root: {
-					border: '1px solid #ddd',
-					color: '#212121',
+					border: '1px solid var(--lg-ln-ddd)',
+					color: 'var(--lg-tx-212121)',
 				},
 			},
 		},
 	},
 	shadow,
 	typography,
+};
+
+/**
+ * DARK THEME: same components (their colors are CSS variables from scss/theme.css), dark palette.
+ * Palette values stay real colors because MUI derives hover/alpha shades from them.
+ */
+export const dark = {
+	...light,
+	palette: {
+		...light.palette,
+		mode: 'dark',
+		type: 'dark',
+		background: {
+			default: '#0B1520',
+			paper: '#142231',
+		},
+		secondary: {
+			main: '#8FA3B5',
+		},
+		error: {
+			main: '#EF5350',
+		},
+		success: {
+			main: '#3FBF7F',
+		},
+		warning: {
+			main: '#F0B429',
+		},
+		text: {
+			primary: '#E6EDF3',
+			secondary: '#8FA3B5',
+			dark: '#E6EDF3',
+		},
+		divider: '#1F2F3F',
+	},
 };

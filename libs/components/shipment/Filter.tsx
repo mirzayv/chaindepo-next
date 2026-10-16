@@ -19,7 +19,7 @@ interface FilterType {
 }
 
 const inputClass =
-	'h-10 w-full min-w-0 rounded-card border border-line bg-white px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted focus:border-accent';
+	'h-10 w-full min-w-0 rounded-card border border-line bg-card px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted focus:border-accent';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
 	<fieldset className="m-0 flex min-w-0 flex-col gap-2 border-0 border-t border-line p-0 pt-4">
@@ -147,7 +147,7 @@ const Filter = (props: FilterType) => {
 	);
 
 	return (
-		<div className="flex flex-col gap-4 rounded-card border border-line bg-white p-4 md:p-5">
+		<div className="flex flex-col gap-4 rounded-card border border-line bg-card p-4 md:p-5">
 			<div className="flex items-center justify-between gap-3">
 				<h2 className="m-0 text-h3 font-semibold text-ink">Filters</h2>
 				<button

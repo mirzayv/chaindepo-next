@@ -31,7 +31,7 @@ const Pagination = ({ page, count, onChange, className = '' }: PaginationProps) 
 		<nav aria-label="Pagination" className={`flex flex-wrap items-center justify-center gap-1.5 ${className}`}>
 			<button
 				type="button"
-				className={`${baseButton} border-line bg-white text-ink hover:border-accent hover:text-accent`}
+				className={`${baseButton} border-line bg-card text-ink hover:border-accent hover:text-accent`}
 				onClick={() => onChange(page - 1)}
 				disabled={page <= 1}
 				aria-label="Previous page"
@@ -50,7 +50,7 @@ const Pagination = ({ page, count, onChange, className = '' }: PaginationProps) 
 						className={
 							item === page
 								? `${baseButton} border-accent bg-accent text-white`
-								: `${baseButton} border-line bg-white text-ink hover:border-accent hover:text-accent`
+								: `${baseButton} border-line bg-card text-ink hover:border-accent hover:text-accent`
 						}
 						onClick={() => onChange(item)}
 						aria-current={item === page ? 'page' : undefined}
@@ -61,7 +61,7 @@ const Pagination = ({ page, count, onChange, className = '' }: PaginationProps) 
 			)}
 			<button
 				type="button"
-				className={`${baseButton} border-line bg-white text-ink hover:border-accent hover:text-accent`}
+				className={`${baseButton} border-line bg-card text-ink hover:border-accent hover:text-accent`}
 				onClick={() => onChange(page + 1)}
 				disabled={page >= count}
 				aria-label="Next page"

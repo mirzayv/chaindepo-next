@@ -18,7 +18,7 @@ const MARKERS: MapMarker[] = LOCATIONS.map((location) => ({
 
 const KoreaNetwork = () => {
 	return (
-		<section className="w-full bg-white">
+		<section className="w-full bg-page">
 			<div className="mx-auto grid max-w-page items-center gap-8 px-4 py-14 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-12 md:px-6 md:py-20">
 				<div className="flex flex-col gap-3">
 					<h2 className="m-0 text-h2 font-semibold text-ink">Nine cities, one record</h2>
@@ -31,7 +31,7 @@ const KoreaNetwork = () => {
 							<li key={location}>
 								<Link
 									href={shipmentListHref({ originList: [location] })}
-									className="inline-flex h-8 items-center rounded-full border border-line bg-white px-3 text-small font-medium text-ink transition-colors duration-150 ease-out hover:border-accent hover:text-accent"
+									className="inline-flex h-8 items-center rounded-full border border-line bg-card px-3 text-small font-medium text-ink transition-colors duration-150 ease-out hover:border-accent hover:text-accent"
 								>
 									{CITIES[location].name}
 								</Link>

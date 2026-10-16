@@ -27,7 +27,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 	};
 
 	return (
-		<article className="flex gap-4 rounded-card border border-line bg-white p-4 transition-colors duration-150 ease-out hover:border-accent">
+		<article className="flex gap-4 rounded-card border border-line bg-card p-4 transition-colors duration-150 ease-out hover:border-accent">
 			{imagePath && (
 				<Link href={articleHref} className="hidden shrink-0 sm:block" aria-hidden="true" tabIndex={-1}>
 					<img src={imagePath} alt="" className="block h-20 w-28 rounded-card bg-surface object-cover" />
@@ -61,7 +61,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 				className={`inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 self-start rounded-card border px-3 text-small font-medium transition-colors duration-150 ease-out ${
 					liked
 						? 'border-accent bg-accent text-white hover:bg-accent-hover'
-						: 'border-line bg-white text-ink hover:border-accent hover:text-accent'
+						: 'border-line bg-card text-ink hover:border-accent hover:text-accent'
 				}`}
 			>
 				<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill={liked ? 'currentColor' : 'none'}>

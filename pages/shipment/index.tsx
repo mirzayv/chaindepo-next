@@ -143,7 +143,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 								id="shipment-sort"
 								value={sortIdOf(searchFilter)}
 								onChange={sortingHandler}
-								className="h-10 cursor-pointer rounded-card border border-line bg-white px-3 text-small font-medium text-ink outline-none transition-colors duration-150 ease-out hover:border-accent focus:border-accent"
+								className="h-10 cursor-pointer rounded-card border border-line bg-card px-3 text-small font-medium text-ink outline-none transition-colors duration-150 ease-out hover:border-accent focus:border-accent"
 							>
 								{SORTS.map((item) => (
 									<option key={item.id} value={item.id}>
@@ -155,7 +155,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 					</div>
 
 					{shipments?.length === 0 ? (
-						<div className="rounded-card border border-line bg-white px-6 py-14 text-center">
+						<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
 							<p className="m-0 text-h3 font-semibold text-ink">No shipments found</p>
 							<p className="m-0 mt-1 text-small text-muted">Try fewer filters or reset them.</p>
 						</div>

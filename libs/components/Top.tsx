@@ -8,6 +8,7 @@ import { getJwtToken, logOut, updateUserInfo } from '../auth';
 import { REACT_APP_API_URL } from '../config';
 import { MemberType } from '../enums/member.enum';
 import Logo from './ui/Logo';
+import ThemeToggle from './ui/ThemeToggle';
 
 interface NavItem {
 	label: string;
@@ -98,7 +99,7 @@ const Top = () => {
 		}`;
 
 	return (
-		<header className="cd-ui sticky top-0 z-50 w-full border-b border-line bg-white">
+		<header className="cd-ui sticky top-0 z-50 w-full border-b border-line bg-card">
 			<div className="mx-auto flex h-16 max-w-page items-center gap-8 px-4 md:px-6">
 				<Link href={'/'} className="shrink-0" aria-label="ChainDepo home">
 					<Logo size={22} />
@@ -138,6 +139,8 @@ const Top = () => {
 						))}
 					</select>
 
+					<ThemeToggle className="hidden md:flex" />
+
 					{isLoggedIn ? (
 						<div className="relative" ref={accountRef}>
 							<button
@@ -152,7 +155,7 @@ const Top = () => {
 							</button>
 							<div
 								role="menu"
-								className={`absolute right-0 top-11 w-48 origin-top-right rounded-card border border-line bg-white py-1 shadow-card transition duration-150 ease-out motion-reduce:transition-opacity ${
+								className={`absolute right-0 top-11 w-48 origin-top-right rounded-card border border-line bg-card py-1 shadow-card transition duration-150 ease-out motion-reduce:transition-opacity ${
 									accountOpen
 										? 'visible scale-100 opacity-100'
 										: 'invisible scale-95 opacity-0 motion-reduce:scale-100'
@@ -219,7 +222,7 @@ const Top = () => {
 			{/* mobile sheet: drops down from the header and goes back up the same way */}
 			<div
 				id="cd-mobile-menu"
-				className={`absolute inset-x-0 top-full origin-top border-b border-line bg-white transition duration-150 ease-out motion-reduce:transition-opacity md:hidden ${
+				className={`absolute inset-x-0 top-full origin-top border-b border-line bg-card transition duration-150 ease-out motion-reduce:transition-opacity md:hidden ${
 					menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0 motion-reduce:translate-y-0'
 				}`}
 			>
@@ -257,18 +260,21 @@ const Top = () => {
 						) : (
 							<span className="text-small text-muted">{user?.memberNick}</span>
 						)}
-						<select
-							aria-label={t('Language')}
-							value={lang}
-							onChange={langChangeHandler}
-							className="h-9 rounded-card border border-line px-2 text-small font-medium text-ink"
-						>
-							{LANGUAGES.map((item) => (
-								<option key={item.code} value={item.code}>
-									{item.label}
-								</option>
-							))}
-						</select>
+						<div className="flex items-center gap-2">
+							<ThemeToggle />
+							<select
+								aria-label={t('Language')}
+								value={lang}
+								onChange={langChangeHandler}
+								className="h-9 rounded-card border border-line px-2 text-small font-medium text-ink"
+							>
+								{LANGUAGES.map((item) => (
+									<option key={item.code} value={item.code}>
+										{item.label}
+									</option>
+								))}
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>

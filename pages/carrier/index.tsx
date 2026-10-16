@@ -28,7 +28,7 @@ const SORTS: { id: string; label: string; sort: string; direction: string }[] = 
 ];
 
 const inputClass =
-	'h-10 rounded-card border border-line bg-white px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted hover:border-accent focus:border-accent';
+	'h-10 rounded-card border border-line bg-card px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted hover:border-accent focus:border-accent';
 
 const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 	const router = useRouter();
@@ -148,7 +148,7 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 
 				{carriers?.length === 0 ? (
 					<div
-						className="rounded-card border border-line bg-white px-6 py-14 text-center"
+						className="rounded-card border border-line bg-card px-6 py-14 text-center"
 						aria-busy={getCarriersLoading}
 					>
 						<p className="m-0 text-h3 font-semibold text-ink">No carriers found</p>

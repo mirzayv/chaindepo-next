@@ -16,7 +16,7 @@ const RECENT_INPUT: ShipmentsInquiry = {
 };
 
 const SkeletonTile = () => (
-	<div className="flex flex-col overflow-hidden rounded-card border border-line bg-white" aria-hidden="true">
+	<div className="flex flex-col overflow-hidden rounded-card border border-line bg-card" aria-hidden="true">
 		<div className="aspect-[16/10] w-full animate-pulse bg-surface motion-reduce:animate-none" />
 		<div className="flex flex-col gap-3 p-4">
 			<div className="h-5 w-3/4 animate-pulse rounded bg-surface motion-reduce:animate-none" />
@@ -36,7 +36,7 @@ const RecentShipments = () => {
 	const showSkeleton = loading && shipments.length === 0;
 
 	return (
-		<section className="w-full bg-white">
+		<section className="w-full bg-page">
 			<div className="mx-auto max-w-page px-4 py-14 md:px-6 md:py-20">
 				<div className="mb-8 flex items-end justify-between gap-4">
 					<div className="flex flex-col gap-2">

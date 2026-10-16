@@ -15,8 +15,8 @@
 					height: fit-content;
 					padding: 12px;
 					border-radius: 6px;
-					border: 1px solid #e3e8ee;
-					background: #fff;
+					border: 1px solid var(--lg-ln-e3e8ee);
+					background: var(--lg-bg-fff);
 					.image-info {
 						width: 100%;
 						flex-direction: row;
@@ -30,7 +30,7 @@
 						.community-name {
 							.name {
 								margin-top: 15px;
-								color: #181a20;
+								color: var(--lg-tx-181a20);
 								font-family: $font;
 								font-size: 15px;
 								font-style: normal;
@@ -46,9 +46,9 @@
 						justify-content: center;
 						align-items: center;
 						border-radius: 6px;
-						border: 1px solid #181a20;
+						border: 1px solid var(--lg-ln-181a20);
 						margin-bottom: 10px;
-						color: #181a20;
+						color: var(--lg-tx-181a20);
 						font-family: $font;
 						font-size: 14px;
 						font-style: normal;
@@ -62,7 +62,7 @@
 						padding: 0;
 						justify-content: center;
 						align-items: center;
-						background-color: #000000;
+						background-color: var(--lg-bg-000);
 						color: #ffffff;
 						border-radius: 6px;
 						margin-bottom: 10px;
@@ -86,7 +86,7 @@
 							width: 60%;
 							height: auto;
 							.title {
-								color: #000;
+								color: var(--lg-tx-000);
 								font-family: $font;
 								font-size: 24px;
 								font-style: normal;
@@ -95,7 +95,7 @@
 								letter-spacing: 0.24px;
 							}
 							.sub-title {
-								color: #757575;
+								color: var(--lg-tx-757575);
 								font-family: $font;
 								font-size: 13px;
 								font-style: normal;
@@ -123,7 +123,7 @@
 							width: 1012px;
 							min-height: 500px;
 							border-radius: 8px 8px 0px 0px;
-							border: 1px solid #eee;
+							border: 1px solid var(--lg-ln-eee);
 							box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 							.content-and-info {
 								width: 100%;
@@ -131,11 +131,11 @@
 								padding: 35px 25px;
 								flex-direction: row;
 								justify-content: space-between;
-								border-bottom: 1px solid #eee;
+								border-bottom: 1px solid var(--lg-ln-eee);
 								.content {
 									gap: 12px;
 									.content-data {
-										color: #000;
+										color: var(--lg-tx-000);
 										font-family: $font;
 										font-size: 18px;
 										font-style: normal;
@@ -154,7 +154,7 @@
 											cursor: pointer;
 										}
 										.member-nick {
-											color: #000;
+											color: var(--lg-tx-000);
 											font-family: $font;
 											font-size: 13px;
 											font-style: normal;
@@ -166,10 +166,10 @@
 										.divider {
 											width: 1px;
 											height: 16px;
-											background: #eee;
+											background: var(--lg-bg-eee);
 										}
 										.time-added {
-											color: #bdbdbd;
+											color: var(--lg-tx-bdbdbd);
 											font-family: $font;
 											font-size: 12px;
 											font-style: normal;
@@ -196,7 +196,7 @@
 										}
 										.text {
 											padding-top: 2 px;
-											color: #000;
+											color: var(--lg-tx-000);
 											font-family: $font;
 											font-size: 11px;
 											font-style: normal;
@@ -208,7 +208,7 @@
 									.divider {
 										width: 1px;
 										height: 21px;
-										background: #eeeeee;
+										background: var(--lg-bg-eee);
 									}
 								}
 							}
@@ -231,7 +231,7 @@
 										height: 45px;
 										gap: 5px;
 										border-radius: 2px;
-										border: 1px solid #eee;
+										border: 1px solid var(--lg-ln-eee);
 										background: #2f8fb5;
 										p {
 											color: #fff;
@@ -253,7 +253,7 @@
 							gap: 11px;
 							.title-text {
 								align-self: flex-start;
-								color: #000;
+								color: var(--lg-tx-000);
 								text-align: center;
 								font-family: $font;
 								font-size: 17px;
@@ -268,9 +268,9 @@
 									height: 61px;
 									outline: none;
 									padding: 22px 17px;
-									border: 1px solid #eee;
+									border: 1px solid var(--lg-ln-eee);
 									::placeholder {
-										color: #c0c0c0;
+										color: var(--lg-tx-c0c0c0);
 										font-family: $font;
 										font-size: 14px;
 										font-style: normal;
@@ -286,10 +286,10 @@
 									justify-content: space-between;
 									align-items: center;
 									padding-left: 17px;
-									border: 1px solid #eee;
+									border: 1px solid var(--lg-ln-eee);
 									border-top: none;
 									p {
-										color: #000;
+										color: var(--lg-tx-000);
 										font-family: $font;
 										font-size: 14px;
 										font-style: normal;
@@ -316,7 +316,7 @@
 						.comments {
 							width: 100%;
 							height: auto;
-							border: 1px solid #efefef;
+							border: 1px solid var(--lg-ln-efefef);
 							border-top: none;
 							.comments-title {
 								width: 112.087px;
@@ -347,7 +347,7 @@
 								height: auto;
 								padding: 20px 24px;
 								gap: 17px;
-								border: 1px solid #efefef;
+								border: 1px solid var(--lg-ln-efefef);
 								border-top: none;
 								.member-info {
 									width: 100%;
@@ -369,7 +369,7 @@
 										}
 										.name-date-column {
 											.name {
-												color: #000;
+												color: var(--lg-tx-000);
 												font-family: $font;
 												font-size: 16px;
 												font-style: normal;
@@ -378,7 +378,7 @@
 												cursor: pointer;
 											}
 											.date {
-												color: #757575;
+												color: var(--lg-tx-757575);
 												font-family: $font;
 												font-size: 13px;
 												font-style: normal;
@@ -397,7 +397,7 @@
 									width: 100%;
 									height: auto;
 									p {
-										color: #000;
+										color: var(--lg-tx-000);
 										font-family: $font;
 										font-size: 16px;
 										font-style: normal;
@@ -417,10 +417,10 @@
 				gap: 75px;
 				padding: 30px 9px 28px 9px;
 				border-radius: 10px;
-				border: 1px solid #c4c4c4;
+				border: 1px solid var(--lg-ln-c4c4c4);
 				.similar-articles-title {
 					padding-left: 56px;
-					color: #000;
+					color: var(--lg-tx-000);
 					font-family: $font;
 					font-size: 30px;
 					font-style: normal;

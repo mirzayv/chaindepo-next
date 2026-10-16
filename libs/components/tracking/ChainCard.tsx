@@ -59,7 +59,7 @@ const ChainCard = ({ chain, loading, failed, verifying, checkedAt, onVerify }: C
 	const styles = TONE_CLASS[tone];
 
 	return (
-		<section className="flex flex-col gap-4 rounded-card border border-line bg-white p-5" aria-labelledby="chain-card-title">
+		<section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5" aria-labelledby="chain-card-title">
 			<h2 id="chain-card-title" className="m-0 text-h3 font-semibold text-ink">
 				Verification
 			</h2>
@@ -92,7 +92,7 @@ const ChainCard = ({ chain, loading, failed, verifying, checkedAt, onVerify }: C
 					onClick={onVerify}
 					disabled={verifying || loading}
 					aria-busy={verifying}
-					className="inline-flex h-10 items-center gap-2 rounded-card border border-line bg-white px-4 text-[0.875rem] font-semibold text-ink transition duration-150 ease-out hover:border-accent hover:text-accent active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none"
+					className="inline-flex h-10 items-center gap-2 rounded-card border border-line bg-card px-4 text-[0.875rem] font-semibold text-ink transition duration-150 ease-out hover:border-accent hover:text-accent active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none"
 				>
 					<svg
 						width="14"

@@ -22,7 +22,7 @@ const CarrierCard = (props: CarrierCardProps) => {
 	const name = carrier?.memberFullName || carrier?.memberNick;
 
 	return (
-		<article className="flex items-center gap-4 rounded-card border border-line bg-white p-4 transition-colors duration-150 ease-out hover:border-accent">
+		<article className="flex items-center gap-4 rounded-card border border-line bg-card p-4 transition-colors duration-150 ease-out hover:border-accent">
 			<Link href={href} className="shrink-0" aria-hidden="true" tabIndex={-1}>
 				<img src={imagePath} alt="" className="block h-14 w-14 rounded-full border border-line bg-surface object-cover" />
 			</Link>
@@ -45,7 +45,7 @@ const CarrierCard = (props: CarrierCardProps) => {
 				className={`inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-card border px-3 text-small font-medium transition-colors duration-150 ease-out ${
 					liked
 						? 'border-accent bg-accent text-white hover:bg-accent-hover'
-						: 'border-line bg-white text-ink hover:border-accent hover:text-accent'
+						: 'border-line bg-card text-ink hover:border-accent hover:text-accent'
 				}`}
 			>
 				<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill={liked ? 'currentColor' : 'none'}>

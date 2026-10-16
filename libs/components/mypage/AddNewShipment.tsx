@@ -510,7 +510,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 											<Button
 												size="small"
 												onClick={() => removeImageHandler(image)}
-												sx={{ position: 'absolute', top: 4, right: 4, minWidth: 0, background: 'white' }}
+												sx={{ position: 'absolute', top: 4, right: 4, minWidth: 0, background: 'var(--lg-bg-fff)' }}
 											>
 												✕
 											</Button>

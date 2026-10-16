@@ -34,11 +34,11 @@ const CommunityWrite: NextPage = () => {
 				</div>
 
 				{user?._id ? (
-					<div className="rounded-card border border-line bg-white p-4 md:p-6">
+					<div className="rounded-card border border-line bg-card p-4 md:p-6">
 						<TuiEditor />
 					</div>
 				) : (
-					<div className="rounded-card border border-line bg-white px-6 py-14 text-center">
+					<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
 						<p className="m-0 text-h3 font-semibold text-ink">Log in to write a post</p>
 						<Link
 							href="/account/join"

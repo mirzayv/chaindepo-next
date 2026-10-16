@@ -383,7 +383,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																	updateButtonHandler(commentData?._id, CommentStatus.DELETE);
 																}}
 															>
-																<DeleteForeverIcon sx={{ color: '#757575', cursor: 'pointer' }} />
+																<DeleteForeverIcon sx={{ color: 'var(--lg-tx-757575)', cursor: 'pointer' }} />
 															</IconButton>
 															<IconButton
 																onClick={() => {
@@ -393,7 +393,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																	setOpenBackdrop(true);
 																}}
 															>
-																<EditIcon sx={{ color: '#757575' }} />
+																<EditIcon sx={{ color: 'var(--lg-tx-757575)' }} />
 															</IconButton>
 															<Backdrop
 																sx={{
@@ -412,15 +412,15 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																	sx={{
 																		width: '100%',
 																		height: '100%',
-																		background: 'white',
-																		border: '1px solid #b9b9b9',
+																		background: 'var(--lg-bg-fff)',
+																		border: '1px solid var(--lg-ln-b9b9b9)',
 																		padding: '15px',
 																		gap: '10px',
 																		borderRadius: '10px',
 																		boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
 																	}}
 																>
-																	<Typography variant="h4" color={'#b9b9b9'}>
+																	<Typography variant="h4" color={'var(--lg-tx-b9b9b9)'}>
 																		Update comment
 																	</Typography>
 																	<Stack gap={'20px'}>
@@ -430,7 +430,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																			onChange={(e) => updateCommentInputHandler(e.target.value)}
 																			type="text"
 																			style={{
-																				border: '1px solid #b9b9b9',
+																				border: '1px solid var(--lg-ln-b9b9b9)',
 																				outline: 'none',
 																				height: '40px',
 																				padding: '0px 10px',
@@ -438,7 +438,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																			}}
 																		/>
 																		<Stack width={'100%'} flexDirection={'row'} justifyContent={'space-between'}>
-																			<Typography variant="subtitle1" color={'#b9b9b9'}>
+																			<Typography variant="subtitle1" color={'var(--lg-tx-b9b9b9)'}>
 																				{updatedCommentWordsCnt}/100
 																			</Typography>
 																			<Stack sx={{ flexDirection: 'row', alignSelf: 'flex-end', gap: '10px' }}>

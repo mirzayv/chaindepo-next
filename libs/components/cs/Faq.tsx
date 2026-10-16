@@ -176,7 +176,7 @@ const Faq = () => {
 					<details
 						key={item.question}
 						open={index === 0}
-						className="group rounded-card border border-line bg-white [&_summary::-webkit-details-marker]:hidden"
+						className="group rounded-card border border-line bg-card [&_summary::-webkit-details-marker]:hidden"
 					>
 						<summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-[0.9375rem] font-semibold text-ink hover:text-accent">
 							{item.question}

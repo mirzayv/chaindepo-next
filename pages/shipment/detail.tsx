@@ -203,7 +203,7 @@ const ShipmentDetail: NextPage = () => {
 									onClick={likeHandler}
 									aria-pressed={liked}
 									aria-label={liked ? 'Remove from favorites' : 'Add to favorites'}
-									className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-white px-3 text-small font-medium text-ink transition-colors duration-150 ease-out hover:border-accent active:scale-95 motion-reduce:transform-none"
+									className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-card px-3 text-small font-medium text-ink transition-colors duration-150 ease-out hover:border-accent active:scale-95 motion-reduce:transform-none"
 								>
 									<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
 										<path
@@ -366,7 +366,7 @@ const ShipmentDetail: NextPage = () => {
 		);
 	}
 
-	return <div className="cd-ui w-full bg-white">{body}</div>;
+	return <div className="cd-ui w-full bg-page">{body}</div>;
 };
 
 export default withLayoutFull(ShipmentDetail);

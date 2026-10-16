@@ -13,13 +13,13 @@
 	box-sizing: border-box;
 	border-width: 0;
 	border-style: solid;
-	border-color: #e3e8ee;
+	border-color: rgb(var(--cd-line));
 }
 
 /* zero specificity: beats browser defaults, loses to any utility class */
 :where(.cd-ui) {
 	font-family: var(--font-inter), system-ui, sans-serif;
-	color: #0b2236;
+	color: rgb(var(--cd-ink));
 	line-height: 1.55;
 	-webkit-font-smoothing: antialiased;
 }
@@ -51,23 +51,31 @@
 /* Leaflet maps (libs/components/ui/map): palette and font on top of leaflet.css */
 .cd-map .leaflet-container {
 	font-family: var(--font-inter), system-ui, sans-serif;
-	background: #f5f7f9;
+	background: rgb(var(--cd-surface));
 }
 /* tile layer only: markers and the route line live in other panes and keep their teal */
 .cd-map .cd-map-tiles {
 	filter: grayscale(1) brightness(1.1) contrast(0.8);
 }
+/* dark: inverted grayscale tiles, dimmed (markers and the route line are unaffected) */
+html.dark .cd-map .cd-map-tiles {
+	filter: grayscale(1) invert(1) brightness(0.62) contrast(1.15);
+}
 .cd-map .leaflet-popup-content-wrapper {
-	border: 1px solid #e3e8ee;
+	border: 1px solid rgb(var(--cd-line));
 	border-radius: 6px;
 	box-shadow: 0 1px 2px rgba(11, 34, 54, 0.08);
+}
+.cd-map .leaflet-popup-content-wrapper,
+.cd-map .leaflet-popup-tip {
+	background: rgb(var(--cd-card));
 }
 .cd-map .leaflet-popup-tip {
 	box-shadow: none;
 }
 .cd-map .leaflet-popup-content {
 	margin: 10px 14px;
-	color: #0b2236;
+	color: rgb(var(--cd-ink));
 	font-size: 13px;
 	line-height: 1.45;
 }
@@ -85,12 +93,26 @@
 	text-decoration: underline;
 }
 .cd-map .leaflet-bar a {
-	color: #0b2236;
+	color: rgb(var(--cd-ink));
 }
 .cd-map .leaflet-control-attribution,
 .cd-map .leaflet-control-attribution a {
-	color: #5a6b7b;
+	color: rgb(var(--cd-muted));
 	font-size: 11px;
+}
+/* dark: zoom buttons and the attribution strip (leaflet.css paints them white) */
+html.dark .cd-map .leaflet-bar a {
+	background-color: #142231;
+	border-bottom-color: #1f2f3f;
+}
+html.dark .cd-map .leaflet-bar a:hover {
+	background-color: #111e2b;
+}
+html.dark .cd-map .leaflet-bar {
+	border-color: #1f2f3f;
+}
+html.dark .cd-map .leaflet-control-attribution {
+	background: rgba(11, 21, 32, 0.8);
 }
 
 @tailwind utilities;

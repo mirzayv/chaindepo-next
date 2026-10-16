@@ -38,7 +38,7 @@ const Hero = () => {
 				/>
 			)}
 			{/* flat overlay for legibility, not a gradient */}
-			<div className="absolute inset-0 -z-10 bg-ink/35" aria-hidden="true" />
+			<div className="absolute inset-0 -z-10 bg-navy/35" aria-hidden="true" />
 
 			<div className="mx-auto grid max-w-page items-center gap-10 px-4 py-16 md:grid-cols-[1.15fr_1fr] md:px-6 md:py-28">
 				<div className="flex max-w-xl flex-col gap-4">
@@ -49,7 +49,7 @@ const Hero = () => {
 					</p>
 				</div>
 
-				<div className="w-full rounded-card border border-line bg-white p-5 shadow-card sm:p-6">
+				<div className="w-full rounded-card border border-line bg-card p-5 shadow-card sm:p-6">
 					<h2 className="m-0 mb-1 text-h3 font-semibold text-ink">Track a shipment</h2>
 					<p className="m-0 mb-4 text-small text-muted">Enter the code you got from the shipper.</p>
 					<TrackForm />

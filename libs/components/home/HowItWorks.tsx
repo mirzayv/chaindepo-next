@@ -18,7 +18,7 @@ const STEPS = [
 const HowItWorks = () => {
 	return (
 		// the page's one dark band: flat navy, no gradient
-		<section className="w-full bg-ink">
+		<section className="w-full bg-navy">
 			<div className="mx-auto max-w-page px-4 py-14 md:px-6 md:py-20">
 				{/* the page's single uppercase label */}
 				<p className="m-0 mb-3 text-small font-semibold uppercase tracking-[0.08em] text-white/70">How it works</p>

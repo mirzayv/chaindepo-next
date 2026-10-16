@@ -30,7 +30,7 @@ const CS: NextPage = () => {
 	return (
 		<div className="cd-ui w-full bg-surface">
 			<div className="mx-auto flex max-w-[880px] flex-col gap-6 px-4 py-8 md:px-6 md:py-12">
-				<div role="tablist" aria-label="Help center sections" className="inline-flex gap-1 self-start rounded-card border border-line bg-white p-1">
+				<div role="tablist" aria-label="Help center sections" className="inline-flex gap-1 self-start rounded-card border border-line bg-card p-1">
 					{TABS.map((item) => {
 						const selected = item.id === tab;
 						return (

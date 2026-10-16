@@ -90,7 +90,7 @@ const FloatingWidget = () => {
 				aria-label="Assistant and community chat"
 				aria-hidden={!open}
 				tabIndex={-1}
-				className={`fixed inset-x-0 bottom-0 z-[60] flex h-[85vh] flex-col overflow-hidden rounded-t-[10px] border border-line bg-white shadow-[0_8px_24px_rgba(11,34,54,0.12)] outline-none transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-opacity sm:inset-x-auto sm:bottom-[5.5rem] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-7.5rem)] sm:w-[380px] sm:origin-bottom-right sm:rounded-card ${
+				className={`fixed inset-x-0 bottom-0 z-[60] flex h-[85vh] flex-col overflow-hidden rounded-t-[10px] border border-line bg-card shadow-[0_8px_24px_rgba(11,34,54,0.12)] outline-none transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-opacity sm:inset-x-auto sm:bottom-[5.5rem] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-7.5rem)] sm:w-[380px] sm:origin-bottom-right sm:rounded-card ${
 					open
 						? 'visible translate-y-0 opacity-100 sm:scale-100'
 						: 'invisible translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95'
@@ -199,7 +199,7 @@ const FloatingWidget = () => {
 											)}
 											<span
 												className={`whitespace-pre-wrap break-words rounded-[10px] px-3 py-2 text-[0.875rem] leading-snug ${
-													mine ? 'bg-accent text-white' : 'border border-line bg-white text-ink'
+													mine ? 'bg-accent text-white' : 'border border-line bg-card text-ink'
 												}`}
 											>
 												{message.text}
@@ -225,7 +225,7 @@ const FloatingWidget = () => {
 								value={draft}
 								onChange={(e) => setDraft(e.target.value)}
 								placeholder="Write a message"
-								className="h-10 min-w-0 flex-1 rounded-card border border-line bg-white px-3 text-[0.9375rem] text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent"
+								className="h-10 min-w-0 flex-1 rounded-card border border-line bg-card px-3 text-[0.9375rem] text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent"
 							/>
 							<button
 								type="submit"

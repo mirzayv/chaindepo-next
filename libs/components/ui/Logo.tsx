@@ -9,7 +9,8 @@ interface LogoProps {
 }
 
 /** ChainDepo wordmark: a solid accent square followed by lowercase "chaindepo" in Inter Bold. */
-const Logo = ({ size = 24, color = '#0B2236', className }: LogoProps) => {
+// default follows the ink token (navy in light, near-white in dark)
+const Logo = ({ size = 24, color = 'rgb(var(--cd-ink))', className }: LogoProps) => {
 	return (
 		<svg
 			className={className}

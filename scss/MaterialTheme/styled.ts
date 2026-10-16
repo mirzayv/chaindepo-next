@@ -89,10 +89,10 @@ export const IOSSwitch = styled(Switch)(({ theme }) => ({
 // TEXT FIELD STYLE
 export const RedditTextField = styled(TextField)(({ theme }) => ({
 	'& .MuiFilledInput-root': {
-		border: '1px solid #eee',
+		border: '1px solid var(--lg-ln-eee)',
 		overflow: 'hidden',
 		borderRadius: 4,
-		backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#fff',
+		backgroundColor: 'var(--lg-bg-fff)',
 		transition: theme.transitions.create(['border-color', 'background-color', 'box-shadow']),
 		'&:hover': {
 			backgroundColor: 'transparent',
@@ -108,9 +108,9 @@ export const RedditTextField = styled(TextField)(({ theme }) => ({
 // TEXT FIELD STYLE
 export const StyleButton = styled(Button)(({ theme }) => ({
 	'& .Button-root': {
-		border: '1px solid #eee',
+		border: '1px solid var(--lg-ln-eee)',
 		overflow: 'hidden',
-		backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#fff',
+		backgroundColor: 'var(--lg-bg-fff)',
 		transition: theme.transitions.create(['border-color', 'background-color', 'box-shadow']),
 		'&:hover': {
 			backgroundColor: 'transparent',

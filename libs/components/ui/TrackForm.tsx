@@ -38,7 +38,7 @@ const TrackForm = ({ defaultValue = '', error, className = '' }: TrackFormProps)
 					spellCheck={false}
 					aria-invalid={Boolean(error)}
 					aria-describedby={error ? errorId : undefined}
-					className={`h-12 min-w-0 flex-1 rounded-card border bg-white px-3.5 font-mono text-[0.9375rem] uppercase text-ink outline-none transition-colors duration-150 ease-out placeholder:normal-case placeholder:text-muted/70 focus:border-accent ${
+					className={`h-12 min-w-0 flex-1 rounded-card border bg-card px-3.5 font-mono text-[0.9375rem] uppercase text-ink outline-none transition-colors duration-150 ease-out placeholder:normal-case placeholder:text-muted/70 focus:border-accent ${
 						error ? 'border-bad' : 'border-line'
 					}`}
 				/>

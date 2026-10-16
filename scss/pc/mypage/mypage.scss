@@ -1,6 +1,6 @@
 #pc-wrap {
 	#my-page {
-		background: #f6f6f6;
+		background: var(--lg-bg-f6f6f6);
 		.container {
 			.my-page {
 				position: relative;
@@ -16,8 +16,8 @@
 					flex-direction: row;
 					margin: 0 0 64px 0;
 					border-radius: 12px;
-					border: 1px solid #e3e8ee;
-					background: #fff;
+					border: 1px solid var(--lg-ln-e3e8ee);
+					background: var(--lg-bg-fff);
 					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 					.left-config {
 						position: relative;
@@ -25,8 +25,8 @@
 						width: 266px;
 						height: 700px;
 						border-radius: 12px;
-						background: #fff;
-						border: 1px solid #e3e8ee;
+						background: var(--lg-bg-fff);
+						border: 1px solid var(--lg-ln-e3e8ee);
 						box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 						margin: 20px 20px 20px 20px;
 						.profile {
@@ -49,7 +49,7 @@
 								display: flex;
 								flex-direction: column;
 								.user-name {
-									color: #0b2236;
+									color: var(--lg-tx-0b2236);
 									font-family: $font;
 									font-size: 15px;
 									font-style: normal;
@@ -113,7 +113,7 @@
 										}
 									}
 									.menu-badge-icon {
-										color: #5a6b7b;
+										color: var(--lg-tx-5a6b7b);
 									}
 									.flex-box {
 										display: flex;
@@ -135,7 +135,7 @@
 								}
 								.sub-title {
 									margin-left: 12px;
-									color: #0b2236;
+									color: var(--lg-tx-0b2236);
 									font-family: $font;
 									font-size: 14px;
 									font-style: normal;
@@ -163,7 +163,7 @@
 								height: 413px;
 								margin-bottom: 7px;
 								border-radius: 12px;
-								background: #fff;
+								background: var(--lg-bg-fff);
 								box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
 								.top {
 									position: relative;
@@ -207,9 +207,9 @@
 										align-items: center;
 										border-radius: 6px;
 										border: 1px solid rgba(255, 255, 255, 0.5);
-										background: #fff;
+										background: var(--lg-bg-fff);
 										p {
-											color: #181a20;
+											color: var(--lg-tx-181a20);
 											font-family: $font;
 											font-size: 15px;
 											font-style: normal;
@@ -232,7 +232,7 @@
 											height: 23px;
 											overflow: hidden;
 											p {
-												color: #181a20;
+												color: var(--lg-tx-181a20);
 												font-family: $font;
 												font-size: 15px;
 												font-style: normal;
@@ -245,7 +245,7 @@
 											width: 100%;
 											overflow: hidden;
 											p {
-												color: #717171;
+												color: var(--lg-tx-717171);
 												font-family: $font;
 												font-size: 13px;
 												font-style: normal;
@@ -265,7 +265,7 @@
 											gap: 5px;
 											align-items: center;
 											p {
-												color: #181a20;
+												color: var(--lg-tx-181a20);
 												font-family: $font;
 												font-size: 13px;
 												font-style: normal;
@@ -277,7 +277,7 @@
 									.divider {
 										width: 100%;
 										height: 1px;
-										background: #ddd;
+										background: var(--lg-bg-ddd);
 										margin-bottom: 17px;
 									}
 									.type-buttons {
@@ -290,13 +290,13 @@
 											align-items: center;
 											gap: 7px;
 											p {
-												color: #181a20;
+												color: var(--lg-tx-181a20);
 												font-family: $font;
 												font-style: normal;
 												line-height: normal;
 											}
 											.disabled-type {
-												color: rgba(143, 143, 143, 0.54);
+												color: var(--lg-tx-8f8f8f54);
 												font-family: $font;
 												font-style: normal;
 												line-height: normal;
@@ -325,7 +325,7 @@
 							}
 							.total-result {
 								p {
-									color: #181a20;
+									color: var(--lg-tx-181a20);
 									text-align: center;
 									font-family: $font;
 									font-size: 24px;

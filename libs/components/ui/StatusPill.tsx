@@ -20,7 +20,7 @@ interface StatusPillProps {
 const StatusPill = ({ status, className = '' }: StatusPillProps) => {
 	return (
 		<span
-			className={`inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-white px-2.5 text-small font-medium leading-none text-ink ${className}`}
+			className={`inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-card px-2.5 text-small font-medium leading-none text-ink ${className}`}
 		>
 			<span className={`h-1.5 w-1.5 rounded-full ${DOT_CLASS[status] ?? 'bg-muted'}`} aria-hidden="true" />
 			{labelOf(status)}

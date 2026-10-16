@@ -13,7 +13,7 @@ import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { Message } from '../../enums/common.enum';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 
-const labelStyle = { color: '#5A6B7B', marginBottom: '8px', fontSize: '13px', fontWeight: 600 };
+const labelStyle = { color: 'var(--lg-tx-5a6b7b)', marginBottom: '8px', fontSize: '13px', fontWeight: 600 };
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
@@ -115,7 +115,7 @@ const TuiEditor = () => {
 			<Stack direction="row" style={{ marginBottom: '24px', gap: '16px', flexWrap: 'wrap' }}>
 				<Box component={'div'} style={{ width: '240px' }}>
 					<Typography style={labelStyle}>Board</Typography>
-					<FormControl sx={{ width: '100%', background: 'white' }}>
+					<FormControl sx={{ width: '100%', background: 'var(--lg-bg-fff)' }}>
 						<Select
 							value={articleCategory}
 							onChange={changeCategoryHandler}
@@ -137,7 +137,7 @@ const TuiEditor = () => {
 						id="article-title"
 						placeholder="What is your post about?"
 						inputProps={{ 'aria-label': 'Title' }}
-						style={{ width: '100%', background: 'white' }}
+						style={{ width: '100%', background: 'var(--lg-bg-fff)' }}
 					/>
 				</Box>
 			</Stack>

@@ -34,7 +34,7 @@ const Notice = () => {
 	return (
 		<ul className="m-0 flex list-none flex-col gap-3 p-0">
 			{NOTICES.map((notice) => (
-				<li key={notice.title} className="rounded-card border border-line bg-white p-4 md:p-5">
+				<li key={notice.title} className="rounded-card border border-line bg-card p-4 md:p-5">
 					<article className="flex flex-col gap-1.5">
 						<div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
 							<h3 className="m-0 text-[0.9375rem] font-semibold text-ink">{notice.title}</h3>

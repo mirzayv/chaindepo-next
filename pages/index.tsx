@@ -16,7 +16,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 const Home: NextPage = () => {
 	return (
-		<div className="cd-ui w-full bg-white">
+		<div className="cd-ui w-full bg-page">
 			<Hero />
 			<TwoPaths />
 			<HowItWorks />

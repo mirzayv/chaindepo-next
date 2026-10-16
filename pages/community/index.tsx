@@ -107,7 +107,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 							))}
 						</ul>
 					) : (
-						<div className="rounded-card border border-line bg-white px-6 py-14 text-center">
+						<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
 							<p className="m-0 text-h3 font-semibold text-ink">No posts yet</p>
 							<p className="m-0 mt-1 text-small text-muted">Be the first to write in {board.label}.</p>
 						</div>

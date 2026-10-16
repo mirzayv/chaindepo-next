@@ -43,13 +43,13 @@ const TwoPaths = () => {
 	];
 
 	return (
-		<section className="w-full bg-white">
+		<section className="w-full bg-page">
 			<div className="mx-auto grid max-w-page gap-6 px-4 py-14 md:grid-cols-2 md:px-6 md:py-20">
 				{cards.map((card) => (
 					<Link
 						key={card.title}
 						href={card.href}
-						className="group flex flex-col overflow-hidden whitespace-normal rounded-card border border-line bg-white text-ink transition-colors duration-150 ease-out hover:border-accent"
+						className="group flex flex-col overflow-hidden whitespace-normal rounded-card border border-line bg-card text-ink transition-colors duration-150 ease-out hover:border-accent"
 					>
 						<div className="relative aspect-[16/9] w-full bg-surface">
 							<Image src={card.photo} alt="" fill sizes="(min-width: 768px) 600px, 100vw" className="object-cover" />

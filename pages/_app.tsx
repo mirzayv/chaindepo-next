@@ -1,12 +1,14 @@
 import type { AppProps } from 'next/app';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { light } from '../scss/MaterialTheme';
+import { dark, light } from '../scss/MaterialTheme';
+import useColorMode from '../libs/hooks/useColorMode';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../apollo/client';
 import { appWithTranslation } from 'next-i18next';
+import '../scss/theme.css';
 import '../scss/app.scss';
 import '../scss/pc/main.scss';
 import '../scss/mobile/main.scss';
@@ -16,8 +18,10 @@ const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], display: 'swap' });
 
 const App = ({ Component, pageProps }: AppProps) => {
+	// MUI follows the same light/dark switch as Tailwind (class on <html>, see useColorMode)
+	const { mode } = useColorMode();
 	// @ts-ignore
-	const [theme, setTheme] = useState(createTheme(light));
+	const theme = useMemo(() => createTheme(mode === 'dark' ? dark : light), [mode]);
 	const client = useApollo(pageProps.initialApolloState);
 
 	return (

@@ -155,7 +155,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 						onChange={(e) => setContent(e.target.value.slice(0, MAX_LENGTH))}
 						rows={3}
 						placeholder="Ask about this shipment or leave a note"
-						className="w-full resize-y rounded-card border border-line bg-white px-3 py-2.5 text-[0.9375rem] leading-relaxed text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-accent"
+						className="w-full resize-y rounded-card border border-line bg-card px-3 py-2.5 text-[0.9375rem] leading-relaxed text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-accent"
 					/>
 					<div className="flex items-center justify-between gap-3">
 						<span className="text-small leading-snug text-muted">

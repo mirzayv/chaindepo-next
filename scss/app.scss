@@ -5,7 +5,7 @@
 a {
 	white-space: nowrap;
 	text-decoration: none;
-	color: #212121;
+	color: var(--lg-tx-212121);
 }
 button {
 	text-transform: none;
@@ -13,7 +13,7 @@ button {
 	padding: 0;
 }
 button.outline {
-	border: 1px solid #eee;
+	border: 1px solid var(--lg-ln-eee);
 }
 button.contain {
 	color: #fff;
@@ -43,7 +43,7 @@ body {
 hr {
 	border-width: 0;
 	border-bottom-width: thin;
-	border-color: #eee;
+	border-color: var(--lg-ln-eee);
 	margin: auto;
 }
 

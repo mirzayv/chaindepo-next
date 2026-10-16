@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+	// html.dark is set before paint (pages/_document.tsx) and toggled by libs/hooks/useColorMode.ts
+	darkMode: 'class',
 	// Only the new Tailwind files are scanned, so class names in MUI/SCSS files never generate utilities.
 	content: [
 		'./pages/index.tsx',
@@ -34,18 +36,22 @@ module.exports = {
 	},
 	theme: {
 		extend: {
+			// values live in scss/theme.css (light on :root, dark on html.dark) as "R G B" channels
 			colors: {
-				ink: '#0B2236',
-				muted: '#5A6B7B',
-				line: '#E3E8EE',
-				surface: '#F5F7F9',
+				ink: 'rgb(var(--cd-ink) / <alpha-value>)',
+				muted: 'rgb(var(--cd-muted) / <alpha-value>)',
+				line: 'rgb(var(--cd-line) / <alpha-value>)',
+				surface: 'rgb(var(--cd-surface) / <alpha-value>)',
+				card: 'rgb(var(--cd-card) / <alpha-value>)',
+				page: 'rgb(var(--cd-page) / <alpha-value>)',
+				navy: 'rgb(var(--cd-navy) / <alpha-value>)',
 				accent: {
-					DEFAULT: '#2F8FB5',
-					hover: '#26789A',
+					DEFAULT: 'rgb(var(--cd-accent) / <alpha-value>)',
+					hover: 'rgb(var(--cd-accent-hover) / <alpha-value>)',
 				},
-				ok: '#1E8E5A',
-				warn: '#E0A100',
-				bad: '#C62828',
+				ok: 'rgb(var(--cd-ok) / <alpha-value>)',
+				warn: 'rgb(var(--cd-warn) / <alpha-value>)',
+				bad: 'rgb(var(--cd-bad) / <alpha-value>)',
 			},
 			borderRadius: {
 				card: '6px',
