@@ -40,7 +40,7 @@ const Hero = () => {
 			{/* flat overlay for legibility, not a gradient */}
 			<div className="absolute inset-0 -z-10 bg-navy/35" aria-hidden="true" />
 
-			<div className="mx-auto grid max-w-page items-center gap-10 px-4 py-16 md:grid-cols-[1.15fr_1fr] md:px-6 md:py-28">
+			<div className="mx-auto grid max-w-page grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-[1.15fr_1fr] md:px-6 md:py-28">
 				<div className="flex max-w-xl flex-col gap-4">
 					<h1 className="m-0 text-display font-bold text-white">Shipments you can verify.</h1>
 					<p className="m-0 text-[1.0625rem] leading-relaxed text-white/90">

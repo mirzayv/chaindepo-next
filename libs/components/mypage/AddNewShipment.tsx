@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ShipmentLocation, ShipmentStatus, ShipmentType } from '../../enums/shipment.enum';
 import { MemberType } from '../../enums/member.enum';
 import { Messages, REACT_APP_API_URL } from '../../config';
@@ -18,8 +17,17 @@ import { T } from '../../types/common';
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
+type FieldErrors = Partial<Record<'shipmentTitle' | 'shipmentAddress' | 'shipmentWeight' | 'shipmentDesc', string>>;
+
+/** inline message under a field (theme red, readable in dark mode) */
+const FieldError = ({ id, message }: { id: string; message?: string }) =>
+	message ? (
+		<Typography id={id} role="alert" sx={{ mt: '6px', fontSize: '13px', color: 'rgb(var(--cd-bad))' }}>
+			{message}
+		</Typography>
+	) : null;
+
 const AddShipment = ({ initialValues, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const inputRef = useRef<any>(null);
 	const [dragging, setDragging] = useState<boolean>(false);
@@ -27,6 +35,8 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 	const [shipmentTypes] = useState<ShipmentType[]>(Object.values(ShipmentType));
 	const [shipmentLocations] = useState<ShipmentLocation[]>(Object.values(ShipmentLocation));
 	const [carriers, setCarriers] = useState<Member[]>([]);
+	const [touched, setTouched] = useState<Partial<Record<keyof FieldErrors, boolean>>>({});
+	const [showAllErrors, setShowAllErrors] = useState<boolean>(false);
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 
@@ -172,15 +182,52 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 		}
 	};
 
-	/** backend rejects '' for optional ObjectId / Length(5,500) fields, so drop empty optionals **/
+	/**
+	 * Mirrors the backend ShipmentInput rules, so the user gets a field message instead of a
+	 * generic "Bad Request Exception": title/address Length(3, 100), weight > 0, desc optional Length(5, 500).
+	 */
+	const validate = (): FieldErrors => {
+		const errors: FieldErrors = {};
+		const title = insertShipmentData.shipmentTitle.trim();
+		const address = insertShipmentData.shipmentAddress.trim();
+		const desc = (insertShipmentData.shipmentDesc ?? '').trim();
+		if (title.length < 3) errors.shipmentTitle = 'Title must be at least 3 characters.';
+		else if (title.length > 100) errors.shipmentTitle = 'Title can be at most 100 characters.';
+		if (address.length < 3) errors.shipmentAddress = 'Pickup address must be at least 3 characters.';
+		else if (address.length > 100) errors.shipmentAddress = 'Pickup address can be at most 100 characters.';
+		if (!(insertShipmentData.shipmentWeight > 0)) errors.shipmentWeight = 'Weight must be greater than 0 kg.';
+		if (desc && (desc.length < 5 || desc.length > 500))
+			errors.shipmentDesc = 'Description must be 5–500 characters, or leave it empty.';
+		return errors;
+	};
+	const errors = validate();
+	// a field shows its message once it has been left, or after a Save attempt
+	const errorOf = (field: keyof FieldErrors) => (showAllErrors || touched[field] ? errors[field] : undefined);
+	const touch = (field: keyof FieldErrors) => setTouched((prev) => ({ ...prev, [field]: true }));
+
+	/** backend rejects '' for optional ObjectId / Length(5,500) fields, so empty optionals are omitted **/
 	const buildPayload = () => {
-		const payload: T = { ...insertShipmentData };
+		const payload: T = {
+			...insertShipmentData,
+			shipmentTitle: insertShipmentData.shipmentTitle.trim(),
+			shipmentAddress: insertShipmentData.shipmentAddress.trim(),
+		};
 		if (!payload.carrierId) delete payload.carrierId;
-		if (!payload.shipmentDesc) delete payload.shipmentDesc;
+		const desc = (payload.shipmentDesc ?? '').trim();
+		if (desc) payload.shipmentDesc = desc;
+		else delete payload.shipmentDesc;
 		return payload;
 	};
 
+	/** true when the form may be sent; otherwise every field message is shown **/
+	const checkBeforeSave = (): boolean => {
+		if (Object.keys(validate()).length === 0) return true;
+		setShowAllErrors(true);
+		return false;
+	};
+
 	const insertShipmentHandler = useCallback(async () => {
+		if (!checkBeforeSave()) return;
 		try {
 			await createShipment({
 				variables: {
@@ -201,6 +248,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 	}, [insertShipmentData]);
 
 	const updateShipmentHandler = useCallback(async () => {
+		if (!checkBeforeSave()) return;
 		try {
 			await updateShipment({
 				variables: {
@@ -230,9 +278,8 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 		!!getShipmentData?.getShipment &&
 		getShipmentData.getShipment.shipmentStatus !== ShipmentStatus.CREATED;
 
-	if (device === 'mobile') {
-		return <div>ADD NEW SHIPMENT MOBILE PAGE</div>;
-	} else {
+	// same layout at every width; scss/pc/mypage/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="add-property-page">
 				<Stack className="main-title-box">
@@ -255,7 +302,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									onChange={({ target: { value } }) =>
 										setInsertShipmentData({ ...insertShipmentData, shipmentTitle: value })
 									}
+									onBlur={() => touch('shipmentTitle')}
+									aria-invalid={Boolean(errorOf('shipmentTitle'))}
+									aria-describedby="shipment-title-error"
 								/>
+								<FieldError id="shipment-title-error" message={errorOf('shipmentTitle')} />
 							</Stack>
 
 							<Stack className="config-row">
@@ -360,7 +411,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 										onChange={({ target: { value } }) =>
 											setInsertShipmentData({ ...insertShipmentData, shipmentAddress: value })
 										}
+										onBlur={() => touch('shipmentAddress')}
+										aria-invalid={Boolean(errorOf('shipmentAddress'))}
+										aria-describedby="shipment-address-error"
 									/>
+									<FieldError id="shipment-address-error" message={errorOf('shipmentAddress')} />
 								</Stack>
 								<Stack className="price-year-after-price">
 									<Typography className="title">Weight (kg)</Typography>
@@ -374,7 +429,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 										onChange={({ target: { value } }) =>
 											setInsertShipmentData({ ...insertShipmentData, shipmentWeight: parseFloat(value) || 0 })
 										}
+										onBlur={() => touch('shipmentWeight')}
+										aria-invalid={Boolean(errorOf('shipmentWeight'))}
+										aria-describedby="shipment-weight-error"
 									/>
+									<FieldError id="shipment-weight-error" message={errorOf('shipmentWeight')} />
 								</Stack>
 							</Stack>
 
@@ -402,7 +461,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Typography className="property-title">Shipment Description</Typography>
 							<Stack className="config-column">
-								<Typography className="title">Description</Typography>
+								<Typography className="title">Description (optional)</Typography>
 								<textarea
 									name=""
 									id=""
@@ -411,7 +470,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									onChange={({ target: { value } }) =>
 										setInsertShipmentData({ ...insertShipmentData, shipmentDesc: value })
 									}
+									onBlur={() => touch('shipmentDesc')}
+									aria-invalid={Boolean(errorOf('shipmentDesc'))}
+									aria-describedby="shipment-desc-error"
 								></textarea>
+								<FieldError id="shipment-desc-error" message={errorOf('shipmentDesc')} />
 							</Stack>
 						</Stack>
 

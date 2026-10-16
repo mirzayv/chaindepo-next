@@ -154,7 +154,7 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 						<p className="m-0 text-h3 font-semibold text-ink">No carriers found</p>
 					</div>
 				) : (
-					<ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+					<ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
 						{carriers.map((carrier: Member) => (
 							<li key={carrier._id} className="min-w-0">
 								<CarrierCard carrier={carrier} likeMemberHandler={likeMemberHandler} />

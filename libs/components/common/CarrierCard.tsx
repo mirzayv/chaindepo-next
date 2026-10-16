@@ -24,7 +24,7 @@ const CarrierCard = (props: CarrierCardProps) => {
 	return (
 		<article className="flex items-center gap-4 rounded-card border border-line bg-card p-4 transition-colors duration-150 ease-out hover:border-accent">
 			<Link href={href} className="shrink-0" aria-hidden="true" tabIndex={-1}>
-				<img src={imagePath} alt="" className="block h-14 w-14 rounded-full border border-line bg-surface object-cover" />
+				<img src={imagePath} alt="" className="block h-14 w-14 rounded-full border border-line bg-surface object-cover object-top" />
 			</Link>
 
 			<div className="flex min-w-0 flex-1 flex-col gap-0.5">

@@ -17,7 +17,7 @@ const TViewer = (props: any) => {
 
 	return (
 		<Stack sx={{ background: 'var(--lg-bg-fff)', mt: '30px', borderRadius: '10px' }}>
-			<Box component={'div'} sx={{ m: '40px' }}>
+			<Box component={'div'} sx={{ m: { xs: '16px', md: '40px' } }}>
 				{editorLoaded ? (
 					<Viewer
 						initialValue={props.markdown}

@@ -121,7 +121,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 
 	return (
 		<div className="cd-ui w-full bg-surface">
-			<div className="mx-auto grid max-w-page gap-6 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[280px_minmax(0,1fr)]">
+			<div className="mx-auto grid max-w-page grid-cols-1 gap-6 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[280px_minmax(0,1fr)]">
 				{/* ─── CHAP: FILTR ─── */}
 				<aside className="min-w-0">
 					<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
@@ -160,7 +160,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 							<p className="m-0 mt-1 text-small text-muted">Try fewer filters or reset them.</p>
 						</div>
 					) : (
-						<ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 xl:grid-cols-3">
+						<ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 xl:grid-cols-3">
 							{shipments.map((shipment: Shipment) => (
 								<li key={shipment?._id} className="flex min-w-0">
 									<ShipmentTile shipment={shipment} />

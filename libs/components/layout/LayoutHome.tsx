@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
@@ -9,8 +8,6 @@ import FloatingWidget from '../widget/FloatingWidget';
 
 const withLayoutMain = (Component: any) => {
 	return (props: any) => {
-		const device = useDeviceDetect();
-
 		/** LIFECYCLES **/
 		useEffect(() => {
 			const jwt = getJwtToken();
@@ -23,8 +20,8 @@ const withLayoutMain = (Component: any) => {
 					<title>ChainDepo · Verified shipment tracking</title>
 					<meta name={'title'} content={`ChainDepo`} />
 				</Head>
-				{/* the wrapper id keeps the existing pc/mobile SCSS scopes working */}
-				<Stack id={device == 'mobile' ? 'mobile-wrap' : 'pc-wrap'}>
+				{/* always #pc-wrap: the page SCSS lives under it and handles small widths itself (mobile-wrap left phones unstyled) */}
+				<Stack id={'pc-wrap'}>
 					<Top />
 
 					<Stack id={'main'}>

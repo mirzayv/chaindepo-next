@@ -25,8 +25,8 @@ export const userVar = makeVar<CustomJwtPayload>({
 	memberBlocks: 0,
 });
 
-//@ts-ignore
-export const socketVar = makeVar<WebSocket>();
+/** the chat socket; null while logged out (guests do not connect, see apollo/client.ts) */
+export const socketVar = makeVar<WebSocket | null>(null);
 
 /**
  * Community chat state, written by the socket in apollo/client.ts (LoggingWebsocket).

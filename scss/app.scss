@@ -40,6 +40,15 @@ body {
 		box-shadow: none;
 	}
 }
+/* avatars on the MUI/SCSS pages: when a portrait is cropped, keep the top of the head
+   (Tailwind avatars use `object-top`) */
+.MuiAvatar-img,
+#pc-wrap .agent-detail-page .agent-info > img,
+#pc-wrap .review-card .info .left img,
+#pc-wrap #community-detail-page .member-info img,
+#pc-wrap #community-detail-page .name-date img {
+	object-position: center top;
+}
 hr {
 	border-width: 0;
 	border-bottom-width: thin;

@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import ShipmentBigCard from '../../libs/components/common/ShipmentBigCard';
 import ReviewCard from '../../libs/components/carrier/ReviewCard';
@@ -29,7 +28,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [carrierId, setCarrierId] = useState<string | null>(null);
@@ -190,9 +188,8 @@ const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>CARRIER DETAIL PAGE MOBILE</div>;
-	} else {
+	// same layout at every width; scss/pc/responsive.scss stacks it below 768px
+	{
 		return (
 			<Stack className={'agent-detail-page'}>
 				<Stack className={'container'}>

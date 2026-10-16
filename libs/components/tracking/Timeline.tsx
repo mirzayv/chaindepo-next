@@ -73,12 +73,16 @@ const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: 
 								broken ? 'rounded-card border border-bad/40 bg-bad/5 p-3' : ''
 							}`}
 						>
-							<div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-								<p className="m-0 text-[0.9375rem] font-semibold leading-snug text-ink">
+							{/* below 640px the date goes under the title instead of competing for the same line */}
+							<div className="flex flex-col gap-0.5 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-1">
+								<p className="m-0 min-w-0 break-words text-[0.9375rem] font-semibold leading-snug text-ink">
 									{labelOf(event.eventStatus)}
 									<span className="font-normal text-muted"> · {cityName(event.eventLocation)}</span>
 								</p>
-								<time dateTime={moment(event.createdAt).toISOString()} className="text-small leading-snug text-muted">
+								<time
+									dateTime={moment(event.createdAt).toISOString()}
+									className="whitespace-nowrap text-small leading-snug text-muted"
+								>
 									{moment(event.createdAt).format('YYYY.MM.DD HH:mm')}
 								</time>
 							</div>

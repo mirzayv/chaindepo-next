@@ -87,7 +87,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 	return (
 		<div className="cd-ui w-full bg-surface">
-			<div className="mx-auto grid max-w-page gap-6 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[220px_minmax(0,1fr)]">
+			<div className="mx-auto grid max-w-page grid-cols-1 gap-6 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[220px_minmax(0,1fr)]">
 				<aside className="min-w-0">
 					<CommunityNav active={articleCategory} />
 				</aside>

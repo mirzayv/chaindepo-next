@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -37,6 +38,7 @@ const Top = () => {
 	const [lang, setLang] = useState<string>('en');
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
 	const [accountOpen, setAccountOpen] = useState<boolean>(false);
+	const [portalReady, setPortalReady] = useState<boolean>(false);
 	const accountRef = useRef<HTMLDivElement>(null);
 
 	const isLoggedIn = Boolean(user?._id);
@@ -57,11 +59,36 @@ const Top = () => {
 		setLang(stored ?? 'en');
 	}, [router]);
 
+	// the mobile menu is portalled to <body>, which only exists after mount
+	useEffect(() => {
+		setPortalReady(true);
+	}, []);
+
 	// close menus on navigation
 	useEffect(() => {
 		setMenuOpen(false);
 		setAccountOpen(false);
 	}, [router.asPath]);
+
+	// full-screen mobile menu: the page behind must not scroll
+	useEffect(() => {
+		if (!menuOpen) return;
+		const previous = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		return () => {
+			document.body.style.overflow = previous;
+		};
+	}, [menuOpen]);
+
+	// leaving the mobile breakpoint with the menu open would keep the scroll lock
+	useEffect(() => {
+		const media = window.matchMedia('(min-width: 768px)');
+		const onChange = (e: MediaQueryListEvent) => {
+			if (e.matches) setMenuOpen(false);
+		};
+		media.addEventListener('change', onChange);
+		return () => media.removeEventListener('change', onChange);
+	}, []);
 
 	// account menu: close on outside click and Escape
 	useEffect(() => {
@@ -84,6 +111,9 @@ const Top = () => {
 	}, [accountOpen, menuOpen]);
 
 	/** HANDLERS **/
+	// links close the menu themselves too: a link to the current page does not change the route
+	const closeMenu = () => setMenuOpen(false);
+
 	const langChangeHandler = async (e: ChangeEvent<HTMLSelectElement>) => {
 		const locale = e.target.value;
 		setLang(locale);
@@ -151,7 +181,7 @@ const Top = () => {
 								aria-label={user?.memberNick ?? 'Account'}
 								className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-line p-0 transition-transform duration-150 ease-out active:scale-95 motion-reduce:transition-none"
 							>
-								<img src={avatarSrc} alt="" className="h-full w-full object-cover" />
+								<img src={avatarSrc} alt="" className="h-full w-full object-cover object-top" />
 							</button>
 							<div
 								role="menu"
@@ -219,65 +249,94 @@ const Top = () => {
 				</div>
 			</div>
 
-			{/* mobile sheet: drops down from the header and goes back up the same way */}
-			<div
-				id="cd-mobile-menu"
-				className={`absolute inset-x-0 top-full origin-top border-b border-line bg-card transition duration-150 ease-out motion-reduce:transition-opacity md:hidden ${
-					menuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0 motion-reduce:translate-y-0'
-				}`}
-			>
-				<nav className="flex flex-col px-4 py-2" aria-label="Main mobile">
-					{NAV_ITEMS.map((item) => {
-						const active = item.isActive(router.pathname);
-						return (
-							<Link
-								key={item.href}
-								href={item.href}
-								aria-current={active ? 'page' : undefined}
-								className={`flex h-12 items-center border-b border-line text-body font-medium last:border-b-0 ${
-									active ? 'text-accent' : 'text-ink'
-								}`}
-							>
-								{t(item.label)}
+			{/*
+			 * mobile menu: full-screen overlay, portalled to <body> so no stacking context (sticky header,
+			 * Leaflet panes/controls up to z 1000) can sit on top of it
+			 */}
+			{portalReady &&
+				createPortal(
+					<div
+						id="cd-mobile-menu"
+						role="dialog"
+						aria-modal="true"
+						aria-label={t('Menu')}
+						aria-hidden={!menuOpen}
+						className={`cd-ui fixed inset-0 z-[1300] flex flex-col overflow-y-auto bg-page transition-opacity duration-150 ease-out md:hidden ${
+							menuOpen ? 'visible opacity-100' : 'invisible opacity-0'
+						}`}
+					>
+						<div className="flex h-16 shrink-0 items-center justify-between border-b border-line px-4">
+							<Link href={'/'} aria-label="ChainDepo home" onClick={closeMenu}>
+								<Logo size={22} />
 							</Link>
-						);
-					})}
-				</nav>
-				<div className="flex flex-col gap-3 border-t border-line px-4 py-4">
-					{canCreateShipment && (
-						<Link
-							href={createShipmentHref}
-							className="flex h-11 items-center justify-center rounded-card bg-accent text-[0.9375rem] font-semibold text-white active:scale-[0.98] motion-reduce:transform-none"
-						>
-							{t('Create shipment')}
-						</Link>
-					)}
-					<div className="flex items-center justify-between">
-						{!isLoggedIn ? (
-							<Link href={'/account/join'} className="text-[0.9375rem] font-medium text-ink">
-								{t('Log in')}
-							</Link>
-						) : (
-							<span className="text-small text-muted">{user?.memberNick}</span>
-						)}
-						<div className="flex items-center gap-2">
-							<ThemeToggle />
-							<select
-								aria-label={t('Language')}
-								value={lang}
-								onChange={langChangeHandler}
-								className="h-9 rounded-card border border-line px-2 text-small font-medium text-ink"
+							<button
+								type="button"
+								onClick={closeMenu}
+								aria-label="Close menu"
+								className="flex h-9 w-9 items-center justify-center rounded-card p-0 text-ink transition-colors duration-150 hover:bg-surface"
 							>
-								{LANGUAGES.map((item) => (
-									<option key={item.code} value={item.code}>
-										{item.label}
-									</option>
-								))}
-							</select>
+								<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+									<path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+								</svg>
+							</button>
 						</div>
-					</div>
-				</div>
-			</div>
+
+						<nav className="flex flex-col px-4 py-2" aria-label="Main mobile">
+							{NAV_ITEMS.map((item) => {
+								const active = item.isActive(router.pathname);
+								return (
+									<Link
+										key={item.href}
+										href={item.href}
+										onClick={closeMenu}
+										aria-current={active ? 'page' : undefined}
+										className={`flex h-12 items-center border-b border-line text-body font-medium last:border-b-0 ${
+											active ? 'text-accent' : 'text-ink'
+										}`}
+									>
+										{t(item.label)}
+									</Link>
+								);
+							})}
+						</nav>
+						<div className="flex flex-col gap-3 border-t border-line px-4 py-4">
+							{canCreateShipment && (
+								<Link
+									href={createShipmentHref}
+									onClick={closeMenu}
+									className="flex h-11 items-center justify-center rounded-card bg-accent text-[0.9375rem] font-semibold text-white active:scale-[0.98] motion-reduce:transform-none"
+								>
+									{t('Create shipment')}
+								</Link>
+							)}
+							<div className="flex items-center justify-between">
+								{!isLoggedIn ? (
+									<Link href={'/account/join'} onClick={closeMenu} className="text-[0.9375rem] font-medium text-ink">
+										{t('Log in')}
+									</Link>
+								) : (
+									<span className="text-small text-muted">{user?.memberNick}</span>
+								)}
+								<div className="flex items-center gap-2">
+									<ThemeToggle />
+									<select
+										aria-label={t('Language')}
+										value={lang}
+										onChange={langChangeHandler}
+										className="h-9 rounded-card border border-line px-2 text-small font-medium text-ink"
+									>
+										{LANGUAGES.map((item) => (
+											<option key={item.code} value={item.code}>
+												{item.label}
+											</option>
+										))}
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>,
+					document.body,
+				)}
 		</header>
 	);
 };

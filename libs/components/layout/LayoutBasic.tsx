@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
@@ -34,7 +33,6 @@ const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
 		const router = useRouter();
 		const { t } = useTranslation('common');
-		const device = useDeviceDetect();
 
 		const heading = useMemo(
 			() => PAGE_HEADINGS[router.pathname] ?? { title: '', desc: '', band: false },
@@ -53,8 +51,8 @@ const withLayoutBasic = (Component: any) => {
 					<title>{heading.title ? `${t(heading.title)} · ChainDepo` : 'ChainDepo'}</title>
 					<meta name={'title'} content={`ChainDepo`} />
 				</Head>
-				{/* the wrapper id keeps the existing pc/mobile SCSS scopes working */}
-				<Stack id={device == 'mobile' ? 'mobile-wrap' : 'pc-wrap'}>
+				{/* always #pc-wrap: the page SCSS lives under it and handles small widths itself (mobile-wrap left phones unstyled) */}
+				<Stack id={'pc-wrap'}>
 					<Top />
 
 					{heading.band && heading.title && (

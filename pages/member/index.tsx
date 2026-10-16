@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Stack } from '@mui/material';
 import MemberMenu from '../../libs/components/member/MemberMenu';
@@ -21,7 +20,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 /** public member page: profile, plus the shipments they created (shipper) or carry (carrier) */
 const MemberPage: NextPage = () => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { memberId } = router.query;
 	const [member, setMember] = useState<Member | null>(null);
@@ -39,9 +37,8 @@ const MemberPage: NextPage = () => {
 
 	const showShipments = member?.memberType === MemberType.USER || member?.memberType === MemberType.CARRIER;
 
-	if (device === 'mobile') {
-		return <>MEMBER PAGE MOBILE</>;
-	} else {
+	// same layout at every width; scss/pc/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="member-page" style={{ position: 'relative' }}>
 				<div className="container">

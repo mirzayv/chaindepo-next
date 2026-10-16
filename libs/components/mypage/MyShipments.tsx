@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ShipmentCard } from './ShipmentCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Shipment } from '../../types/shipment/shipment';
@@ -26,7 +25,6 @@ const statusTabs: ShipmentStatus[] = [
 ];
 
 const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const [searchFilter, setSearchFilter] = useState<MyShipmentsInquiry>(initialInput);
 	const [myShipments, setMyShipments] = useState<Shipment[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -104,9 +102,8 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 		router.back();
 	}
 
-	if (device === 'mobile') {
-		return <div>MY SHIPMENTS MOBILE</div>;
-	} else {
+	// same layout at every width; scss/pc/mypage/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="my-property-page">
 				<Stack className="main-title-box">

@@ -70,7 +70,8 @@ const Footer = () => {
 				))}
 			</div>
 			<div className="border-t border-line">
-				<div className="mx-auto flex max-w-page px-4 py-5 md:px-6">
+				{/* mobile: extra bottom room so the floating chat button (48px + safe area) never covers the last line */}
+				<div className="mx-auto flex max-w-page px-4 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5 sm:pb-5 md:px-6">
 					<span className="text-small leading-snug text-muted">© {new Date().getFullYear()} ChainDepo</span>
 				</div>
 			</div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ShipmentCard } from '../mypage/ShipmentCard';
 import { Shipment } from '../../types/shipment/shipment';
 import { ShipmentsInquiry } from '../../types/shipment/shipment.input';
@@ -22,7 +21,6 @@ const initialInput: ShipmentsInquiry = {
 };
 
 const MemberShipments = ({ byCarrier = false }: MemberShipmentsProps) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { memberId } = router.query;
 	const [searchFilter, setSearchFilter] = useState<ShipmentsInquiry>({ ...initialInput });
@@ -56,9 +54,8 @@ const MemberShipments = ({ byCarrier = false }: MemberShipmentsProps) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-	if (device === 'mobile') {
-		return <div>MEMBER SHIPMENTS MOBILE</div>;
-	} else {
+	// same layout at every width; scss/pc/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="member-properties-page">
 				<Stack className="main-title-box">

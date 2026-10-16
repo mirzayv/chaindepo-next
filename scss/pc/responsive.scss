@@ -1,0 +1,171 @@
+/*
+ * Carrier detail, community detail and member pages below 768px (My Page: scss/pc/mypage/responsive.scss).
+ * The SCSS these override was written for desktop widths (410px cards, 1012px article boxes, 266px sidebars);
+ * here everything stacks into one column. Desktop is untouched: everything sits inside the media query.
+ * Selectors repeat the full path of the rules they override so they win on specificity.
+ */
+@media (max-width: 767px) {
+	/* shipment cards on the carrier detail page (general.scss) */
+	.property-big-card-box {
+		width: 100%;
+		height: auto;
+		margin: 0 0 24px;
+	}
+
+	#pc-wrap {
+		/* ── carrier detail ── */
+		.agent-detail-page {
+			padding: 16px 0 40px;
+			.container {
+				.agent-info {
+					margin-left: 0;
+					img {
+						width: 88px;
+						height: 88px;
+						margin-right: 16px;
+					}
+					.info {
+						min-width: 0;
+						strong {
+							font-size: 20px;
+							overflow-wrap: anywhere;
+						}
+						div span {
+							font-size: 16px;
+						}
+					}
+				}
+				.agent-home-list {
+					padding-bottom: 24px;
+					margin-top: 20px;
+					.card-wrap {
+						margin-top: 16px;
+						padding: 0 12px;
+						.wrap-main {
+							width: 100%;
+							margin-left: 0;
+						}
+					}
+				}
+				.review-box {
+					width: 100%;
+					padding: 24px 12px;
+					border-radius: 12px;
+					margin-top: 32px;
+					.main-intro span {
+						font-size: 22px;
+					}
+					.review-wrap {
+						padding: 16px;
+						margin-top: 24px;
+					}
+					.leave-review-config {
+						padding: 16px;
+						.submit-btn .submit-review {
+							width: 100%;
+						}
+					}
+				}
+			}
+		}
+
+		/* ── community detail ── */
+		#community-detail-page {
+			.container {
+				padding-top: 16px;
+				gap: 32px;
+				.main-box {
+					flex-direction: column;
+					gap: 16px;
+					.left-config {
+						width: auto;
+					}
+					.community-detail-config {
+						width: 100%;
+						min-width: 0;
+						.title-box {
+							margin-bottom: 16px;
+							.left {
+								width: 100%;
+							}
+						}
+						.config {
+							.first-box-config {
+								width: 100%;
+								min-height: 0;
+								.content-and-info {
+									flex-direction: column;
+									height: auto;
+									gap: 12px;
+									padding: 16px;
+								}
+							}
+							.second-box-config {
+								width: 100%;
+								padding: 16px;
+							}
+							.comments-box .main-comment {
+								padding: 16px;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/* ── member page ── */
+		#member-page {
+			.container .member-page {
+				padding-top: 16px;
+				.back-frame {
+					flex-direction: column;
+					margin: 0 0 32px 0;
+					border-radius: 6px;
+					.left-config {
+						width: auto;
+						height: auto;
+						margin: 12px;
+					}
+					.main-config {
+						width: auto;
+						min-width: 0;
+						margin: 0 12px 24px;
+						gap: 32px;
+					}
+				}
+			}
+			#member-properties-page {
+				.main-title-box .right-box {
+					width: auto;
+				}
+				.properties-list-box .list-box {
+					.listing-title-box {
+						display: none;
+					}
+					.property-card-box {
+						flex-wrap: wrap;
+						align-items: center;
+						gap: 8px 12px;
+						.image-box {
+							width: 88px;
+							height: 72px;
+							margin-right: 0;
+						}
+						.information-box {
+							width: auto;
+							flex: 1 1 160px;
+							min-width: 0;
+						}
+						.date-box,
+						.status-box,
+						.views-box {
+							width: auto;
+							height: auto;
+							margin-right: 0;
+						}
+					}
+				}
+			}
+		}
+	}
+}

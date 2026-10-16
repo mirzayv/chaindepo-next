@@ -1,6 +1,5 @@
 import { Menu, MenuItem, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,7 +21,6 @@ interface ShipmentCardProps {
 
 export const ShipmentCard = (props: ShipmentCardProps) => {
 	const { shipment, deleteShipmentHandler, memberPage, updateShipmentHandler, children } = props;
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -52,10 +50,8 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') {
-		return <div>MOBILE SHIPMENT CARD</div>;
-	} else
-		return (
+	// same layout at every width; scss/pc/mypage/responsive.scss wraps the row below 768px
+	return (
 			<Stack className="property-card-box">
 				<Stack className="image-box" onClick={() => pushShipmentDetail(shipment?._id)}>
 					<img

@@ -248,7 +248,7 @@ const ShipmentDetail: NextPage = () => {
 										href={`/member?memberId=${shipper._id}`}
 										className="inline-flex max-w-full items-center gap-2 text-ink transition-colors duration-150 hover:text-accent"
 									>
-										<img src={shipperAvatar} alt="" className="h-5 w-5 shrink-0 rounded-full object-cover" />
+										<img src={shipperAvatar} alt="" className="h-5 w-5 shrink-0 rounded-full object-cover object-top" />
 										<span className="truncate">{shipper.memberNick}</span>
 									</Link>
 								) : (
@@ -271,7 +271,7 @@ const ShipmentDetail: NextPage = () => {
 					</div>
 				</section>
 
-				<div className="mx-auto grid max-w-page gap-8 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-10">
+				<div className="mx-auto grid max-w-page grid-cols-1 gap-8 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-10">
 					<div className="flex min-w-0 flex-col gap-10">
 						<section className="flex flex-col gap-4" aria-labelledby="route-title">
 							<h2 id="route-title" className="m-0 text-h3 font-semibold text-ink">

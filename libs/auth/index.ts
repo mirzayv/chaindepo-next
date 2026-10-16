@@ -1,5 +1,5 @@
 import decodeJWT from 'jwt-decode';
-import { initializeApollo } from '../../apollo/client';
+import { initializeApollo, reconnectChatSocket } from '../../apollo/client';
 import { userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
@@ -122,6 +122,8 @@ const requestSignUpJwtToken = async ({
 export const updateStorage = ({ jwtToken }: { jwtToken: any }) => {
 	setJwtToken(jwtToken);
 	window.localStorage.setItem('login', Date.now().toString());
+	// the chat socket was opened with the previous token (or as a guest)
+	reconnectChatSocket();
 };
 
 export const updateUserInfo = (jwtToken: any) => {
@@ -160,6 +162,7 @@ export const logOut = () => {
 const deleteStorage = () => {
 	localStorage.removeItem('accessToken');
 	window.localStorage.setItem('logout', Date.now().toString());
+	reconnectChatSocket();
 };
 
 const deleteUserInfo = () => {

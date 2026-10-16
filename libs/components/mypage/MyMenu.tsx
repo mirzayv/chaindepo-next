@@ -65,7 +65,7 @@ const MyMenu = () => {
 				<img
 					src={user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
 					alt=""
-					className="block h-14 w-14 shrink-0 rounded-full border border-line bg-surface object-cover"
+					className="block h-14 w-14 shrink-0 rounded-full border border-line bg-surface object-cover object-top"
 				/>
 				<div className="flex min-w-0 flex-col gap-0.5">
 					<span className="truncate text-[0.9375rem] font-semibold text-ink">{user?.memberNick}</span>

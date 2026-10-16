@@ -97,7 +97,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 						const memberHref = member?._id === user?._id ? '/mypage' : `/member?memberId=${member?._id}`;
 						return (
 							<li key={comment._id} className="flex gap-3 border-b border-line py-4 first:pt-0 last:border-b-0">
-								<img src={avatar} alt="" className="h-9 w-9 shrink-0 rounded-full border border-line object-cover" />
+								<img src={avatar} alt="" className="h-9 w-9 shrink-0 rounded-full border border-line object-cover object-top" />
 								<div className="flex min-w-0 flex-1 flex-col gap-1">
 									<div className="flex flex-wrap items-baseline gap-x-2">
 										<Link

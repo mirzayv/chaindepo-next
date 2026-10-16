@@ -57,14 +57,16 @@
 						gap: 50px;
 						.image-box {
 							position: relative;
-							width: 194px;
-							height: 157px;
+							width: 160px;
+							height: 160px;
+							flex-shrink: 0;
 							img {
 								width: 100%;
 								height: 100%;
+								border-radius: 50%;
 								object-fit: cover;
-								border-radius: 15px;
-								object-fit: cover;
+								/* portraits: keep the top of the head */
+								object-position: center top;
 							}
 							.delete-box {
 								position: absolute;

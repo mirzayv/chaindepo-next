@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { Messages, REACT_APP_API_URL } from '../../config';
@@ -12,7 +11,6 @@ import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
-	const device = useDeviceDetect();
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
@@ -112,10 +110,8 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	// address and photo are optional (new members have neither)
 	const doDisabledCheck = () => updateData.memberNick === '' || updateData.memberPhone === '';
 
-	if (device === 'mobile') {
-		return <>MY PROFILE PAGE MOBILE</>;
-	} else
-		return (
+	// same layout at every width; scss/pc/mypage/responsive.scss stacks it below 768px
+	return (
 			<div id="my-profile-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">

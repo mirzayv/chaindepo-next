@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { Button, Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ShipmentCard } from './ShipmentCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { Shipment } from '../../types/shipment/shipment';
@@ -21,7 +20,6 @@ import { sweetConfirmAlert, sweetErrorHandling, sweetTopSmallSuccessAlert } from
  * filtered out on the client; a page may therefore show fewer rows than `limit`.
  */
 const AvailableShipments: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const [searchFilter, setSearchFilter] = useState<ShipmentsInquiry>(initialInput);
 	const [availableShipments, setAvailableShipments] = useState<Shipment[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -63,9 +61,8 @@ const AvailableShipments: NextPage = ({ initialInput, ...props }: any) => {
 		router.back();
 	}
 
-	if (device === 'mobile') {
-		return <div>AVAILABLE SHIPMENTS MOBILE</div>;
-	} else {
+	// same layout at every width; scss/pc/mypage/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="my-property-page">
 				<Stack className="main-title-box">

@@ -82,7 +82,11 @@ const FloatingWidget = () => {
 
 	return (
 		<div className="cd-ui">
-			{/* PANEL: grows out of the button corner and shrinks back into it */}
+			{/*
+			 * PANEL. Mobile (<640px): full screen, 100dvh so the iOS Safari toolbar never covers the input.
+			 * Desktop: grows out of the button corner and shrinks back into it.
+			 * z 1300: above the sticky header (50) and Leaflet panes/controls (up to ~1000).
+			 */}
 			<div
 				ref={panelRef}
 				id="cd-widget-panel"
@@ -90,14 +94,14 @@ const FloatingWidget = () => {
 				aria-label="Assistant and community chat"
 				aria-hidden={!open}
 				tabIndex={-1}
-				className={`fixed inset-x-0 bottom-0 z-[60] flex h-[85vh] flex-col overflow-hidden rounded-t-[10px] border border-line bg-card shadow-[0_8px_24px_rgba(11,34,54,0.12)] outline-none transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-opacity sm:inset-x-auto sm:bottom-[5.5rem] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-7.5rem)] sm:w-[380px] sm:origin-bottom-right sm:rounded-card ${
+				className={`fixed inset-0 z-[1300] flex h-[100dvh] flex-col overflow-hidden bg-card outline-none transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-opacity sm:inset-auto sm:bottom-[5.5rem] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-7.5rem)] sm:w-[380px] sm:origin-bottom-right sm:rounded-card sm:border sm:border-line sm:shadow-[0_8px_24px_rgba(11,34,54,0.12)] ${
 					open
 						? 'visible translate-y-0 opacity-100 sm:scale-100'
 						: 'invisible translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95'
 				}`}
 			>
-				{/* HEADER + TABS */}
-				<div className="flex items-center justify-between border-b border-line px-4 pt-3">
+				{/* HEADER + TABS (the close button stays at the top on mobile, below the notch) */}
+				<div className="flex shrink-0 items-center justify-between border-b border-line px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:pt-3">
 					<div role="tablist" aria-label="Widget sections" className="flex gap-5">
 						{TABS.map((item) => {
 							const selected = tab === item.id;
@@ -170,85 +174,96 @@ const FloatingWidget = () => {
 					aria-labelledby="cd-tab-chat"
 					className={`min-h-0 flex-1 flex-col ${tab === 'chat' ? 'flex' : 'hidden'}`}
 				>
-					<div className="flex items-center gap-2 border-b border-line px-4 py-2 text-small leading-snug text-muted">
-						<span className="h-2 w-2 rounded-full bg-ok" aria-hidden="true" />
-						{onlineUsers} online
-					</div>
-
-					<div className="flex-1 overflow-y-auto bg-surface px-4 py-3" aria-live="polite">
-						{messages.length === 0 && (
-							<p className="m-0 py-8 text-center text-small leading-snug text-muted">No messages yet. Say hello.</p>
-						)}
-						<ul className="m-0 flex list-none flex-col gap-3 p-0">
-							{messages.map((message: ChatMessage, index: number) => {
-								const mine = isLoggedIn && String(message.memberData?._id) === String(user?._id);
-								return (
-									<li key={index} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>
-										{!mine && (
-											<img
-												src={avatarOf(message)}
-												alt=""
-												className="h-7 w-7 shrink-0 rounded-full border border-line object-cover"
-											/>
-										)}
-										<div className={`flex max-w-[75%] flex-col ${mine ? 'items-end' : 'items-start'}`}>
-											{!mine && (
-												<span className="mb-0.5 px-1 text-[0.75rem] leading-snug text-muted">
-													{message.memberData?.memberNick ?? 'Guest'}
-												</span>
-											)}
-											<span
-												className={`whitespace-pre-wrap break-words rounded-[10px] px-3 py-2 text-[0.875rem] leading-snug ${
-													mine ? 'bg-accent text-white' : 'border border-line bg-card text-ink'
-												}`}
-											>
-												{message.text}
-											</span>
-										</div>
-									</li>
-								);
-							})}
-						</ul>
-						<div ref={listEndRef} />
-					</div>
-
+					{/* guests see no messages and no online count; the socket only opens after login */}
 					{isLoggedIn ? (
-						<form onSubmit={submitHandler} className="flex items-center gap-2 border-t border-line p-3">
-							<label htmlFor="cd-chat-input" className="sr-only">
-								Message
-							</label>
-							<input
-								id="cd-chat-input"
-								type="text"
-								autoComplete="off"
-								maxLength={500}
-								value={draft}
-								onChange={(e) => setDraft(e.target.value)}
-								placeholder="Write a message"
-								className="h-10 min-w-0 flex-1 rounded-card border border-line bg-card px-3 text-[0.9375rem] text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent"
-							/>
-							<button
-								type="submit"
-								disabled={!draft.trim()}
-								aria-label="Send"
-								className="flex h-10 w-10 shrink-0 items-center justify-center rounded-card bg-accent p-0 text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"
+						<>
+							<div className="flex items-center gap-2 border-b border-line px-4 py-2 text-small leading-snug text-muted">
+								<span className="h-2 w-2 rounded-full bg-ok" aria-hidden="true" />
+								{onlineUsers} online
+							</div>
+
+							<div className="flex-1 overflow-y-auto bg-surface px-4 py-3" aria-live="polite">
+								{messages.length === 0 && (
+									<p className="m-0 py-8 text-center text-small leading-snug text-muted">No messages yet. Say hello.</p>
+								)}
+								<ul className="m-0 flex list-none flex-col gap-3 p-0">
+									{messages.map((message: ChatMessage, index: number) => {
+										const mine = String(message.memberData?._id) === String(user?._id);
+										return (
+											<li key={index} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>
+												{!mine && (
+													<img
+														src={avatarOf(message)}
+														alt=""
+														className="h-7 w-7 shrink-0 rounded-full border border-line object-cover object-top"
+													/>
+												)}
+												<div className={`flex max-w-[75%] flex-col ${mine ? 'items-end' : 'items-start'}`}>
+													{!mine && (
+														<span className="mb-0.5 px-1 text-[0.75rem] leading-snug text-muted">
+															{message.memberData?.memberNick ?? 'Guest'}
+														</span>
+													)}
+													<span
+														className={`whitespace-pre-wrap break-words rounded-[10px] px-3 py-2 text-[0.875rem] leading-snug ${
+															mine ? 'bg-accent text-white' : 'border border-line bg-card text-ink'
+														}`}
+													>
+														{message.text}
+													</span>
+												</div>
+											</li>
+										);
+									})}
+								</ul>
+								<div ref={listEndRef} />
+							</div>
+
+							<form
+								onSubmit={submitHandler}
+								className="flex shrink-0 items-center gap-2 border-t border-line p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3"
 							>
-								<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-									<path
-										d="M3 10l14-6-6 14-2-6-6-2z"
-										stroke="currentColor"
-										strokeWidth="1.6"
-										strokeLinejoin="round"
-									/>
-								</svg>
-							</button>
-						</form>
+								<label htmlFor="cd-chat-input" className="sr-only">
+									Message
+								</label>
+								<input
+									id="cd-chat-input"
+									type="text"
+									autoComplete="off"
+									maxLength={500}
+									value={draft}
+									onChange={(e) => setDraft(e.target.value)}
+									placeholder="Write a message"
+									// 16px on mobile: iOS Safari zooms into inputs smaller than that
+									className="h-10 min-w-0 flex-1 rounded-card border border-line bg-card px-3 text-[1rem] text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent sm:text-[0.9375rem]"
+								/>
+								<button
+									type="submit"
+									disabled={!draft.trim()}
+									aria-label="Send"
+									className="flex h-10 w-10 shrink-0 items-center justify-center rounded-card bg-accent p-0 text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"
+								>
+									<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+										<path
+											d="M3 10l14-6-6 14-2-6-6-2z"
+											stroke="currentColor"
+											strokeWidth="1.6"
+											strokeLinejoin="round"
+										/>
+									</svg>
+								</button>
+							</form>
+						</>
 					) : (
-						<div className="border-t border-line p-3 text-center text-[0.875rem] leading-snug text-muted">
-							<Link href={'/account/join'} className="font-semibold text-accent hover:text-accent-hover">
+						<div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10 pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-center sm:pb-10">
+							<p className="m-0 text-[0.9375rem] leading-relaxed text-muted">Log in to join the community chat</p>
+							<Link
+								href={'/account/join'}
+								onClick={() => setOpen(false)}
+								className="inline-flex h-10 items-center justify-center rounded-card bg-accent px-5 text-[0.875rem] font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
+							>
 								Log in
-							</Link>{' '}
-							to chat
+							</Link>
 						</div>
 					)}
 				</div>
@@ -262,7 +277,8 @@ const FloatingWidget = () => {
 				aria-expanded={open}
 				aria-controls="cd-widget-panel"
 				aria-label={open ? 'Close assistant and chat' : 'Open assistant and chat'}
-				className={`fixed bottom-4 right-4 z-[61] h-[52px] w-[52px] items-center justify-center rounded-full bg-accent p-0 text-white shadow-[0_2px_8px_rgba(11,34,54,0.18)] transition duration-150 ease-out hover:bg-accent-hover active:scale-95 motion-reduce:transform-none sm:bottom-6 sm:right-6 ${
+				// mobile: 48px, lifted above the iOS home indicator; desktop unchanged
+				className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[61] h-12 w-12 items-center justify-center rounded-full bg-accent p-0 text-white shadow-[0_2px_8px_rgba(11,34,54,0.18)] transition duration-150 ease-out hover:bg-accent-hover active:scale-95 motion-reduce:transform-none sm:bottom-6 sm:right-6 sm:h-[52px] sm:w-[52px] ${
 					open ? 'hidden sm:flex' : 'flex'
 				}`}
 			>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Stack } from '@mui/material';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyShipments from '../../libs/components/mypage/MyShipments';
 import AddShipment from '../../libs/components/mypage/AddNewShipment';
@@ -21,7 +20,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const MyPage: NextPage = () => {
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 	const category: any = router.query?.category ?? 'myProfile';
@@ -31,32 +29,29 @@ const MyPage: NextPage = () => {
 		if (!user._id) router.push('/').then();
 	}, [user]);
 
-	if (device === 'mobile') {
-		return <div>MY PAGE</div>;
-	} else {
-		return (
-			<div id="my-page" style={{ position: 'relative' }}>
-				<div className="container">
-					<Stack className={'my-page'}>
-						<Stack className={'back-frame'}>
-							<Stack className={'left-config'}>
-								<MyMenu />
-							</Stack>
-							<Stack className="main-config" mb={'76px'}>
-								<Stack className={'list-config'}>
-									{category === 'addShipment' && <AddShipment />}
-									{category === 'myShipments' && <MyShipments />}
-									{category === 'carrierShipments' && <CarrierShipments />}
-									{category === 'availableShipments' && <AvailableShipments />}
-									{category === 'myProfile' && <MyProfile />}
-								</Stack>
+	// one layout for every width; scss/pc/mypage/responsive.scss stacks it below 768px
+	return (
+		<div id="my-page" style={{ position: 'relative' }}>
+			<div className="container">
+				<Stack className={'my-page'}>
+					<Stack className={'back-frame'}>
+						<Stack className={'left-config'}>
+							<MyMenu />
+						</Stack>
+						<Stack className="main-config" mb={'76px'}>
+							<Stack className={'list-config'}>
+								{category === 'addShipment' && <AddShipment />}
+								{category === 'myShipments' && <MyShipments />}
+								{category === 'carrierShipments' && <CarrierShipments />}
+								{category === 'availableShipments' && <AvailableShipments />}
+								{category === 'myProfile' && <MyProfile />}
 							</Stack>
 						</Stack>
 					</Stack>
-				</div>
+				</Stack>
 			</div>
-		);
-	}
+		</div>
+	);
 };
 
 export default withLayoutBasic(MyPage);

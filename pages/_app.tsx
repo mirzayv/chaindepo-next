@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import React, { useMemo } from 'react';
@@ -26,6 +27,10 @@ const App = ({ Component, pageProps }: AppProps) => {
 
 	return (
 		<ApolloProvider client={client}>
+			{/* viewport-fit=cover makes env(safe-area-inset-*) report the iOS home-indicator / toolbar insets */}
+			<Head>
+				<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+			</Head>
 			{/* Font variables on :root so MUI portals (menus, dialogs) and Tailwind both pick them up */}
 			<style jsx global>{`
 				:root {

@@ -1,0 +1,174 @@
+/*
+ * My Page (profile, shipment lists, create/edit shipment) below 768px.
+ * The SCSS above was written for a 1260px desktop frame; these overrides stack it into one column.
+ * Desktop is untouched: everything here sits inside the media query.
+ * Selectors repeat the full path of the rules they override so they win on specificity (same or higher).
+ */
+@media (max-width: 767px) {
+	#pc-wrap {
+		#my-page {
+			.container .my-page {
+				padding-top: 16px;
+				.back-frame {
+					flex-direction: column;
+					margin: 0 0 32px 0;
+					border-radius: 6px;
+					.left-config {
+						width: auto;
+						height: auto;
+						margin: 12px;
+					}
+					.main-config {
+						width: auto;
+						min-width: 0;
+						margin: 0 12px 24px;
+						gap: 32px;
+					}
+				}
+			}
+
+			/* shipment lists (My shipments, Available, Assigned) */
+			#my-property-page {
+				gap: 20px;
+				.main-title-box .right-box {
+					width: auto;
+					.main-title {
+						font-size: 22px;
+					}
+				}
+				.property-list-box .tab-name-box {
+					justify-content: flex-start;
+					overflow-x: auto;
+					padding: 0 8px;
+					gap: 4px;
+					.tab-name,
+					.active-tab-name {
+						width: auto;
+						flex-shrink: 0;
+						padding: 0 10px;
+						font-size: 14px;
+					}
+				}
+				.list-box {
+					min-height: 0;
+					padding: 12px;
+					/* the column headings only line up with the desktop row layout */
+					.listing-title-box {
+						display: none;
+					}
+					.property-card-box {
+						flex-wrap: wrap;
+						align-items: center;
+						gap: 8px 12px;
+						margin-top: 16px;
+						padding-bottom: 16px;
+						.image-box {
+							width: 88px;
+							height: 72px;
+							margin-right: 0;
+						}
+						.information-box {
+							width: auto;
+							flex: 1 1 160px;
+							min-width: 0;
+							.address {
+								overflow-wrap: anywhere;
+							}
+						}
+						.date-box,
+						.status-box,
+						.views-box {
+							width: auto;
+							height: auto;
+							margin-right: 0;
+						}
+						/* carrier "add event" form */
+						> .MuiStack-root:last-child {
+							flex-wrap: wrap;
+							gap: 8px;
+							margin-left: 0;
+							> * {
+								margin-left: 0;
+							}
+						}
+					}
+				}
+			}
+
+			/* My profile */
+			#my-profile-page {
+				.main-title-box .right-box {
+					width: auto;
+					.main-title {
+						font-size: 22px;
+					}
+				}
+				.top-box {
+					padding: 16px;
+					margin-top: 12px;
+					.photo-box .image-big-box {
+						flex-direction: column;
+						gap: 16px;
+						.upload-big-box {
+							align-self: flex-start;
+						}
+					}
+					.small-input-box {
+						gap: 16px;
+						.input-box {
+							width: 100%;
+						}
+					}
+				}
+			}
+
+			/* Create / edit shipment */
+			#add-property-page {
+				gap: 20px;
+				.main-title-box .main-title {
+					font-size: 22px;
+				}
+				.config {
+					padding: 16px;
+					.config-row,
+					.config-detail-row,
+					.description-box .config-row {
+						flex-direction: column;
+						gap: 16px;
+					}
+					.config-detail-row .price-year-after-price .year-built-input {
+						width: 100%;
+					}
+					.images-box {
+						margin-bottom: 32px;
+						.upload-box {
+							height: auto;
+							padding: 32px 16px;
+						}
+						.gallery-box {
+							gap: 12px;
+							.image-box {
+								width: 96px;
+								height: 96px;
+							}
+						}
+					}
+					.wrap-box {
+						gap: 16px;
+					}
+					.buttons-row,
+					.description-box .buttons-row {
+						flex-wrap: wrap;
+						gap: 12px;
+						.prev-button,
+						.next-button,
+						.submit-button {
+							width: auto;
+							flex: 1 1 140px;
+						}
+					}
+				}
+			}
+		}
+	}
+}

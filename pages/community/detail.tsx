@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Stack, Typography, IconButton, Backdrop, Pagination } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -42,7 +41,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
 
@@ -237,9 +235,8 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>COMMUNITY DETAIL PAGE MOBILE</div>;
-	} else {
+	// same layout at every width; scss/pc/responsive.scss stacks it below 768px
+	{
 		return (
 			<div id="community-detail-page">
 				<div className="container">
@@ -398,9 +395,10 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 															<Backdrop
 																sx={{
 																	top: '40%',
-																	right: '25%',
-																	left: '25%',
-																	width: '1000px',
+																	// phones: full width minus a 16px gutter; desktop unchanged
+																	right: { xs: '16px', md: '25%' },
+																	left: { xs: '16px', md: '25%' },
+																	width: { xs: 'auto', md: '1000px' },
 																	height: 'fit-content',
 																	borderRadius: '10px',
 																	color: '#ffffff',

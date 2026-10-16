@@ -1,7 +1,6 @@
 import React from 'react';
 import { Stack, Box, Divider, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Shipment } from '../../types/shipment/shipment';
 import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../config';
@@ -18,7 +17,6 @@ interface ShipmentBigCardProps {
 
 const ShipmentBigCard = (props: ShipmentBigCardProps) => {
 	const { shipment, likeShipmentHandler } = props;
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 
@@ -27,9 +25,8 @@ const ShipmentBigCard = (props: ShipmentBigCardProps) => {
 		router.push(`/shipment/detail?id=${shipmentId}`);
 	};
 
-	if (device === 'mobile') {
-		return <div>SHIPMENT BIG CARD</div>;
-	} else {
+	// same card at every width
+	{
 		return (
 			<Stack className="property-big-card-box" onClick={() => goShipmentDetailPage(shipment?._id)}>
 				<Box

@@ -39,7 +39,7 @@ const RecentShipments = () => {
 		<section className="w-full bg-page">
 			<div className="mx-auto max-w-page px-4 py-14 md:px-6 md:py-20">
 				<div className="mb-8 flex items-end justify-between gap-4">
-					<div className="flex flex-col gap-2">
+					<div className="flex min-w-0 flex-col gap-2">
 						<h2 className="m-0 text-h2 font-semibold text-ink">Recent shipments</h2>
 						<p className="m-0 text-body text-muted">The latest shipments posted on ChainDepo.</p>
 					</div>
@@ -58,7 +58,7 @@ const RecentShipments = () => {
 						))}
 					</div>
 				) : shipments.length > 0 ? (
-					<ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+					<ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
 						{shipments.map((shipment) => (
 							<li key={shipment._id} className="flex">
 								<ShipmentTile shipment={shipment} />

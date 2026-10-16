@@ -29,12 +29,34 @@ const tokenRefreshLink = new TokenRefreshLink({
 	},
 });
 
+// the one chat socket of this tab (created by WebSocketLink below), so auth changes can reconnect it
+let activeWebsocket: LoggingWebsocket | null = null;
+
 // Custom websocket client
 class LoggingWebsocket {
-	private socket: WebSocket;
+	/** null while logged out: guests never open the chat socket */
+	private socket: WebSocket | null = null;
+	private readonly url: string;
+	/** token the current connection was opened with; the server reads the identity only at connect time */
+	private token: string = '';
 
 	constructor(url: string) {
-		this.socket = new WebSocket(`${url}?token=${getJwtToken()}`);
+		this.url = url;
+		this.connect();
+		activeWebsocket = this;
+	}
+
+	private connect() {
+		this.token = getJwtToken() ?? '';
+		if (!this.token) {
+			// guest: no connection, and nothing from a previous session stays visible
+			this.socket = null;
+			socketVar(null);
+			chatOnlineVar(0);
+			chatMessagesVar([]);
+			return;
+		}
+		this.socket = new WebSocket(`${this.url}?token=${this.token}`);
 		socketVar(this.socket);
 
 		this.socket.onopen = () => {
@@ -67,13 +89,36 @@ class LoggingWebsocket {
 		};
 	}
 
+	/**
+	 * Login and signup open the socket; logout closes it; a profile update reopens it with the new token
+	 * (the server keeps the identity it saw at connect). While logged in, history and online count stay in
+	 * chatMessagesVar / chatOnlineVar across a reconnect, and the new connection sends fresh ones.
+	 */
+	reconnectIfTokenChanged() {
+		const current = getJwtToken() ?? '';
+		if (current === this.token) return;
+		const old = this.socket;
+		if (old) {
+			old.onmessage = null;
+			old.onerror = null;
+			old.onopen = null;
+			old.close();
+		}
+		this.connect();
+	}
+
 	send(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-		this.socket.send(data as string);
+		if (this.socket?.readyState === WebSocket.OPEN) this.socket.send(data as string);
 	}
 
 	close() {
-		this.socket.close();
+		this.socket?.close();
 	}
+}
+
+/** call after the stored JWT changes (libs/auth updateStorage / deleteStorage) */
+export function reconnectChatSocket() {
+	activeWebsocket?.reconnectIfTokenChanged();
 }
 
 function createIsomorphicLink() {

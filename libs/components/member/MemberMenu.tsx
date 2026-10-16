@@ -18,7 +18,7 @@ const MemberMenu = ({ member }: MemberMenuProps) => {
 				<img
 					src={member?.memberImage ? `${REACT_APP_API_URL}/${member?.memberImage}` : '/img/profile/defaultUser.svg'}
 					alt=""
-					className="block h-14 w-14 shrink-0 rounded-full border border-line bg-surface object-cover"
+					className="block h-14 w-14 shrink-0 rounded-full border border-line bg-surface object-cover object-top"
 				/>
 				<div className="flex min-w-0 flex-col gap-0.5">
 					<h1 className="m-0 truncate text-[0.9375rem] font-semibold text-ink">{member?.memberNick}</h1>
