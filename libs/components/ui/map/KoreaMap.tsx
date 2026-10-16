@@ -27,9 +27,9 @@ export interface KoreaMapProps {
 	ariaLabel: string;
 }
 
-const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-const TILE_ATTRIBUTION =
-	'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+/** OSM standard tiles; .cd-map-tiles (scss/tailwind.css) mutes them to the light palette */
+const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 const ACCENT = '#2F8FB5';
 const MUTED = '#5A6B7B';
@@ -81,7 +81,7 @@ const KoreaMap = ({ markers, path = [], pendingPath = [], className = '', ariaLa
 				attributionControl
 				className="h-full w-full"
 			>
-				<TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} subdomains="abcd" maxZoom={18} />
+				<TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className="cd-map-tiles" maxZoom={19} />
 				<FitToPoints points={points} />
 
 				{path.length > 1 && (

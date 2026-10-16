@@ -74,12 +74,14 @@ function createIsomorphicLink() {
 
 		// @ts-ignore
 		const link = new createUploadLink({
-			uri: process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
+			// resolved in next.config.js from NEXT_PUBLIC_API_URL
+			uri: process.env.REACT_APP_API_GRAPHQL_URL,
 		});
 
 		/* WEBSOCKET SUBSCRIPTION LINK */
 		const wsLink = new WebSocketLink({
-			uri: process.env.NEXT_PUBLIC_API_WS ?? 'ws://127.0.0.1:3007',
+			// resolved in next.config.js from NEXT_PUBLIC_API_WS
+			uri: process.env.REACT_APP_API_WS ?? 'ws://localhost:3007',
 			options: {
 				reconnect: false,
 				timeout: 30000,
