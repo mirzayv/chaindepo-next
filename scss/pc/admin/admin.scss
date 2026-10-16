@@ -48,10 +48,10 @@
     }
     li.on {
       font-weight: 600;
-      background: #FDF4F4;
-      color: #F54D56;
+      background: rgba(47, 143, 181, 0.1);
+      color: #2f8fb5;
       span {
-        color: #212121;
+        color: #2f8fb5;
       }
     }
   }
@@ -292,7 +292,7 @@
     .btn-upload {
       border: 1px dashed #eee;
     }
-    .btn-text { color: #e92c28; }
+    .btn-text { color: #2f8fb5; }
     .btn-window {
       color: #757575;
       margin-left: 8px;
@@ -324,8 +324,8 @@
         }
         li.on {
           font-weight: 500;
-          color: #e92c28;
-          border-bottom: 2px solid #e92c28;
+          color: #2f8fb5;
+          border-bottom: 2px solid #2f8fb5;
         }
       }
       &.check-table-wrap {
@@ -404,7 +404,7 @@
       }
       .flex-box {
         button {
-          color: #e92c28;
+          color: #2f8fb5;
           font-weight: 500;
           margin-right: 8px;
         }

@@ -16,6 +16,7 @@ import { CREATE_TRACKING_EVENT } from '../../../apollo/user/mutation';
 import { GET_CARRIER_SHIPMENTS } from '../../../apollo/user/query';
 import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { carrierNextStatuses } from '../../config';
+import { labelOf } from '../../utils';
 
 const statusTabs: ShipmentStatus[] = [
 	ShipmentStatus.CREATED,
@@ -45,14 +46,14 @@ const AddEventForm = (props: AddEventFormProps) => {
 			<Select size={'small'} value={eventStatus} onChange={(e: any) => setEventStatus(e.target.value)}>
 				{nextStatuses.map((status) => (
 					<MenuItem value={status} key={status}>
-						{status}
+						{labelOf(status)}
 					</MenuItem>
 				))}
 			</Select>
 			<Select size={'small'} value={eventLocation} onChange={(e: any) => setEventLocation(e.target.value)}>
 				{Object.values(ShipmentLocation).map((location) => (
 					<MenuItem value={location} key={location}>
-						{location}
+						{labelOf(location)}
 					</MenuItem>
 				))}
 			</Select>
@@ -147,7 +148,7 @@ const CarrierShipments: NextPage = ({ initialInput, ...props }: any) => {
 								onClick={() => changeStatusHandler(status)}
 								className={searchFilter.search.shipmentStatus === status ? 'active-tab-name' : 'tab-name'}
 							>
-								{status}
+								{labelOf(status)}
 							</Typography>
 						))}
 					</Stack>
@@ -156,7 +157,7 @@ const CarrierShipments: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Shipment</Typography>
 							<Typography className="title-text">Date Created</Typography>
 							<Typography className="title-text">Status</Typography>
-							<Typography className="title-text">View</Typography>
+							<Typography className="title-text">Views</Typography>
 						</Stack>
 
 						{carrierShipments?.length === 0 ? (

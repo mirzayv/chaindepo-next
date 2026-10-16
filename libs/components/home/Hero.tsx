@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import TrackForm from '../ui/TrackForm';
 
-const HERO_PHOTO = 'https://images.unsplash.com/photo-1603123041052-8e02cacaa54e?w=2000&q=80';
+const HERO_VIDEO = '/video/hero.mp4';
+const HERO_POSTER = '/video/hero-poster.jpg';
+/** the video only plays on desktop widths with motion allowed; everyone else sees the poster */
+const VIDEO_QUERY = '(min-width: 768px) and (prefers-reduced-motion: no-preference)';
 
-/** full-bleed port photo with a flat ink overlay and the tracking card on top */
+/** full-bleed port video (poster on mobile / reduced motion) with a flat ink overlay and the tracking card on top */
 const Hero = () => {
+	const [playVideo, setPlayVideo] = useState<boolean>(false);
+
+	/** LIFECYCLES **/
+	useEffect(() => {
+		const query = window.matchMedia(VIDEO_QUERY);
+		const update = () => setPlayVideo(query.matches);
+		update();
+		query.addEventListener('change', update);
+		return () => query.removeEventListener('change', update);
+	}, []);
+
 	return (
 		<section className="relative isolate w-full overflow-hidden bg-muted">
-			<Image src={HERO_PHOTO} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+			<Image src={HERO_POSTER} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+			{/* mounted only when it may play, so mobile never downloads the file */}
+			{playVideo && (
+				<video
+					className="absolute inset-0 -z-20 h-full w-full object-cover"
+					src={HERO_VIDEO}
+					poster={HERO_POSTER}
+					autoPlay
+					muted
+					loop
+					playsInline
+					preload="metadata"
+					aria-hidden="true"
+				/>
+			)}
 			{/* flat overlay for legibility, not a gradient */}
 			<div className="absolute inset-0 -z-10 bg-ink/35" aria-hidden="true" />
 

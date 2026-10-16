@@ -6,7 +6,7 @@ import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { ChatsCircle, Headset, User, UserCircleGear } from 'phosphor-react';
+import { ChatsCircle, Package, User } from 'phosphor-react';
 import cookies from 'js-cookie';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
@@ -36,34 +36,13 @@ const AdminMenuList = (props: any) => {
 			case 'community':
 				setClickMenu(['Community']);
 				break;
-			case 'cs':
-				setClickMenu(['Cs']);
-				break;
 			default:
 				setClickMenu(['Users']);
 				break;
 		}
 
-		switch (pathnames[2]) {
-			case 'logs':
-				setClickSubMenu('Logs');
-				break;
-			case 'inquiry':
-				setClickSubMenu('1:1 Inquiry');
-				break;
-			case 'notice':
-				setClickSubMenu('Notice');
-				break;
-			case 'faq':
-				setClickSubMenu('FAQ');
-				break;
-			case 'board_create':
-				setClickSubMenu('Board Create');
-				break;
-			default:
-				setClickSubMenu('List');
-				break;
-		}
+		// every section has a single "List" page (Help center content is static, see pages/cs)
+		setClickSubMenu('List');
 	}, []);
 
 	/** HANDLERS **/
@@ -85,7 +64,7 @@ const AdminMenuList = (props: any) => {
 		},
 		{
 			title: 'Shipments',
-			icon: <UserCircleGear size={20} color="#bdbdbd" weight="fill" />,
+			icon: <Package size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Shipments'),
 		},
 		{
@@ -93,21 +72,12 @@ const AdminMenuList = (props: any) => {
 			icon: <ChatsCircle size={20} color="#bdbdbd" weight="fill" />,
 			on_click: () => subMenuChangeHandler('Community'),
 		},
-		{
-			title: 'Cs',
-			icon: <Headset size={20} color="#bdbdbd" weight="fill" />,
-			on_click: () => subMenuChangeHandler('Cs'),
-		},
 	];
 
 	const sub_menu_set: any = {
 		Users: [{ title: 'List', url: '/_admin/users' }],
 		Shipments: [{ title: 'List', url: '/_admin/shipments' }],
 		Community: [{ title: 'List', url: '/_admin/community' }],
-		Cs: [
-			{ title: 'FAQ', url: '/_admin/cs/faq' },
-			{ title: 'Notice', url: '/_admin/cs/notice' },
-		],
 	};
 
 	return (

@@ -1,6 +1,7 @@
 import { makeVar } from '@apollo/client';
 
 import { CustomJwtPayload } from '../libs/types/customJwtPayload';
+import { Member } from '../libs/types/member/member';
 export const themeVar = makeVar({});
 
 export const userVar = makeVar<CustomJwtPayload>({
@@ -26,3 +27,17 @@ export const userVar = makeVar<CustomJwtPayload>({
 
 //@ts-ignore
 export const socketVar = makeVar<WebSocket>();
+
+/**
+ * Community chat state, written by the socket in apollo/client.ts (LoggingWebsocket).
+ * It lives here and not in component state because the server sends the online count and the
+ * history only once, right after connecting; the socket outlives page changes, the widget does not.
+ */
+export interface ChatMessagePayload {
+	event: string;
+	text: string;
+	memberData: Member | null;
+}
+
+export const chatOnlineVar = makeVar<number>(0);
+export const chatMessagesVar = makeVar<ChatMessagePayload[]>([]);

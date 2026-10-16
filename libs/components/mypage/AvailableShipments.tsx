@@ -80,7 +80,7 @@ const AvailableShipments: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Shipment</Typography>
 							<Typography className="title-text">Date Created</Typography>
 							<Typography className="title-text">Status</Typography>
-							<Typography className="title-text">View</Typography>
+							<Typography className="title-text">Views</Typography>
 						</Stack>
 
 						{availableShipments?.length === 0 ? (

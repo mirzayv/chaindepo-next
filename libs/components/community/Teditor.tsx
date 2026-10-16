@@ -3,7 +3,7 @@ import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextFiel
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
 import { getJwtToken } from '../../auth';
-import { REACT_APP_API_URL } from '../../config';
+import { communityCategories, REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { T } from '../../types/common';
@@ -12,6 +12,8 @@ import { useMutation } from '@apollo/client';
 import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { Message } from '../../enums/common.enum';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
+
+const labelStyle = { color: '#5A6B7B', marginBottom: '8px', fontSize: '13px', fontWeight: 600 };
 
 const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
@@ -38,7 +40,7 @@ const TuiEditor = () => {
 				'operations',
 				JSON.stringify({
 					query: `mutation ImageUploader($file: Upload!, $target: String!) {
-						imageUploader(file: $file, target: $target) 
+						imageUploader(file: $file, target: $target)
 				  }`,
 					variables: {
 						file: null,
@@ -77,7 +79,6 @@ const TuiEditor = () => {
 	};
 
 	const articleTitleHandler = (e: T) => {
-		console.log(e.target.value);
 		memoizedValues.articleTitle = e.target.value;
 	};
 
@@ -96,11 +97,11 @@ const TuiEditor = () => {
 				},
 			});
 
-			await sweetTopSuccessAlert('Article created successfully ', 700);
+			await sweetTopSuccessAlert('Post published', 700);
 			await router.push({
-				pathname: '/mypage',
+				pathname: '/community',
 				query: {
-					category: 'myArticles',
+					articleCategory,
 				},
 			});
 		} catch (err: any) {
@@ -109,53 +110,43 @@ const TuiEditor = () => {
 		}
 	};
 
-	const doDisabledCheck = () => {
-		if (memoizedValues.articleContent === '' || memoizedValues.articleTitle === '') {
-			return true;
-		}
-	};
-
 	return (
 		<Stack>
-			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly">
-				<Box component={'div'} className={'form_row'} style={{ width: '300px' }}>
-					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
-						Category
-					</Typography>
+			<Stack direction="row" style={{ marginBottom: '24px', gap: '16px', flexWrap: 'wrap' }}>
+				<Box component={'div'} style={{ width: '240px' }}>
+					<Typography style={labelStyle}>Board</Typography>
 					<FormControl sx={{ width: '100%', background: 'white' }}>
 						<Select
 							value={articleCategory}
 							onChange={changeCategoryHandler}
 							displayEmpty
-							inputProps={{ 'aria-label': 'Without label' }}
+							inputProps={{ 'aria-label': 'Board' }}
 						>
-							<MenuItem value={BoardArticleCategory.FREE}>
-								<span>Free</span>
-							</MenuItem>
-							<MenuItem value={BoardArticleCategory.HUMOR}>Humor</MenuItem>
-							<MenuItem value={BoardArticleCategory.NEWS}>News</MenuItem>
-							<MenuItem value={BoardArticleCategory.RECOMMEND}>Recommendation</MenuItem>
+							{communityCategories.map((category) => (
+								<MenuItem key={category.value} value={category.value}>
+									{category.label}
+								</MenuItem>
+							))}
 						</Select>
 					</FormControl>
 				</Box>
-				<Box component={'div'} style={{ width: '300px', flexDirection: 'column' }}>
-					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
-						Title
-					</Typography>
+				<Box component={'div'} style={{ flex: '1 1 320px', flexDirection: 'column' }}>
+					<Typography style={labelStyle}>Title</Typography>
 					<TextField
 						onChange={articleTitleHandler}
-						id="filled-basic"
-						label="Type Title"
-						style={{ width: '300px', background: 'white' }}
+						id="article-title"
+						placeholder="What is your post about?"
+						inputProps={{ 'aria-label': 'Title' }}
+						style={{ width: '100%', background: 'white' }}
 					/>
 				</Box>
 			</Stack>
 
 			<Editor
-				initialValue={'Type here'}
-				placeholder={'Type here'}
+				initialValue={''}
+				placeholder={'Write your post'}
 				previewStyle={'vertical'}
-				height={'640px'}
+				height={'520px'}
 				// @ts-ignore
 				initialEditType={'WYSIWYG'}
 				toolbarItems={[
@@ -176,14 +167,15 @@ const TuiEditor = () => {
 				}}
 			/>
 
-			<Stack direction="row" justifyContent="center">
+			<Stack direction="row" justifyContent="flex-end">
 				<Button
 					variant="contained"
 					color="primary"
-					style={{ margin: '30px', width: '250px', height: '45px' }}
+					disableElevation
+					style={{ marginTop: '24px', minWidth: '160px', height: '44px', color: '#fff', textTransform: 'none' }}
 					onClick={handleRegisterButton}
 				>
-					Register
+					Publish
 				</Button>
 			</Stack>
 		</Stack>

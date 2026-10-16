@@ -136,10 +136,8 @@ export const updateUserInfo = (jwtToken: any) => {
 		memberPhone: claims.memberPhone ?? '',
 		memberNick: claims.memberNick ?? '',
 		memberFullName: claims.memberFullName ?? '',
-		memberImage:
-			claims.memberImage === null || claims.memberImage === undefined
-				? '/img/profile/defaultUser.svg'
-				: `${claims.memberImage}`,
+		// a path relative to the API (uploads/member/...), or '' — components prefix REACT_APP_API_URL or use the placeholder
+		memberImage: claims.memberImage ?? '',
 		memberAddress: claims.memberAddress ?? '',
 		memberDesc: claims.memberDesc ?? '',
 		memberShipments: claims.memberShipments,

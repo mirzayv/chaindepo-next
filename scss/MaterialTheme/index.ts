@@ -12,16 +12,27 @@ export const light = {
 			default: '#f4f6f8',
 			paper: common.white,
 		},
+		// ChainDepo palette (AGENTS.md): accent teal-blue, navy text
 		primary: {
 			contrastText: '#ffffff',
-			main: '#E92C28',
+			main: '#2F8FB5',
+			dark: '#26789A',
 		},
 		secondary: {
-			main: '#1646C1',
+			main: '#0B2236',
+		},
+		error: {
+			main: '#C62828',
+		},
+		success: {
+			main: '#1E8E5A',
+		},
+		warning: {
+			main: '#E0A100',
 		},
 		text: {
-			primary: '#212121',
-			secondary: '#616161',
+			primary: '#0B2236',
+			secondary: '#5A6B7B',
 			dark: common.black,
 		},
 	},
@@ -251,7 +262,7 @@ export const light = {
 			styleOverrides: {
 				root: {
 					'&.Mui-checked': {
-						color: 'black',
+						color: '#2F8FB5',
 					},
 				},
 			},

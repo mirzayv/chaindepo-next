@@ -18,6 +18,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { REMOVE_SHIPMENT_BY_ADMIN, UPDATE_SHIPMENT_BY_ADMIN } from '../../../apollo/admin/mutation';
 import { GET_ALL_SHIPMENTS_BY_ADMIN } from '../../../apollo/admin/query';
 import { T } from '../../../libs/types/common';
+import { labelOf } from '../../../libs/utils';
 
 const AdminShipments: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
@@ -164,7 +165,7 @@ const AdminShipments: NextPage = ({ initialInquiry, ...props }: any) => {
 										value={status}
 										className={value === status ? 'li on' : 'li'}
 									>
-										{status === 'ALL' ? 'All' : status}
+										{status === 'ALL' ? 'All' : labelOf(status)}
 									</ListItem>
 								))}
 							</List>
@@ -172,11 +173,11 @@ const AdminShipments: NextPage = ({ initialInquiry, ...props }: any) => {
 							<Stack className={'search-area'} sx={{ m: '24px' }}>
 								<Select sx={{ width: '160px', mr: '20px' }} value={searchType}>
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
-										ALL ORIGINS
+										All origins
 									</MenuItem>
 									{Object.values(ShipmentLocation).map((location: string) => (
 										<MenuItem value={location} onClick={() => searchTypeHandler(location)} key={location}>
-											{location}
+											{labelOf(location)}
 										</MenuItem>
 									))}
 								</Select>

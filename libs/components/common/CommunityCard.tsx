@@ -1,106 +1,81 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Stack, Typography } from '@mui/material';
-import { BoardArticle } from '../../types/board-article/board-article';
+import Link from 'next/link';
 import Moment from 'react-moment';
-import { REACT_APP_API_URL } from '../../config';
 import { useReactiveVar } from '@apollo/client';
+import { BoardArticle } from '../../types/board-article/board-article';
+import { REACT_APP_API_URL } from '../../config';
 import { userVar } from '../../../apollo/store';
-import IconButton from '@mui/material/IconButton';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 interface CommunityCardProps {
 	boardArticle: BoardArticle;
-	size?: string;
 	likeArticleHandler?: any;
 }
 
+/** community article row: optional image, title, author, date, views and a like toggle */
 const CommunityCard = (props: CommunityCardProps) => {
-	const { boardArticle, size = 'normal', likeArticleHandler } = props;
-	const device = useDeviceDetect();
-	const router = useRouter();
+	const { boardArticle, likeArticleHandler } = props;
 	const user = useReactiveVar(userVar);
-	const imagePath: string = boardArticle?.articleImage
+	const imagePath: string | null = boardArticle?.articleImage
 		? `${REACT_APP_API_URL}/${boardArticle?.articleImage}`
-		: '/img/community/communityImg.png';
-
-	/** HANDLERS **/
-	const chooseArticleHandler = (e: React.SyntheticEvent, boardArticle: BoardArticle) => {
-		router.push(
-			{
-				pathname: '/community/detail',
-				query: { articleCategory: boardArticle?.articleCategory, id: boardArticle?._id },
-			},
-			undefined,
-			{ shallow: true },
-		);
+		: null;
+	const liked = Boolean(boardArticle?.meLiked?.[0]?.myFavorite);
+	const authorId = boardArticle?.memberData?._id;
+	const authorHref = authorId === user?._id ? '/mypage' : `/member?memberId=${authorId}`;
+	const articleHref = {
+		pathname: '/community/detail',
+		query: { articleCategory: boardArticle?.articleCategory, id: boardArticle?._id },
 	};
 
-	const goMemberPage = (id: string) => {
-		if (id === user?._id) router.push('/mypage');
-		else router.push(`/member?memberId=${id}`);
-	};
-
-	if (device === 'mobile') {
-		return <div>COMMUNITY CARD MOBILE</div>;
-	} else {
-		return (
-			<Stack
-				sx={{ width: size === 'small' ? '285px' : '317px' }}
-				className="community-general-card-config"
-				onClick={(e: any) => chooseArticleHandler(e, boardArticle)}
-			>
-				<Stack className="image-box">
-					<img src={imagePath} alt="" className="card-img" />
-				</Stack>
-				<Stack className="desc-box" sx={{ marginTop: '-20px' }}>
-					<Stack>
-						<Typography
-							className="desc"
-							onClick={(e: any) => {
-								e.stopPropagation();
-								goMemberPage(boardArticle?.memberData?._id as string);
-							}}
-						>
+	return (
+		<article className="flex gap-4 rounded-card border border-line bg-white p-4 transition-colors duration-150 ease-out hover:border-accent">
+			{imagePath && (
+				<Link href={articleHref} className="hidden shrink-0 sm:block" aria-hidden="true" tabIndex={-1}>
+					<img src={imagePath} alt="" className="block h-20 w-28 rounded-card bg-surface object-cover" />
+				</Link>
+			)}
+			<div className="flex min-w-0 flex-1 flex-col gap-1.5">
+				<Link href={articleHref} className="line-clamp-2 text-[0.9375rem] font-semibold text-ink hover:text-accent">
+					{boardArticle?.articleTitle}
+				</Link>
+				<p className="m-0 text-small text-muted">
+					{authorId ? (
+						<Link href={authorHref} className="font-medium text-ink hover:text-accent">
 							{boardArticle?.memberData?.memberNick}
-						</Typography>
-						<Typography className="title">{boardArticle?.articleTitle}</Typography>
-					</Stack>
-					<Stack className={'buttons'}>
-						<IconButton color={'default'}>
-							<RemoveRedEyeIcon />
-						</IconButton>
-						<Typography className="view-cnt">{boardArticle?.articleViews}</Typography>
-						<IconButton
-							color={'default'}
-							onClick={(e: any) => {
-								e.stopPropagation();
-								likeArticleHandler?.(e, user, boardArticle?._id);
-							}}
-						>
-							{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
-								<FavoriteIcon color={'primary'} />
-							) : (
-								<FavoriteBorderIcon />
-							)}
-						</IconButton>
-						<Typography className="view-cnt">{boardArticle?.articleLikes}</Typography>
-					</Stack>
-				</Stack>
-				<Stack className="date-box">
-					<Moment className="month" format={'MMMM'}>
-						{boardArticle?.createdAt}
-					</Moment>
-					<Typography className="day">
-						<Moment format={'DD'}>{boardArticle?.createdAt}</Moment>
-					</Typography>
-				</Stack>
-			</Stack>
-		);
-	}
+						</Link>
+					) : (
+						'Member'
+					)}
+					{' · '}
+					<Moment format={'YYYY.MM.DD'}>{boardArticle?.createdAt}</Moment>
+					{' · '}
+					{boardArticle?.articleViews ?? 0} views
+					{' · '}
+					{boardArticle?.articleComments ?? 0} comments
+				</p>
+			</div>
+			<button
+				type="button"
+				onClick={(e) => likeArticleHandler?.(e, user, boardArticle?._id)}
+				aria-pressed={liked}
+				aria-label={liked ? 'Unlike article' : 'Like article'}
+				className={`inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 self-start rounded-card border px-3 text-small font-medium transition-colors duration-150 ease-out ${
+					liked
+						? 'border-accent bg-accent text-white hover:bg-accent-hover'
+						: 'border-line bg-white text-ink hover:border-accent hover:text-accent'
+				}`}
+			>
+				<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill={liked ? 'currentColor' : 'none'}>
+					<path
+						d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"
+						stroke="currentColor"
+						strokeWidth="1.8"
+						strokeLinejoin="round"
+					/>
+				</svg>
+				{boardArticle?.articleLikes ?? 0}
+			</button>
+		</article>
+	);
 };
 
 export default CommunityCard;

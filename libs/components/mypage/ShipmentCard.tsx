@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Shipment } from '../../types/shipment/shipment';
-import { formatKRW } from '../../utils';
+import { formatKRW, labelOf } from '../../utils';
 import { IMAGE_PLACEHOLDER } from '../../config';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
@@ -70,7 +70,7 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 				<Stack className="information-box" onClick={() => pushShipmentDetail(shipment?._id)}>
 					<Typography className="name">{shipment.shipmentTitle}</Typography>
 					<Typography className="address">
-						{shipment.shipmentTrackingCode} · {shipment.shipmentOrigin} → {shipment.shipmentDestination}
+						{shipment.shipmentTrackingCode} · {labelOf(shipment.shipmentOrigin)} → {labelOf(shipment.shipmentDestination)}
 					</Typography>
 					<Typography className="price">
 						<strong>{formatKRW(shipment?.shipmentPrice)}</strong>
@@ -82,9 +82,9 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 					</Typography>
 				</Stack>
 				<Stack className="status-box">
-					<Stack className="coloured-box" sx={{ background: '#E5F0FD' }} onClick={handleClick}>
-						<Typography className="status" sx={{ color: '#3554d1' }}>
-							{shipment.shipmentStatus}
+					<Stack className="coloured-box" sx={{ background: 'rgba(47, 143, 181, 0.1)' }} onClick={handleClick}>
+						<Typography className="status" sx={{ color: '#2F8FB5' }}>
+							{labelOf(shipment.shipmentStatus)}
 						</Typography>
 					</Stack>
 				</Stack>

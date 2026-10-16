@@ -16,7 +16,7 @@ import Avatar from '@mui/material/Avatar';
 import { Stack } from '@mui/material';
 import { Shipment } from '../../../types/shipment/shipment';
 import { IMAGE_PLACEHOLDER, REACT_APP_API_URL } from '../../../config';
-import { formatKRW } from '../../../utils';
+import { formatKRW, labelOf } from '../../../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { ShipmentStatus } from '../../../enums/shipment.enum';
@@ -180,9 +180,9 @@ export const ShipmentPanelList = (props: ShipmentPanelListType) => {
 										<TableCell align="center">{formatKRW(shipment.shipmentPrice)}</TableCell>
 										<TableCell align="center">{shipment.memberData?.memberNick}</TableCell>
 										<TableCell align="center">
-											{shipment.shipmentOrigin} → {shipment.shipmentDestination}
+											{labelOf(shipment.shipmentOrigin)} → {labelOf(shipment.shipmentDestination)}
 										</TableCell>
-										<TableCell align="center">{shipment.shipmentType}</TableCell>
+										<TableCell align="center">{labelOf(shipment.shipmentType)}</TableCell>
 										<TableCell align="center">
 											{shipment.shipmentStatus === ShipmentStatus.DELETE ? (
 												<Button
@@ -195,7 +195,7 @@ export const ShipmentPanelList = (props: ShipmentPanelListType) => {
 											) : (
 												<>
 													<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-														{shipment.shipmentStatus}
+														{labelOf(shipment.shipmentStatus)}
 													</Button>
 
 													{/* backend: updateShipmentByAdmin only accepts DELETE (soft delete);
@@ -217,7 +217,7 @@ export const ShipmentPanelList = (props: ShipmentPanelListType) => {
 															}
 														>
 															<Typography variant={'subtitle1'} component={'span'}>
-																{ShipmentStatus.DELETE}
+																Delete
 															</Typography>
 														</MenuItem>
 													</Menu>

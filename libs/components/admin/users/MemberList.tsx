@@ -18,6 +18,10 @@ import { Stack } from '@mui/material';
 import { Member } from '../../../types/member/member';
 import { REACT_APP_API_URL } from '../../../config';
 import { MemberStatus, MemberType } from '../../../enums/member.enum';
+import { labelOf } from '../../../utils';
+
+/** USER is the shipper role */
+const memberTypeLabel = (type?: string) => (type === MemberType.USER ? 'Shipper' : labelOf(type));
 
 interface Data {
 	id: string;
@@ -182,7 +186,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 
 										<TableCell align="center">
 											<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-												{member.memberType}
+												{memberTypeLabel(member.memberType)}
 											</Button>
 
 											<Menu
@@ -204,7 +208,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 															key={type}
 														>
 															<Typography variant={'subtitle1'} component={'span'}>
-																{type}
+																{memberTypeLabel(type)}
 															</Typography>
 														</MenuItem>
 													))}
@@ -215,7 +219,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="center">{member.memberBlocks}</TableCell>
 										<TableCell align="center">
 											<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
-												{member.memberStatus}
+												{labelOf(member.memberStatus)}
 											</Button>
 
 											<Menu
@@ -237,7 +241,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 															key={status}
 														>
 															<Typography variant={'subtitle1'} component={'span'}>
-																{status}
+																{labelOf(status)}
 															</Typography>
 														</MenuItem>
 													))}

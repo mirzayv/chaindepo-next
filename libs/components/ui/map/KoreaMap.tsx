@@ -25,6 +25,8 @@ export interface KoreaMapProps {
 	pendingPath?: [number, number][];
 	className?: string;
 	ariaLabel: string;
+	/** fit to South Korea (incl. Jeju) and keep the view there: no zooming or panning out to the neighbours */
+	lockToKorea?: boolean;
 }
 
 /** OSM standard tiles; .cd-map-tiles (scss/tailwind.css) mutes them to the light palette */
@@ -40,6 +42,12 @@ const KOREA_BOUNDS: LatLngBoundsExpression = [
 	[38.5, 129.6],
 ];
 
+/** how far a locked map may be panned: Korea plus a little sea */
+const KOREA_MAX_BOUNDS: LatLngBoundsExpression = [
+	[32.4, 124.2],
+	[39.4, 131.2],
+];
+
 const boundsOf = (points: [number, number][]): LatLngBoundsExpression => {
 	if (points.length === 0) return KOREA_BOUNDS;
 	const lats = points.map(([lat]) => lat);
@@ -51,19 +59,32 @@ const boundsOf = (points: [number, number][]): LatLngBoundsExpression => {
 };
 
 /** MapContainer props are fixed after mount, so refit when the points change (e.g. events arrive) */
-const FitToPoints = ({ points }: { points: [number, number][] }) => {
+const FitToPoints = ({ points, lockToKorea }: { points: [number, number][]; lockToKorea: boolean }) => {
 	const map = useMap();
 	const key = points.map(([lat, lng]) => `${lat},${lng}`).join('|');
 
 	useEffect(() => {
+		if (lockToKorea) {
+			map.fitBounds(KOREA_BOUNDS, { padding: [8, 8] });
+			// the fitted zoom is the furthest out a user may go
+			map.setMinZoom(map.getZoom());
+			return;
+		}
 		map.fitBounds(boundsOf(points), { padding: [36, 36], maxZoom: 9 });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [map, key]);
+	}, [map, key, lockToKorea]);
 
 	return null;
 };
 
-const KoreaMap = ({ markers, path = [], pendingPath = [], className = '', ariaLabel }: KoreaMapProps) => {
+const KoreaMap = ({
+	markers,
+	path = [],
+	pendingPath = [],
+	className = '',
+	ariaLabel,
+	lockToKorea = false,
+}: KoreaMapProps) => {
 	const points: [number, number][] = [...markers.map((m) => [m.lat, m.lng] as [number, number]), ...path, ...pendingPath];
 
 	return (
@@ -74,15 +95,18 @@ const KoreaMap = ({ markers, path = [], pendingPath = [], className = '', ariaLa
 			className={`cd-map relative isolate overflow-hidden rounded-card border border-line ${className}`}
 		>
 			<MapContainer
-				bounds={boundsOf(points)}
-				boundsOptions={{ padding: [36, 36], maxZoom: 9 }}
+				bounds={lockToKorea ? KOREA_BOUNDS : boundsOf(points)}
+				boundsOptions={lockToKorea ? { padding: [8, 8] } : { padding: [36, 36], maxZoom: 9 }}
+				maxBounds={lockToKorea ? KOREA_MAX_BOUNDS : undefined}
+				maxBoundsViscosity={lockToKorea ? 1 : undefined}
+				zoomSnap={lockToKorea ? 0.25 : 1}
 				scrollWheelZoom={false}
 				zoomControl
 				attributionControl
 				className="h-full w-full"
 			>
 				<TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className="cd-map-tiles" maxZoom={19} />
-				<FitToPoints points={points} />
+				<FitToPoints points={points} lockToKorea={lockToKorea} />
 
 				{path.length > 1 && (
 					<Polyline positions={path as LatLngExpression[]} pathOptions={{ color: ACCENT, weight: 3, opacity: 0.9 }} />

@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { UPDATE_SHIPMENT } from '../../../apollo/user/mutation';
 import { GET_MY_SHIPMENTS } from '../../../apollo/user/query';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
+import { labelOf } from '../../utils';
 
 /** tabs for the shipper's own shipments (DELETE is hidden) **/
 const statusTabs: ShipmentStatus[] = [
@@ -82,7 +83,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 
 	const updateShipmentHandler = async (status: string, id: string) => {
 		try {
-			if (await sweetConfirmAlert(`Do you want to change the shipment to ${status} ?`)) {
+			if (await sweetConfirmAlert(`Change the shipment to ${labelOf(status)}?`)) {
 				await updateShipment({
 					variables: {
 						input: {
@@ -122,7 +123,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 								onClick={() => changeStatusHandler(status)}
 								className={searchFilter.search.shipmentStatus === status ? 'active-tab-name' : 'tab-name'}
 							>
-								{status}
+								{labelOf(status)}
 							</Typography>
 						))}
 					</Stack>
@@ -131,7 +132,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 							<Typography className="title-text">Shipment</Typography>
 							<Typography className="title-text">Date Created</Typography>
 							<Typography className="title-text">Status</Typography>
-							<Typography className="title-text">View</Typography>
+							<Typography className="title-text">Views</Typography>
 							{searchFilter.search.shipmentStatus === ShipmentStatus.CREATED && (
 								<Typography className="title-text">Action</Typography>
 							)}

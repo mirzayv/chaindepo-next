@@ -40,8 +40,14 @@ const KoreaNetwork = () => {
 					</ul>
 				</div>
 
-				<div className="h-[340px] w-full md:h-[460px]">
-					<MapView markers={MARKERS} className="h-full w-full" ariaLabel="Map of the nine ChainDepo cities in South Korea" />
+				{/* taller than wide on desktop so the fit is Korea, not the sea around it */}
+				<div className="h-[420px] w-full md:h-[540px]">
+					<MapView
+						markers={MARKERS}
+						lockToKorea
+						className="h-full w-full"
+						ariaLabel="Map of the nine ChainDepo cities in South Korea"
+					/>
 				</div>
 			</div>
 		</section>

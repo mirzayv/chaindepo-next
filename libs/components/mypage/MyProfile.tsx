@@ -67,13 +67,27 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			});
 
 			const responseImage = response.data.data.imageUploader;
-			console.log('+responseImage: ', responseImage);
-			updateData.memberImage = responseImage;
-			setUpdateData({ ...updateData });
+			setUpdateData((prev) => ({ ...prev, memberImage: responseImage }));
+
+			// save the photo right away: the upload alone only stores the file, the member keeps the old image
+			// until updateMember runs. The new token carries memberImage, so header and sidebar update too.
+			const result = await updateMember({
+				variables: { input: { _id: user._id, memberImage: responseImage } },
+			});
+			const jwtToken = result.data.updateMember?.accessToken;
+			if (jwtToken) {
+				updateStorage({ jwtToken });
+				updateUserInfo(jwtToken);
+			}
+			await sweetMixinSuccessAlert('Photo updated');
 
 			return `${REACT_APP_API_URL}/${responseImage}`;
-		} catch (err) {
+		} catch (err: any) {
 			console.log('Error, uploadImage:', err);
+			sweetErrorHandling(err).then();
+		} finally {
+			// allow picking the same file again
+			e.target.value = '';
 		}
 	};
 
@@ -95,18 +109,8 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		}
 	}, [updateData]);
 
-	const doDisabledCheck = () => {
-		if (
-			updateData.memberNick === '' ||
-			updateData.memberPhone === '' ||
-			updateData.memberAddress === '' ||
-			updateData.memberImage === ''
-		) {
-			return true;
-		}
-	};
-
-	console.log('+updateData', updateData);
+	// address and photo are optional (new members have neither)
+	const doDisabledCheck = () => updateData.memberNick === '' || updateData.memberPhone === '';
 
 	if (device === 'mobile') {
 		return <>MY PROFILE PAGE MOBILE</>;

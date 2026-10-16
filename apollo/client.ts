@@ -7,7 +7,7 @@ import { onError } from '@apollo/client/link/error';
 import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
-import { socketVar } from './store';
+import { chatMessagesVar, chatOnlineVar, socketVar } from './store';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -41,8 +41,25 @@ class LoggingWebsocket {
 			console.log('WebSocket connection!');
 		};
 
+		// chat events are stored app-wide: 'info' and 'getMessages' arrive once per connection,
+		// before (or between) the widget mounts, so component state alone would miss them
 		this.socket.onmessage = (msg) => {
-			console.log('WebSocket message:', msg.data);
+			try {
+				const data = JSON.parse(msg.data);
+				switch (data.event) {
+					case 'info':
+						chatOnlineVar(Number(data.totalClients) || 0);
+						break;
+					case 'getMessages':
+						chatMessagesVar(Array.isArray(data.list) ? data.list : []);
+						break;
+					case 'message':
+						chatMessagesVar([...chatMessagesVar(), data]);
+						break;
+				}
+			} catch (err) {
+				console.log('WebSocket message error:', err);
+			}
 		};
 
 		this.socket.onerror = (error) => {

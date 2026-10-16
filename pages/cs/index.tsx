@@ -1,8 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Box, Stack } from '@mui/material';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Notice from '../../libs/components/cs/Notice';
 import Faq from '../../libs/components/cs/Faq';
@@ -14,63 +12,48 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
+const TABS = [
+	{ id: 'notice', label: 'Notices' },
+	{ id: 'faq', label: 'FAQ' },
+];
+
+/** Help center: static notices and FAQ (title band comes from LayoutBasic) */
 const CS: NextPage = () => {
-	const device = useDeviceDetect();
 	const router = useRouter();
+	const tab = router.query.tab === 'faq' ? 'faq' : 'notice';
 
 	/** HANDLERS **/
-	const changeTabHandler = (tab: string) => {
-		router.push(
-			{
-				pathname: '/cs',
-				query: { tab: tab },
-			},
-			undefined,
-			{ scroll: false },
-		);
+	const changeTabHandler = (next: string) => {
+		router.push({ pathname: '/cs', query: { tab: next } }, undefined, { scroll: false, shallow: true });
 	};
-	const tab = router.query.tab ?? 'notice';
 
-	if (device === 'mobile') {
-		return <h1>CS PAGE MOBILE</h1>;
-	} else {
-		return (
-			<Stack className={'cs-page'}>
-				<Stack className={'container'}>
-					<Box component={'div'} className={'cs-main-info'}>
-						<Box component={'div'} className={'info'}>
-							<span>Cs center</span>
-							<p>I will answer your questions</p>
-						</Box>
-						<Box component={'div'} className={'btns'}>
-							<div
-								className={tab == 'notice' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('notice');
-								}}
+	return (
+		<div className="cd-ui w-full bg-surface">
+			<div className="mx-auto flex max-w-[880px] flex-col gap-6 px-4 py-8 md:px-6 md:py-12">
+				<div role="tablist" aria-label="Help center sections" className="inline-flex gap-1 self-start rounded-card border border-line bg-white p-1">
+					{TABS.map((item) => {
+						const selected = item.id === tab;
+						return (
+							<button
+								key={item.id}
+								type="button"
+								role="tab"
+								aria-selected={selected}
+								onClick={() => changeTabHandler(item.id)}
+								className={`h-9 cursor-pointer rounded-[4px] border-0 px-4 text-small font-semibold transition-colors duration-150 ease-out ${
+									selected ? 'bg-accent text-white' : 'bg-transparent text-ink hover:text-accent'
+								}`}
 							>
-								Notice
-							</div>
-							<div
-								className={tab == 'faq' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('faq');
-								}}
-							>
-								FAQ
-							</div>
-						</Box>
-					</Box>
+								{item.label}
+							</button>
+						);
+					})}
+				</div>
 
-					<Box component={'div'} className={'cs-content'}>
-						{tab === 'notice' && <Notice />}
-
-						{tab === 'faq' && <Faq />}
-					</Box>
-				</Stack>
-			</Stack>
-		);
-	}
+				{tab === 'notice' ? <Notice /> : <Faq />}
+			</div>
+		</div>
+	);
 };
 
 export default withLayoutBasic(CS);

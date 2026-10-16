@@ -55,7 +55,7 @@
 }
 /* tile layer only: markers and the route line live in other panes and keep their teal */
 .cd-map .cd-map-tiles {
-	filter: grayscale(1) brightness(1.05) contrast(0.9);
+	filter: grayscale(1) brightness(1.1) contrast(0.8);
 }
 .cd-map .leaflet-popup-content-wrapper {
 	border: 1px solid #e3e8ee;

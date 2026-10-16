@@ -1,11 +1,8 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Stack, Box, Button, Pagination } from '@mui/material';
-import { Menu, MenuItem } from '@mui/material';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CarrierCard from '../../libs/components/common/CarrierCard';
+import Pagination from '../../libs/components/ui/Pagination';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
@@ -22,13 +19,19 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
+/** sort options: id → backend sort field + direction */
+const SORTS: { id: string; label: string; sort: string; direction: string }[] = [
+	{ id: 'recent', label: 'Newest', sort: 'createdAt', direction: 'DESC' },
+	{ id: 'old', label: 'Oldest', sort: 'createdAt', direction: 'ASC' },
+	{ id: 'likes', label: 'Most liked', sort: 'memberLikes', direction: 'DESC' },
+	{ id: 'views', label: 'Most viewed', sort: 'memberViews', direction: 'DESC' },
+];
+
+const inputClass =
+	'h-10 rounded-card border border-line bg-white px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted hover:border-accent focus:border-accent';
+
 const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
-	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
-	const [filterSortName, setFilterSortName] = useState('Recent');
-	const [sortingOpen, setSortingOpen] = useState(false);
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
@@ -38,20 +41,14 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchText, setSearchText] = useState<string>('');
 
 	/** APOLLO REQUESTS **/
-
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
-	const {
-		loading: getCarriersLoading,
-		data: getCarriersData,
-		error: getCarriersError,
-		refetch: getCarriersRefetch,
-	} = useQuery(GET_CARRIERS, {
+	const { loading: getCarriersLoading, refetch: getCarriersRefetch } = useQuery(GET_CARRIERS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setCarriers(data?.getCarriers?.list);
+			setCarriers(data?.getCarriers?.list ?? []);
 			setTotal(data?.getCarriers?.metaCounter[0]?.total ?? 0);
 		},
 	});
@@ -68,41 +65,13 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 	}, [router]);
 
 	/** HANDLERS **/
-
-	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget);
-		setSortingOpen(true);
+	const sortingHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+		const option = SORTS.find((item) => item.id === e.target.value);
+		if (!option) return;
+		setSearchFilter({ ...searchFilter, sort: option.sort, direction: option.direction });
 	};
 
-	const sortingCloseHandler = () => {
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
-			case 'recent':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'DESC' });
-				setFilterSortName('Recent');
-				break;
-			case 'old':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'ASC' });
-				setFilterSortName('Oldest order');
-				break;
-			case 'likes':
-				setSearchFilter({ ...searchFilter, sort: 'memberLikes', direction: 'DESC' });
-				setFilterSortName('Likes');
-				break;
-			case 'views':
-				setSearchFilter({ ...searchFilter, sort: 'memberViews', direction: 'DESC' });
-				setFilterSortName('Views');
-				break;
-		}
-		setSortingOpen(false);
-		setAnchorEl2(null);
-	};
-
-	const paginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
+	const paginationChangeHandler = async (value: number) => {
 		searchFilter.page = value;
 		await router.push(`/carrier?input=${JSON.stringify(searchFilter)}`, `/carrier?input=${JSON.stringify(searchFilter)}`, {
 			scroll: false,
@@ -128,95 +97,89 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <h1>CARRIERS PAGE MOBILE</h1>;
-	} else {
-		return (
-			<Stack className={'agent-list-page'}>
-				<Stack className={'container'}>
-					<Stack className={'filter'}>
-						<Box component={'div'} className={'left'}>
-							<input
-								type="text"
-								placeholder={'Search for a carrier'}
-								value={searchText}
-								onChange={(e: any) => setSearchText(e.target.value)}
-								onKeyDown={(event: any) => {
-									if (event.key == 'Enter') {
-										setSearchFilter({
-											...searchFilter,
-											search: { ...searchFilter.search, text: searchText },
-										});
-									}
-								}}
-							/>
-						</Box>
-						<Box component={'div'} className={'right'}>
-							<span>Sort by</span>
-							<div>
-								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-									{filterSortName}
-								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-									<MenuItem onClick={sortingHandler} id={'recent'} disableRipple>
-										Recent
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'old'} disableRipple>
-										Oldest
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'likes'} disableRipple>
-										Likes
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'views'} disableRipple>
-										Views
-									</MenuItem>
-								</Menu>
-							</div>
-						</Box>
-					</Stack>
-					<Stack className={'card-wrap'}>
-						{carriers?.length === 0 ? (
-							<div className={'no-data'}>
-								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Carriers found!</p>
-							</div>
-						) : (
-							carriers.map((carrier: Member) => {
-								return <CarrierCard carrier={carrier} likeMemberHandler={likeMemberHandler} key={carrier._id} />;
-							})
-						)}
-					</Stack>
-					<Stack className={'pagination'}>
-						<Stack className="pagination-box">
-							{carriers.length !== 0 && Math.ceil(total / searchFilter.limit) > 1 && (
-								<Stack className="pagination-box">
-									<Pagination
-										page={currentPage}
-										count={Math.ceil(total / searchFilter.limit)}
-										onChange={paginationChangeHandler}
-										shape="circular"
-										color="primary"
-									/>
-								</Stack>
-							)}
-						</Stack>
+	const sortId =
+		SORTS.find((item) => item.sort === searchFilter.sort && item.direction === searchFilter.direction)?.id ?? 'recent';
 
-						{carriers.length !== 0 && (
-							<span>
-								Total {total} carrier{total > 1 ? 's' : ''} available
-							</span>
-						)}
-					</Stack>
-				</Stack>
-			</Stack>
-		);
-	}
+	return (
+		<div className="cd-ui w-full bg-surface">
+			<div className="mx-auto flex max-w-page flex-col gap-5 px-4 py-8 md:px-6 md:py-12">
+				<div className="flex flex-wrap items-center justify-between gap-3">
+					<form
+						role="search"
+						className="flex w-full max-w-sm"
+						onSubmit={(e) => {
+							e.preventDefault();
+							setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: searchText } });
+						}}
+					>
+						<label htmlFor="carrier-search" className="sr-only">
+							Search carriers
+						</label>
+						<input
+							id="carrier-search"
+							type="search"
+							placeholder="Search for a carrier"
+							className={`${inputClass} w-full`}
+							value={searchText}
+							onChange={(e) => {
+								setSearchText(e.target.value);
+								if (e.target.value === '')
+									setSearchFilter({ ...searchFilter, page: 1, search: { ...searchFilter.search, text: '' } });
+							}}
+						/>
+					</form>
+					<div className="flex items-center gap-2">
+						<label htmlFor="carrier-sort" className="text-small text-muted">
+							Sort by
+						</label>
+						<select id="carrier-sort" value={sortId} onChange={sortingHandler} className={`${inputClass} cursor-pointer font-medium`}>
+							{SORTS.map((item) => (
+								<option key={item.id} value={item.id}>
+									{item.label}
+								</option>
+							))}
+						</select>
+					</div>
+				</div>
+
+				<p className="m-0 text-small text-muted" aria-live="polite">
+					{total} carrier{total === 1 ? '' : 's'}
+				</p>
+
+				{carriers?.length === 0 ? (
+					<div
+						className="rounded-card border border-line bg-white px-6 py-14 text-center"
+						aria-busy={getCarriersLoading}
+					>
+						<p className="m-0 text-h3 font-semibold text-ink">No carriers found</p>
+					</div>
+				) : (
+					<ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+						{carriers.map((carrier: Member) => (
+							<li key={carrier._id} className="min-w-0">
+								<CarrierCard carrier={carrier} likeMemberHandler={likeMemberHandler} />
+							</li>
+						))}
+					</ul>
+				)}
+
+				{carriers.length !== 0 && (
+					<Pagination
+						page={currentPage}
+						count={Math.ceil(total / searchFilter.limit)}
+						onChange={paginationChangeHandler}
+						className="mt-2"
+					/>
+				)}
+			</div>
+		</div>
+	);
 };
 
 CarrierList.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 10,
+		limit: 12,
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {},

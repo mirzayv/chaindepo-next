@@ -20,7 +20,8 @@ import Stack from '@mui/material/Stack';
 import OpenInBrowserRoundedIcon from '@mui/icons-material/OpenInBrowserRounded';
 import Moment from 'react-moment';
 import { BoardArticle } from '../../../types/board-article/board-article';
-import { REACT_APP_API_URL } from '../../../config';
+import { boardLabelOf, REACT_APP_API_URL } from '../../../config';
+import { labelOf } from '../../../utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { BoardArticleStatus } from '../../../enums/board-article.enum';
@@ -168,7 +169,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 											)}
 										</Box>
 									</TableCell>
-									<TableCell align="left">{article.articleCategory}</TableCell>
+									<TableCell align="left">{boardLabelOf(article.articleCategory)}</TableCell>
 									<TableCell align="left" className={'name'}>
 										<Link href={`/member?memberId=${article?.memberData?._id}`}>
 											<Avatar
@@ -200,7 +201,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 										) : (
 											<>
 												<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-													{article.articleStatus}
+													{labelOf(article.articleStatus)}
 												</Button>
 
 												<Menu
@@ -222,7 +223,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 																key={status}
 															>
 																<Typography variant={'subtitle1'} component={'span'}>
-																	{status}
+																	{labelOf(status)}
 																</Typography>
 															</MenuItem>
 														))}

@@ -6,7 +6,7 @@
  *
  *  BU SAHIFA NIMA?
  *  Yuklar KATALOGI. Chapda qidiruv filtrlari (Filter.tsx), o'ngda yuk kartochkalari
- *  (ShipmentCard.tsx), tepada saralash (New / Lowest / Highest), pastda sahifalash (pagination).
+ *  (ShipmentTile.tsx), tepada saralash (New / Lowest / Highest), pastda sahifalash (pagination).
  *
  *  OQIM (BUTUN SAHIFANING MOHIYATI):
  *  1) Mijoz filtrni bosadi (Filter.tsx)         → URL o'zgaradi: /shipment?input={...}
@@ -16,30 +16,23 @@
  *  5) Javob keladi → onCompleted                  → setShipments / setTotal → kartalar yangilanadi
  */
 
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
-import ShipmentCard from '../../libs/components/shipment/ShipmentCard';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Filter from '../../libs/components/shipment/Filter';
+import ShipmentTile from '../../libs/components/ui/ShipmentTile';
+import Pagination from '../../libs/components/ui/Pagination';
 import { useRouter } from 'next/router';
 import { ShipmentsInquiry } from '../../libs/types/shipment/shipment.input';
 import { Shipment } from '../../libs/types/shipment/shipment';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import { Direction, Message } from '../../libs/enums/common.enum';
+import { Direction } from '../../libs/enums/common.enum';
 // Direction — ENUM: saralash yo'nalishi (ASC = o'suvchi, DESC = kamayuvchi).
-// Message   — ENUM: tayyor xato matnlari (NOT_AUTHENTICATED = "Please login first!").
 import { GET_SHIPMENTS } from '../../apollo/user/query';
 // GET_SHIPMENTS — GraphQL QUERY HUJJATI: "menga yuklar ro'yxatini shu maydonlari bilan ber" degan blank.
-import { useMutation, useQuery } from '@apollo/client';
-// useQuery    — HOOK: ma'lumot O'QISH uchun (GET).
-// useMutation — HOOK: ma'lumot O'ZGARTIRISH uchun (like, create, update).
-import { LIKE_TARGET_SHIPMENT } from '../../apollo/user/mutation';
-// LIKE_TARGET_SHIPMENT — GraphQL MUTATION HUJJATI: "shu yukka like bos/olib tashla".
+import { useQuery } from '@apollo/client';
+// useQuery — HOOK: ma'lumot O'QISH uchun (GET).
 import { T } from '../../libs/types/common';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -49,8 +42,18 @@ export const getStaticProps = async ({ locale }: any) => ({
 // getStaticProps — Next.js FUNKSIYASI: sahifa KARKASINI oldindan (build paytida) tayyorlaydi (SSG).
 // Bu yerda faqat TARJIMALAR (en/kr/ru) olinadi. Yuklar ro'yxati brauzerda useQuery bilan keladi (CSR).
 
+/** sort options: id → backend sort field + direction */
+const SORTS: { id: string; label: string; sort: string; direction: Direction }[] = [
+	{ id: 'new', label: 'Newest', sort: 'createdAt', direction: Direction.DESC },
+	{ id: 'lowest', label: 'Lowest price', sort: 'shipmentPrice', direction: Direction.ASC },
+	{ id: 'highest', label: 'Highest price', sort: 'shipmentPrice', direction: Direction.DESC },
+	{ id: 'heaviest', label: 'Heaviest', sort: 'shipmentWeight', direction: Direction.DESC },
+];
+
+const sortIdOf = (filter: ShipmentsInquiry): string =>
+	SORTS.find((item) => item.sort === filter.sort && item.direction === filter.direction)?.id ?? 'new';
+
 const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 
 	const [searchFilter, setSearchFilter] = useState<ShipmentsInquiry>(
@@ -63,18 +66,9 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [sortingOpen, setSortingOpen] = useState(false);
-	const [filterSortName, setFilterSortName] = useState('New');
-
 	/** APOLLO REQUESTS **/
-
-	const [likeTargetShipment] = useMutation(LIKE_TARGET_SHIPMENT);
-
 	const {
 		loading: getShipmentsLoading,
-		data: getShipmentsData,
-		error: getShipmentsError,
 		refetch: getShipmentsRefetch,
 	} = useQuery(GET_SHIPMENTS, {
 		fetchPolicy: 'cache-and-network',
@@ -85,8 +79,8 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 		notifyOnNetworkStatusChange: true,
 		// refetch paytida ham onCompleted qayta ishlasin.
 		onCompleted: (data: T) => {
-			setShipments(data?.getShipments?.list);
-			setTotal(data?.getShipments?.metaCounter[0]?.total);
+			setShipments(data?.getShipments?.list ?? []);
+			setTotal(data?.getShipments?.metaCounter[0]?.total ?? 0);
 		},
 	});
 
@@ -107,7 +101,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 	}, [searchFilter]);
 
 	/** HANDLERS **/
-	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
+	const handlePaginationChange = async (value: number) => {
 		searchFilter.page = value;
 		await router.push(
 			`/shipment?input=${JSON.stringify(searchFilter)}`,
@@ -119,156 +113,75 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 		setCurrentPage(value);
 	};
 
-	const likeShipmentHandler = async (user: T, id: string) => {
-		// Bu funksiya PROP sifatida ShipmentCard'ga uzatiladi va yurakcha ❤️ bosilganda chaqiriladi.
-		try {
-			if (!id) return;
-			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
-
-			await likeTargetShipment({ variables: { input: id } });
-			// Backend: likeTargetShipment → toggleLike → shipmentStatsEditor (shipmentLikes +1 yoki -1).
-
-			await getShipmentsRefetch({ input: searchFilter });
-			// MUHIM: joriy searchFilter bilan — filtr va sahifa yo'qolmasin.
-
-			await sweetTopSmallSuccessAlert('success', 800);
-		} catch (err: any) {
-			console.log('ERROR, likeShipmentHandler:', err.message);
-			sweetMixinErrorAlert(err.message).then();
-		}
+	const sortingHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+		const option = SORTS.find((item) => item.id === e.target.value);
+		if (!option) return;
+		setSearchFilter({ ...searchFilter, sort: option.sort, direction: option.direction });
 	};
 
-	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget);
-		setSortingOpen(true);
-	};
+	return (
+		<div className="cd-ui w-full bg-surface">
+			<div className="mx-auto grid max-w-page gap-6 px-4 py-8 md:px-6 md:py-12 lg:grid-cols-[280px_minmax(0,1fr)]">
+				{/* ─── CHAP: FILTR ─── */}
+				<aside className="min-w-0">
+					<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
+				</aside>
 
-	const sortingCloseHandler = () => {
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
-			case 'new':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: Direction.DESC });
-				setFilterSortName('New');
-				break;
-			case 'lowest':
-				setSearchFilter({ ...searchFilter, sort: 'shipmentPrice', direction: Direction.ASC });
-				setFilterSortName('Lowest Price');
-				break;
-			case 'highest':
-				setSearchFilter({ ...searchFilter, sort: 'shipmentPrice', direction: Direction.DESC });
-				setFilterSortName('Highest Price');
-				break;
-			case 'heaviest':
-				setSearchFilter({ ...searchFilter, sort: 'shipmentWeight', direction: Direction.DESC });
-				setFilterSortName('Heaviest');
-		}
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	if (device === 'mobile') {
-		return <h1>SHIPMENTS MOBILE</h1>;
-	} else {
-		return (
-			<div id="property-list-page" style={{ position: 'relative' }}>
-				<div className="container">
-					{/* ─── SARALASH (Sort by) ─── */}
-					<Box component={'div'} className={'right'}>
-						<span>Sort by</span>
-						<div>
-							<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-								{filterSortName}
-							</Button>
-							<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'new'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
-								>
-									New
-								</MenuItem>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'lowest'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
-								>
-									Lowest Price
-								</MenuItem>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'highest'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
-								>
-									Highest Price
-								</MenuItem>
-								<MenuItem
-									onClick={sortingHandler}
-									id={'heaviest'}
-									disableRipple
-									sx={{ boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}
-								>
-									Heaviest
-								</MenuItem>
-							</Menu>
+				{/* ─── O'NG: KARTALAR ─── */}
+				<section className="flex min-w-0 flex-col gap-5" aria-busy={getShipmentsLoading}>
+					{/* the page title comes from the LayoutBasic band */}
+					<div className="flex flex-wrap items-center justify-between gap-3">
+						<p className="m-0 text-small text-muted" aria-live="polite">
+							{total} shipment{total === 1 ? '' : 's'} found
+						</p>
+						{/* ─── SARALASH (Sort by) ─── */}
+						<div className="flex items-center gap-2">
+							<label htmlFor="shipment-sort" className="text-small text-muted">
+								Sort by
+							</label>
+							<select
+								id="shipment-sort"
+								value={sortIdOf(searchFilter)}
+								onChange={sortingHandler}
+								className="h-10 cursor-pointer rounded-card border border-line bg-white px-3 text-small font-medium text-ink outline-none transition-colors duration-150 ease-out hover:border-accent focus:border-accent"
+							>
+								{SORTS.map((item) => (
+									<option key={item.id} value={item.id}>
+										{item.label}
+									</option>
+								))}
+							</select>
 						</div>
-					</Box>
-					<Stack className={'property-page'}>
-						{/* ─── CHAP: FILTR ─── */}
-						<Stack className={'filter-config'}>
-							{/* @ts-ignore */}
-							<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
-						</Stack>
-						{/* ─── O'NG: KARTALAR ─── */}
-						<Stack className="main-config" mb={'76px'}>
-							<Stack className={'list-config'}>
-								{shipments?.length === 0 ? (
-									<div className={'no-data'}>
-										<img src="/img/icons/icoAlert.svg" alt="" />
-										<p>No Shipments found!</p>
-									</div>
-								) : (
-									shipments.map((shipment: Shipment) => {
-										return (
-											<ShipmentCard shipment={shipment} likeShipmentHandler={likeShipmentHandler} key={shipment?._id} />
-										);
-									})
-								)}
-							</Stack>
-							{/* ─── PASTDA: SAHIFALASH ─── */}
-							<Stack className="pagination-config">
-								{shipments.length !== 0 && (
-									<Stack className="pagination-box">
-										<Pagination
-											page={currentPage}
-											count={Math.ceil(total / searchFilter.limit)}
-											onChange={handlePaginationChange}
-											shape="circular"
-											color="primary"
-										/>
-									</Stack>
-								)}
+					</div>
 
-								{shipments.length !== 0 && (
-									<Stack className="total-result">
-										<Typography>
-											Total {total} shipment{total > 1 ? 's' : ''} available
-										</Typography>
-									</Stack>
-								)}
-							</Stack>
-						</Stack>
-					</Stack>
-				</div>
+					{shipments?.length === 0 ? (
+						<div className="rounded-card border border-line bg-white px-6 py-14 text-center">
+							<p className="m-0 text-h3 font-semibold text-ink">No shipments found</p>
+							<p className="m-0 mt-1 text-small text-muted">Try fewer filters or reset them.</p>
+						</div>
+					) : (
+						<ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 xl:grid-cols-3">
+							{shipments.map((shipment: Shipment) => (
+								<li key={shipment?._id} className="flex min-w-0">
+									<ShipmentTile shipment={shipment} />
+								</li>
+							))}
+						</ul>
+					)}
+
+					{/* ─── PASTDA: SAHIFALASH ─── */}
+					{shipments.length !== 0 && (
+						<Pagination
+							page={currentPage}
+							count={Math.ceil(total / searchFilter.limit)}
+							onChange={handlePaginationChange}
+							className="mt-2"
+						/>
+					)}
+				</section>
 			</div>
-		);
-	}
+		</div>
+	);
 };
 
 ShipmentList.defaultProps = {
@@ -290,6 +203,6 @@ ShipmentList.defaultProps = {
 	},
 };
 // defaultProps — URL'da ?input bo'lmaganda ishlatiladigan BOSHLANG'ICH CHEK:
-// 1-sahifa, 9 ta yuk, eng yangilari birinchi, 0–5000 kg, 0–2 000 000 $.
+// 1-sahifa, 9 ta yuk, eng yangilari birinchi, 0–5000 kg, 0–₩2,000,000.
 
 export default withLayoutBasic(ShipmentList);

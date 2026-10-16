@@ -1,20 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import { socketVar } from '../../apollo/store';
-import { Member } from '../types/member/member';
+import { chatMessagesVar, chatOnlineVar, ChatMessagePayload, socketVar } from '../../apollo/store';
 
-export interface ChatMessage {
-	event: string;
-	text: string;
-	memberData: Member | null;
-}
-
-interface InfoPayload {
-	event: string;
-	totalClients: number;
-	memberData: Member | null;
-	action: string;
-}
+export type ChatMessage = ChatMessagePayload;
 
 interface UseCommunityChatOptions {
 	/** called for every new live message (not for the initial history) **/
@@ -24,44 +12,30 @@ interface UseCommunityChatOptions {
 /**
  * Community chat over the shared WebSocket (socketVar, opened in apollo/client.ts).
  * Events: 'info' (online count), 'getMessages' (history), 'message' (new message).
- * The next phase can handle the assistant's events on the same socket here.
+ * The socket writes them to chatOnlineVar / chatMessagesVar, so the count and history survive
+ * page changes (the widget remounts with every layout, the socket does not).
  */
 const useCommunityChat = ({ onNewMessage }: UseCommunityChatOptions = {}) => {
 	const socket = useReactiveVar(socketVar);
-	const [messages, setMessages] = useState<ChatMessage[]>([]);
-	const [onlineUsers, setOnlineUsers] = useState<number>(0);
+	const messages = useReactiveVar(chatMessagesVar);
+	const onlineUsers = useReactiveVar(chatOnlineVar);
 
 	/** LIFECYCLES **/
+	// a listener (not socket.onmessage) so it never replaces the store writer in apollo/client.ts
 	useEffect(() => {
-		if (!socket) return;
+		if (!socket || !onNewMessage) return;
 
-		socket.onmessage = (msg: MessageEvent) => {
+		const listener = (msg: MessageEvent) => {
 			try {
 				const data = JSON.parse(msg.data);
-
-				switch (data.event) {
-					case 'info': {
-						const info: InfoPayload = data;
-						setOnlineUsers(info.totalClients);
-						break;
-					}
-					case 'getMessages': {
-						setMessages(data.list as ChatMessage[]);
-						break;
-					}
-					case 'message': {
-						const message: ChatMessage = data;
-						setMessages((prev) => [...prev, message]);
-						onNewMessage?.(message);
-						break;
-					}
-					default:
-						break;
-				}
+				if (data.event === 'message') onNewMessage(data as ChatMessage);
 			} catch (err) {
 				console.log('WebSocket message error:', err);
 			}
 		};
+
+		socket.addEventListener('message', listener);
+		return () => socket.removeEventListener('message', listener);
 	}, [socket, onNewMessage]);
 
 	/** HANDLERS **/
