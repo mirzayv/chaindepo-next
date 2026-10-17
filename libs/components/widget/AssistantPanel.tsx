@@ -1,6 +1,6 @@
 import React, { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { AssistantMessage, assistantMessagesVar } from '../../../apollo/store';
 import { ASK_ASSISTANT } from '../../../apollo/user/mutation';
@@ -91,21 +91,7 @@ const AssistantPanel = ({ isLoggedIn, active, onLoginClick }: AssistantPanelProp
 		send(draft);
 	};
 
-	if (!isLoggedIn) {
-		return (
-			<div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10 pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-center sm:pb-10">
-				<p className="m-0 text-[0.9375rem] leading-relaxed text-muted">{t('Log in to use the assistant')}</p>
-				<Link
-					href={'/account/join'}
-					onClick={onLoginClick}
-					className="inline-flex h-10 items-center justify-center rounded-card bg-accent px-5 text-[0.875rem] font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
-				>
-					{t('Log in')}
-				</Link>
-			</div>
-		);
-	}
-
+	// guests can chat too (backend: 5 questions a day); they only get a note with a login link under the input
 	return (
 		<>
 			<div className="flex-1 overflow-y-auto bg-surface px-4 py-3" aria-live="polite" aria-busy={pending}>
@@ -170,37 +156,53 @@ const AssistantPanel = ({ isLoggedIn, active, onLoginClick }: AssistantPanelProp
 				<div ref={listEndRef} />
 			</div>
 
-			<form
-				onSubmit={submitHandler}
-				className="flex shrink-0 items-end gap-2 border-t border-line p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3"
-			>
-				<label htmlFor="cd-assistant-input" className="sr-only">
-					{t('Ask the assistant')}
-				</label>
-				<textarea
-					id="cd-assistant-input"
-					ref={inputRef}
-					rows={1}
-					maxLength={MAX_LENGTH}
-					value={draft}
-					disabled={pending}
-					onChange={(e) => setDraft(e.target.value)}
-					onKeyDown={keyDownHandler}
-					placeholder={t('Ask the assistant')}
-					// 16px on mobile: iOS Safari zooms into inputs smaller than that
-					className="max-h-32 min-h-10 min-w-0 flex-1 resize-none rounded-card border border-line bg-card px-3 py-2 text-[1rem] leading-snug text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent disabled:opacity-60 sm:text-[0.9375rem]"
-				/>
-				<button
-					type="submit"
-					disabled={pending || !draft.trim()}
-					aria-label={t('Send')}
-					className="flex h-10 w-10 shrink-0 items-center justify-center rounded-card bg-accent p-0 text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"
-				>
-					<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-						<path d="M3 10l14-6-6 14-2-6-6-2z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-					</svg>
-				</button>
-			</form>
+			<div className="shrink-0 border-t border-line p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3">
+				<form onSubmit={submitHandler} className="flex items-end gap-2">
+					<label htmlFor="cd-assistant-input" className="sr-only">
+						{t('Ask the assistant')}
+					</label>
+					<textarea
+						id="cd-assistant-input"
+						ref={inputRef}
+						rows={1}
+						maxLength={MAX_LENGTH}
+						value={draft}
+						disabled={pending}
+						onChange={(e) => setDraft(e.target.value)}
+						onKeyDown={keyDownHandler}
+						placeholder={t('Ask the assistant')}
+						// 16px on mobile: iOS Safari zooms into inputs smaller than that
+						className="max-h-32 min-h-10 min-w-0 flex-1 resize-none rounded-card border border-line bg-card px-3 py-2 text-[1rem] leading-snug text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent disabled:opacity-60 sm:text-[0.9375rem]"
+					/>
+					<button
+						type="submit"
+						disabled={pending || !draft.trim()}
+						aria-label={t('Send')}
+						className="flex h-10 w-10 shrink-0 items-center justify-center rounded-card bg-accent p-0 text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"
+					>
+						<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+							<path d="M3 10l14-6-6 14-2-6-6-2z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+						</svg>
+					</button>
+				</form>
+				{!isLoggedIn && (
+					<p className="m-0 mt-2 text-[0.75rem] leading-snug text-muted">
+						<Trans
+							t={t}
+							i18nKey="Guest: 5 questions a day. <link>Log in</link> for more."
+							components={{
+								link: (
+									<Link
+										href={'/account/join'}
+										onClick={onLoginClick}
+										className="font-medium text-accent hover:text-accent-hover hover:underline"
+									/>
+								),
+							}}
+						/>
+					</p>
+				)}
+			</div>
 		</>
 	);
 };

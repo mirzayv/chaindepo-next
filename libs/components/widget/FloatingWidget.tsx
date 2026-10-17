@@ -156,7 +156,7 @@ const FloatingWidget = () => {
 						})}
 					</div>
 					<div className="mb-2 flex items-center gap-1">
-						{tab === 'assistant' && isLoggedIn && assistantMessages.length > 0 && (
+						{tab === 'assistant' && assistantMessages.length > 0 && (
 							<button
 								type="button"
 								onClick={() => assistantMessagesVar([])}
