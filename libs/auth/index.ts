@@ -2,7 +2,6 @@ import decodeJWT from 'jwt-decode';
 import { initializeApollo, reconnectChatSocket } from '../../apollo/client';
 import { assistantMessagesVar, userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
-import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
 
 export function getJwtToken(): any {
@@ -15,19 +14,19 @@ export function setJwtToken(token: string) {
 	localStorage.setItem('accessToken', token);
 }
 
-export const logIn = async (nick: string, password: string): Promise<void> => {
-	try {
-		const { jwtToken } = await requestJwtToken({ nick, password });
+/**
+ * The server's message for a failed login/signup, as-is (formatError on the backend already picks the
+ * first ValidationPipe message), so the form can show it inline.
+ */
+const authErrorMessage = (err: any): string =>
+	err?.graphQLErrors?.[0]?.message || err?.networkError?.message || err?.message || 'Something went wrong!';
 
-		if (jwtToken) {
-			updateStorage({ jwtToken });
-			updateUserInfo(jwtToken);
-		}
-	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		// throw new Error('Login Err');
-	}
+/** throws an Error with the server's message; the join page shows it inline */
+export const logIn = async (nick: string, password: string): Promise<void> => {
+	const { jwtToken } = await requestJwtToken({ nick, password });
+	if (!jwtToken) throw new Error('Something went wrong!');
+	updateStorage({ jwtToken });
+	updateUserInfo(jwtToken);
 };
 
 const requestJwtToken = async ({
@@ -44,39 +43,25 @@ const requestJwtToken = async ({
 			mutation: LOGIN,
 			variables: { input: { memberNick: nick, memberPassword: password } },
 			fetchPolicy: 'network-only',
+			// the form shows the error itself, not the global SweetAlert popup (errorLink in apollo/client.ts)
+			context: { silentErrors: true },
 		});
 
-		console.log('---------- login ----------');
 		const { accessToken } = result?.data?.login;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
-		switch (err.graphQLErrors[0].message) {
-			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
-				break;
-			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
-				break;
-		}
-		throw new Error('token error');
+		console.log('request token err', err?.graphQLErrors);
+		throw new Error(authErrorMessage(err));
 	}
 };
 
+/** phone is sent digits-only (01012345678); throws an Error with the server's message on failure */
 export const signUp = async (nick: string, password: string, phone: string, type: string): Promise<void> => {
-	try {
-		const { jwtToken } = await requestSignUpJwtToken({ nick, password, phone, type });
-
-		if (jwtToken) {
-			updateStorage({ jwtToken });
-			updateUserInfo(jwtToken);
-		}
-	} catch (err) {
-		console.warn('login err', err);
-		logOut();
-		// throw new Error('Login Err');
-	}
+	const { jwtToken } = await requestSignUpJwtToken({ nick, password, phone, type });
+	if (!jwtToken) throw new Error('Something went wrong!');
+	updateStorage({ jwtToken });
+	updateUserInfo(jwtToken);
 };
 
 const requestSignUpJwtToken = async ({
@@ -99,23 +84,15 @@ const requestSignUpJwtToken = async ({
 				input: { memberNick: nick, memberPassword: password, memberPhone: phone, memberType: type },
 			},
 			fetchPolicy: 'network-only',
+			context: { silentErrors: true },
 		});
 
-		console.log('---------- login ----------');
 		const { accessToken } = result?.data?.signup;
 
 		return { jwtToken: accessToken };
 	} catch (err: any) {
-		console.log('request token err', err.graphQLErrors);
-		switch (err.graphQLErrors[0].message) {
-			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
-				break;
-			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
-				break;
-		}
-		throw new Error('token error');
+		console.log('request token err', err?.graphQLErrors);
+		throw new Error(authErrorMessage(err));
 	}
 };
 
