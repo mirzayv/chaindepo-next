@@ -25,6 +25,37 @@ const NAV_ITEMS: NavItem[] = [
 	{ label: 'Community', href: '/community?articleCategory=FREE', isActive: (p) => p.startsWith('/community') },
 ];
 
+interface AccountLink {
+	label: string;
+	/** My Page tab (pages/mypage/index.tsx `category`); undefined = My Page default */
+	category?: string;
+}
+
+/** the one role-based quick link shown in the navbar (admins and guests get none) */
+const ROLE_NAV_LINK: Partial<Record<MemberType, AccountLink>> = {
+	[MemberType.USER]: { label: 'My shipments', category: 'myShipments' },
+	[MemberType.CARRIER]: { label: 'My deliveries', category: 'carrierShipments' },
+};
+
+const ROLE_LABEL: Record<MemberType, string> = {
+	[MemberType.USER]: 'Shipper',
+	[MemberType.CARRIER]: 'Carrier',
+	[MemberType.ADMIN]: 'Admin',
+};
+
+/** account menu items (avatar dropdown on desktop, account block in the mobile menu) */
+const accountLinksFor = (type?: string): AccountLink[] => {
+	const roleLink = ROLE_NAV_LINK[type as MemberType];
+	return [
+		{ label: 'My page' },
+		...(roleLink ? [roleLink] : []),
+		...(type === MemberType.CARRIER ? [{ label: 'Available shipments', category: 'availableShipments' }] : []),
+		{ label: 'My profile', category: 'myProfile' },
+	];
+};
+
+const myPageHref = (link: AccountLink) => (link.category ? `/mypage?category=${link.category}` : '/mypage');
+
 const LANGUAGES = [
 	{ code: 'en', label: 'EN' },
 	{ code: 'kr', label: 'KR' },
@@ -39,9 +70,16 @@ const Top = () => {
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
 	const [accountOpen, setAccountOpen] = useState<boolean>(false);
 	const [portalReady, setPortalReady] = useState<boolean>(false);
+	/** where the portalled account dropdown sits: under the avatar, right-aligned to it */
+	const [accountPos, setAccountPos] = useState<{ top: number; right: number }>({ top: 64, right: 16 });
 	const accountRef = useRef<HTMLDivElement>(null);
+	const accountMenuRef = useRef<HTMLDivElement>(null);
 
 	const isLoggedIn = Boolean(user?._id);
+	const roleNavLink = isLoggedIn ? ROLE_NAV_LINK[user?.memberType as MemberType] : undefined;
+	const accountLinks = accountLinksFor(user?.memberType);
+	const roleLabel = ROLE_LABEL[user?.memberType as MemberType] ?? '';
+	const isMyPageTab = (category: string) => router.pathname === '/mypage' && router.query.category === category;
 	// only shippers create shipments; guests are sent to log in first
 	const canCreateShipment = !isLoggedIn || user?.memberType === MemberType.USER;
 	const createShipmentHref = isLoggedIn ? '/mypage?category=addShipment' : '/account/join';
@@ -80,21 +118,28 @@ const Top = () => {
 		};
 	}, [menuOpen]);
 
-	// leaving the mobile breakpoint with the menu open would keep the scroll lock
+	// crossing the md breakpoint: the mobile menu would keep the scroll lock, the dropdown its old position
 	useEffect(() => {
 		const media = window.matchMedia('(min-width: 768px)');
 		const onChange = (e: MediaQueryListEvent) => {
 			if (e.matches) setMenuOpen(false);
+			else setAccountOpen(false);
 		};
 		media.addEventListener('change', onChange);
-		return () => media.removeEventListener('change', onChange);
+		window.addEventListener('resize', closeAccount);
+		return () => {
+			media.removeEventListener('change', onChange);
+			window.removeEventListener('resize', closeAccount);
+		};
 	}, []);
 
-	// account menu: close on outside click and Escape
+	// account menu: close on outside click and Escape (the dropdown is portalled, so check both nodes)
 	useEffect(() => {
 		if (!accountOpen && !menuOpen) return;
 		const onPointerDown = (e: PointerEvent) => {
-			if (accountRef.current && !accountRef.current.contains(e.target as Node)) setAccountOpen(false);
+			const target = e.target as Node;
+			if (accountRef.current?.contains(target) || accountMenuRef.current?.contains(target)) return;
+			setAccountOpen(false);
 		};
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') {
@@ -113,6 +158,18 @@ const Top = () => {
 	/** HANDLERS **/
 	// links close the menu themselves too: a link to the current page does not change the route
 	const closeMenu = () => setMenuOpen(false);
+	const closeAccount = () => setAccountOpen(false);
+
+	/** desktop: small dropdown under the avatar; mobile: the same items in the full-screen menu */
+	const avatarClickHandler = () => {
+		if (!window.matchMedia('(min-width: 768px)').matches) {
+			setMenuOpen(true);
+			return;
+		}
+		const rect = accountRef.current?.getBoundingClientRect();
+		if (rect) setAccountPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+		setAccountOpen((prev) => !prev);
+	};
 
 	const langChangeHandler = async (e: ChangeEvent<HTMLSelectElement>) => {
 		const locale = e.target.value;
@@ -150,6 +207,15 @@ const Top = () => {
 							</Link>
 						);
 					})}
+					{roleNavLink?.category && (
+						<Link
+							href={myPageHref(roleNavLink)}
+							className={navLinkClass(isMyPageTab(roleNavLink.category))}
+							aria-current={isMyPageTab(roleNavLink.category) ? 'page' : undefined}
+						>
+							{t(roleNavLink.label)}
+						</Link>
+					)}
 				</nav>
 
 				<div className="ml-auto flex items-center gap-3">
@@ -175,41 +241,15 @@ const Top = () => {
 						<div className="relative" ref={accountRef}>
 							<button
 								type="button"
-								onClick={() => setAccountOpen((prev) => !prev)}
+								onClick={avatarClickHandler}
 								aria-haspopup="menu"
 								aria-expanded={accountOpen}
+								aria-controls="cd-account-menu"
 								aria-label={user?.memberNick ?? 'Account'}
 								className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-line p-0 transition-transform duration-150 ease-out active:scale-95 motion-reduce:transition-none"
 							>
 								<img src={avatarSrc} alt="" className="h-full w-full object-cover object-top" />
 							</button>
-							<div
-								role="menu"
-								className={`absolute right-0 top-11 w-48 origin-top-right rounded-card border border-line bg-card py-1 shadow-card transition duration-150 ease-out motion-reduce:transition-opacity ${
-									accountOpen
-										? 'visible scale-100 opacity-100'
-										: 'invisible scale-95 opacity-0 motion-reduce:scale-100'
-								}`}
-							>
-								<p className="m-0 truncate border-b border-line px-3 pb-2 pt-1.5 text-small leading-snug text-muted">
-									{user?.memberNick}
-								</p>
-								<Link
-									href={'/mypage'}
-									role="menuitem"
-									className="block px-3 py-2 text-[0.875rem] leading-snug text-ink transition-colors duration-150 hover:bg-surface"
-								>
-									{t('My Page')}
-								</Link>
-								<button
-									type="button"
-									role="menuitem"
-									onClick={() => logOut()}
-									className="block w-full px-3 py-2 text-left text-[0.875rem] leading-snug text-ink transition-colors duration-150 hover:bg-surface"
-								>
-									{t('Log out')}
-								</button>
-							</div>
 						</div>
 					) : (
 						<Link
@@ -253,6 +293,47 @@ const Top = () => {
 			 * mobile menu: full-screen overlay, portalled to <body> so no stacking context (sticky header,
 			 * Leaflet panes/controls up to z 1000) can sit on top of it
 			 */}
+			{/* desktop account dropdown: portalled + fixed so it sits above Leaflet (z 1300), like the mobile menu */}
+			{portalReady &&
+				isLoggedIn &&
+				createPortal(
+					<div
+						ref={accountMenuRef}
+						id="cd-account-menu"
+						role="menu"
+						aria-label="Account"
+						style={{ top: accountPos.top, right: accountPos.right }}
+						className={`cd-ui fixed z-[1300] hidden w-56 origin-top-right rounded-card border border-line bg-card py-1 shadow-card transition duration-150 ease-out motion-reduce:transition-opacity md:block ${
+							accountOpen ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0 motion-reduce:scale-100'
+						}`}
+					>
+						<div className="border-b border-line px-3 pb-2 pt-1.5">
+							<p className="m-0 truncate text-[0.875rem] font-semibold leading-snug text-ink">{user?.memberNick}</p>
+							{roleLabel && <p className="m-0 text-small leading-snug text-muted">{roleLabel}</p>}
+						</div>
+						{accountLinks.map((link) => (
+							<Link
+								key={link.label}
+								href={myPageHref(link)}
+								role="menuitem"
+								onClick={closeAccount}
+								className="block px-3 py-2 text-[0.875rem] leading-snug text-ink transition-colors duration-150 hover:bg-surface"
+							>
+								{t(link.label)}
+							</Link>
+						))}
+						<button
+							type="button"
+							role="menuitem"
+							onClick={() => logOut()}
+							className="block w-full border-t border-line px-3 py-2 text-left text-[0.875rem] leading-snug text-ink transition-colors duration-150 hover:bg-surface"
+						>
+							{t('Log out')}
+						</button>
+					</div>,
+					document.body,
+				)}
+
 			{portalReady &&
 				createPortal(
 					<div
@@ -298,7 +379,54 @@ const Top = () => {
 									</Link>
 								);
 							})}
+							{roleNavLink?.category && (
+								<Link
+									href={myPageHref(roleNavLink)}
+									onClick={closeMenu}
+									aria-current={isMyPageTab(roleNavLink.category) ? 'page' : undefined}
+									className={`flex h-12 items-center text-body font-medium ${
+										isMyPageTab(roleNavLink.category) ? 'text-accent' : 'text-ink'
+									}`}
+								>
+									{t(roleNavLink.label)}
+								</Link>
+							)}
 						</nav>
+
+						{/* account: the avatar opens this menu on mobile instead of a dropdown */}
+						{isLoggedIn && (
+							<div role="group" className="flex flex-col border-t border-line px-4 py-2" aria-label="Account">
+								<div className="flex items-center gap-3 py-2">
+									<img
+										src={avatarSrc}
+										alt=""
+										className="h-9 w-9 shrink-0 rounded-full border border-line object-cover object-top"
+									/>
+									<div className="flex min-w-0 flex-col">
+										<span className="truncate text-[0.9375rem] font-semibold text-ink">{user?.memberNick}</span>
+										{roleLabel && <span className="text-small text-muted">{roleLabel}</span>}
+									</div>
+								</div>
+								{accountLinks.map((link) => (
+									<Link
+										key={link.label}
+										href={myPageHref(link)}
+										onClick={closeMenu}
+										className="flex h-11 items-center text-[0.9375rem] text-ink"
+									>
+										{t(link.label)}
+									</Link>
+								))}
+								<button
+									type="button"
+									onClick={() => logOut()}
+									className="flex h-11 items-center p-0 text-left text-[0.9375rem] text-ink"
+								>
+									{t('Log out')}
+								</button>
+							</div>
+						)}
+
 						<div className="flex flex-col gap-3 border-t border-line px-4 py-4">
 							{canCreateShipment && (
 								<Link
@@ -315,7 +443,7 @@ const Top = () => {
 										{t('Log in')}
 									</Link>
 								) : (
-									<span className="text-small text-muted">{user?.memberNick}</span>
+									<span aria-hidden="true" />
 								)}
 								<div className="flex items-center gap-2">
 									<ThemeToggle />

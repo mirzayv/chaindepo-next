@@ -58,6 +58,16 @@ const FloatingWidget = () => {
 		return () => document.removeEventListener('keydown', onKeyDown);
 	}, [open]);
 
+	// mobile full-screen panel: the page behind must not scroll (it would also move the iOS toolbar)
+	useEffect(() => {
+		if (!open || window.matchMedia('(min-width: 640px)').matches) return;
+		const previous = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		return () => {
+			document.body.style.overflow = previous;
+		};
+	}, [open]);
+
 	/** HANDLERS **/
 	const closePanel = () => {
 		setOpen(false);
@@ -82,6 +92,17 @@ const FloatingWidget = () => {
 
 	return (
 		<div className="cd-ui">
+			{/*
+			 * Mobile backdrop: the panel is 100dvh (input stays above the iOS toolbar), but iOS Safari draws
+			 * its translucent toolbar over the strip below that. This solid layer is sized to the *large*
+			 * viewport (100lvh, toolbar retracted), so it extends under the toolbar and the page never shows.
+			 */}
+			<div
+				aria-hidden="true"
+				className={`fixed inset-x-0 top-0 z-[1300] h-screen bg-card supports-[height:100lvh]:h-[100lvh] sm:hidden ${
+					open ? 'block' : 'hidden'
+				}`}
+			/>
 			{/*
 			 * PANEL. Mobile (<640px): full screen, 100dvh so the iOS Safari toolbar never covers the input.
 			 * Desktop: grows out of the button corner and shrinks back into it.
