@@ -1,9 +1,11 @@
 import React, { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
+import { assistantMessagesVar, userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL } from '../../config';
 import useCommunityChat, { ChatMessage } from '../../hooks/useCommunityChat';
+import AssistantPanel from './AssistantPanel';
 
 type WidgetTab = 'assistant' | 'chat';
 
@@ -14,11 +16,13 @@ const TABS: { id: WidgetTab; label: string }[] = [
 
 /**
  * One floating button (bottom right) that opens one panel with two tabs:
- * "Assistant" (placeholder until the AI phase) and "Community chat" (the existing WebSocket chat).
+ * "Assistant" (askAssistant mutation, AssistantPanel.tsx) and "Community chat" (the WebSocket chat).
  * Always mounted, so chat messages keep arriving while the panel is closed.
  */
 const FloatingWidget = () => {
+	const { t } = useTranslation('common');
 	const user = useReactiveVar(userVar);
+	const assistantMessages = useReactiveVar(assistantMessagesVar);
 	const [open, setOpen] = useState<boolean>(false);
 	const [tab, setTab] = useState<WidgetTab>('assistant');
 	const [unread, setUnread] = useState<number>(0);
@@ -141,7 +145,7 @@ const FloatingWidget = () => {
 										selected ? 'border-accent text-ink' : 'border-transparent text-muted hover:text-ink'
 									}`}
 								>
-									{item.label}
+									{t(item.label)}
 									{item.id === 'chat' && unread > 0 && (
 										<span className="min-w-[1.125rem] rounded-full bg-accent px-1 text-center text-[0.6875rem] font-semibold leading-[1.125rem] text-white">
 											{unread > 9 ? '9+' : unread}
@@ -151,41 +155,41 @@ const FloatingWidget = () => {
 							);
 						})}
 					</div>
-					<button
-						type="button"
-						onClick={closePanel}
-						aria-label="Close"
-						className="-mr-1 mb-2 flex h-8 w-8 items-center justify-center rounded-card p-0 text-muted transition-colors duration-150 hover:bg-surface hover:text-ink"
-					>
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-							<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-						</svg>
-					</button>
+					<div className="mb-2 flex items-center gap-1">
+						{tab === 'assistant' && isLoggedIn && assistantMessages.length > 0 && (
+							<button
+								type="button"
+								onClick={() => assistantMessagesVar([])}
+								className="h-8 rounded-card px-2 text-small font-medium text-muted transition-colors duration-150 hover:text-accent"
+							>
+								{t('Clear')}
+							</button>
+						)}
+						<button
+							type="button"
+							onClick={closePanel}
+							aria-label={t('Close')}
+							className="-mr-1 flex h-8 w-8 items-center justify-center rounded-card p-0 text-muted transition-colors duration-150 hover:bg-surface hover:text-ink"
+						>
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+								<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+							</svg>
+						</button>
+					</div>
 				</div>
 
-				{/* ASSISTANT TAB (placeholder until the AI phase) */}
+				{/* ASSISTANT TAB */}
 				<div
 					role="tabpanel"
 					id="cd-tabpanel-assistant"
 					aria-labelledby="cd-tab-assistant"
-					className={`flex-1 overflow-y-auto px-5 py-6 ${tab === 'assistant' ? 'block' : 'hidden'}`}
+					className={`min-h-0 flex-1 flex-col ${tab === 'assistant' ? 'flex' : 'hidden'}`}
 				>
-					<div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-						<span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-accent">
-							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-								<path
-									d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3zM18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</span>
-						<h2 className="m-0 text-h3 font-semibold text-ink">Assistant coming soon</h2>
-						<p className="m-0 max-w-[17rem] text-[0.9375rem] leading-relaxed text-muted">
-							Soon you can ask about a tracking code, a route, or how chain verification works.
-						</p>
-					</div>
+					<AssistantPanel
+						isLoggedIn={isLoggedIn}
+						active={open && tab === 'assistant'}
+						onLoginClick={() => setOpen(false)}
+					/>
 				</div>
 
 				{/* COMMUNITY CHAT TAB */}

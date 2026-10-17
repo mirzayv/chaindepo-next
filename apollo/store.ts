@@ -40,4 +40,17 @@ export interface ChatMessagePayload {
 }
 
 export const chatOnlineVar = makeVar<number>(0);
+
+/**
+ * Assistant conversation (floating widget). Kept here so it survives page changes (the widget remounts
+ * with every layout); cleared on logout (libs/auth).
+ */
+export interface AssistantMessage {
+	role: 'user' | 'model';
+	text: string;
+	/** a failed request, shown as a muted assistant bubble and never sent back as history */
+	error?: boolean;
+}
+
+export const assistantMessagesVar = makeVar<AssistantMessage[]>([]);
 export const chatMessagesVar = makeVar<ChatMessagePayload[]>([]);

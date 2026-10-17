@@ -359,3 +359,16 @@ export const UNSUBSCRIBE = gql`
 		}
 	}
 `;
+
+/**************************
+ *       ASSISTANT       *
+ *************************/
+
+// input: { message, history: [{ role: 'user' | 'model', text }] } (last 6 messages)
+export const ASK_ASSISTANT = gql`
+	mutation AskAssistant($input: AssistantInput!) {
+		askAssistant(input: $input) {
+			reply
+		}
+	}
+`;

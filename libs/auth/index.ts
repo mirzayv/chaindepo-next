@@ -1,6 +1,6 @@
 import decodeJWT from 'jwt-decode';
 import { initializeApollo, reconnectChatSocket } from '../../apollo/client';
-import { userVar } from '../../apollo/store';
+import { assistantMessagesVar, userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
@@ -163,6 +163,8 @@ const deleteStorage = () => {
 	localStorage.removeItem('accessToken');
 	window.localStorage.setItem('logout', Date.now().toString());
 	reconnectChatSocket();
+	// the assistant conversation belongs to the member who is logging out
+	assistantMessagesVar([]);
 };
 
 const deleteUserInfo = () => {
