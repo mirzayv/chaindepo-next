@@ -26,15 +26,18 @@ Backend: ../chaindepo (NestJS GraphQL), running at http://localhost:3007/graphql
 
 ## Design
 
-- Light and calm: white background #FFFFFF, section background #F5F7F9, white cards with a 1px border #E3E8EE, radius 6px, almost no shadow
-- Text navy #0B2236, secondary #5A6B7B; accent teal-blue #2F8FB5 for buttons and links (hover #26789A)
+- Bright and editorial (reference: salmon.ph's layout language, with ChainDepo's own content and blue): light by default (dark only via the header toggle), white #FFFFFF and #F5F7F9 sections alternating, hero on #F2F3F5
+- Big, tight headlines: text-display (hero) and text-section (home section titles), Manrope ExtraBold, letter-spacing about -0.035em
+- Pill buttons (rounded-full): solid accent for the main action, 1.5px ink outline for secondary; large rounded cards (20-28px) without borders
+- Text ink #131416, secondary #6A6D71; accent bright blue #2F7BFF for buttons and links (hover #1A65E6)
+- Home: hero carousel (pause ring, prev/next, dots), photo cards with a colour wash at the top, one near-black band with the live 3D hash chain (libs/components/home/ChainScene.tsx, three.js)
 - Status colors: verified/delivered #1E8E5A, in transit #E0A100, broken/cancelled #C62828
-- Font: Inter for everything (next/font/google), JetBrains Mono only for tracking codes and hashes
+- Font: Manrope for the Tailwind UI (--font-sans), Inter stays on the legacy MUI pages, JetBrains Mono only for tracking codes and hashes
 - Tokens live in tailwind.config.js (preflight off, content limited to the new Tailwind folders)
 - Large real photography (ports, containers, trucks in Korea) from Unsplash via next/image, no logos on photos
-- Logo: lowercase "chaindepo" in Inter Bold after a small solid #2F8FB5 square (libs/components/ui/Logo.tsx)
-- Motion: CSS transitions under 200ms, respect prefers-reduced-motion, no framer-motion
-- No gradients, no glow, no dark hero, no orange, max one small uppercase label per page, no fake statistics, no real company names
+- Logo: a parcel mark with an accent "verified" check badge, then lowercase "chaindepo" in Manrope ExtraBold (libs/components/ui/Logo.tsx; static files in public/logo/ and public/favicon.svg)
+- Motion: short CSS transitions, scroll reveal (libs/components/ui/Reveal.tsx), slide crossfades; always respect prefers-reduced-motion; no framer-motion
+- Gradients only as a colour wash over photos or a fade into the page colour; no glow, no orange, no fake statistics, no real company names
 - Prices in KRW (₩, no decimals) via formatKRW in libs/utils.ts
 - Responsive desktop and mobile
 

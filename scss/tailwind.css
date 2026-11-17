@@ -16,9 +16,16 @@
 	border-color: rgb(var(--cd-line));
 }
 
+/* gradient stop defaults normally set by @tailwind base (preflight is off), so bg-gradient-* utilities work */
+:where(.cd-ui, .cd-ui *) {
+	--tw-gradient-from-position: 0%;
+	--tw-gradient-via-position: 50%;
+	--tw-gradient-to-position: 100%;
+}
+
 /* zero specificity: beats browser defaults, loses to any utility class */
 :where(.cd-ui) {
-	font-family: var(--font-inter), system-ui, sans-serif;
+	font-family: var(--font-sans), var(--font-inter), system-ui, sans-serif;
 	color: rgb(var(--cd-ink));
 	line-height: 1.55;
 	-webkit-font-smoothing: antialiased;
@@ -48,23 +55,100 @@
 	outline-offset: 2px;
 }
 
-/* Leaflet maps (libs/components/ui/map): palette and font on top of leaflet.css */
+/* Leaflet maps (libs/components/ui/map): full-colour CARTO tiles, custom pins and popups */
 .cd-map .leaflet-container {
-	font-family: var(--font-inter), system-ui, sans-serif;
-	background: rgb(var(--cd-surface));
+	font-family: var(--font-sans), var(--font-inter), system-ui, sans-serif;
+	background: #aad3df; /* OSM sea colour while tiles load */
 }
-/* tile layer only: markers and the route line live in other panes and keep their teal */
-.cd-map .cd-map-tiles {
-	filter: grayscale(1) brightness(1.1) contrast(0.8);
+html.dark .cd-map .leaflet-container {
+	background: #262a2e;
 }
-/* dark: inverted grayscale tiles, dimmed (markers and the route line are unaffected) */
-html.dark .cd-map .cd-map-tiles {
-	filter: grayscale(1) invert(1) brightness(0.62) contrast(1.15);
+
+/* pins (L.divIcon): accent dot, white ring, soft pulsing halo, optional name label */
+.cd-map .cd-pin-wrap {
+	background: none;
+	border: 0;
 }
+.cd-map .cd-pin {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	cursor: pointer;
+}
+.cd-map .cd-pin-dot,
+.cd-map .cd-pin-halo {
+	position: absolute;
+	left: -8px;
+	top: -8px;
+	width: 16px;
+	height: 16px;
+	border-radius: 999px;
+}
+.cd-map .cd-pin-dot {
+	background: rgb(var(--cd-accent));
+	border: 3px solid #fff;
+	box-shadow: 0 2px 8px rgba(19, 20, 22, 0.35);
+	transition: transform 150ms ease-out;
+}
+.cd-map .cd-pin:hover .cd-pin-dot {
+	transform: scale(1.25);
+}
+.cd-map .cd-pin-halo {
+	background: rgb(var(--cd-accent) / 0.35);
+	animation: cd-pin-pulse 2.4s ease-out infinite;
+}
+.cd-map .cd-pin.is-muted .cd-pin-dot {
+	background: rgb(var(--cd-muted));
+}
+.cd-map .cd-pin.is-muted .cd-pin-halo {
+	display: none;
+}
+.cd-map .cd-pin-label {
+	position: absolute;
+	left: 14px;
+	top: -13px;
+	white-space: nowrap;
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: rgb(var(--cd-card));
+	color: rgb(var(--cd-ink));
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	box-shadow: 0 2px 10px rgba(19, 20, 22, 0.18);
+}
+@keyframes cd-pin-pulse {
+	0% {
+		transform: scale(1);
+		opacity: 0.9;
+	}
+	100% {
+		transform: scale(3.2);
+		opacity: 0;
+	}
+}
+
+/* network links and the pending part of a route: dots flowing along the line */
+.cd-map .cd-route-flow {
+	animation: cd-route-flow 1.2s linear infinite;
+}
+@keyframes cd-route-flow {
+	to {
+		stroke-dashoffset: -12;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.cd-map .cd-pin-halo,
+	.cd-map .cd-route-flow {
+		animation: none;
+	}
+}
+
+/* popups */
 .cd-map .leaflet-popup-content-wrapper {
-	border: 1px solid rgb(var(--cd-line));
-	border-radius: 6px;
-	box-shadow: 0 1px 2px rgba(11, 34, 54, 0.08);
+	border-radius: 16px;
+	box-shadow: 0 12px 32px rgba(19, 20, 22, 0.18);
 }
 .cd-map .leaflet-popup-content-wrapper,
 .cd-map .leaflet-popup-tip {
@@ -74,45 +158,118 @@ html.dark .cd-map .cd-map-tiles {
 	box-shadow: none;
 }
 .cd-map .leaflet-popup-content {
-	margin: 10px 14px;
+	margin: 12px 16px;
 	color: rgb(var(--cd-ink));
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 1.45;
 }
 .cd-map .leaflet-popup-content p {
 	margin: 0;
 	line-height: 1.45;
 }
+.cd-map .leaflet-popup-content .cd-popup-muted {
+	color: rgb(var(--cd-muted));
+}
 .cd-map .leaflet-popup-content a {
-	color: #2f8fb5;
-	font-weight: 600;
+	color: rgb(var(--cd-accent));
+	font-weight: 700;
 	text-decoration: none;
 }
 .cd-map .leaflet-popup-content a:hover {
-	color: #26789a;
+	color: rgb(var(--cd-accent-hover));
 	text-decoration: underline;
 }
+
+/* zoom buttons: round, floating */
+.cd-map .leaflet-bar {
+	border: 0;
+	border-radius: 14px;
+	overflow: hidden;
+	box-shadow: 0 4px 16px rgba(19, 20, 22, 0.16);
+}
 .cd-map .leaflet-bar a {
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
 	color: rgb(var(--cd-ink));
+	background-color: rgb(var(--cd-card));
+	border-bottom-color: rgb(var(--cd-line));
+}
+.cd-map .leaflet-bar a:hover {
+	background-color: rgb(var(--cd-surface));
+}
+.cd-map .leaflet-control-attribution {
+	background: rgb(var(--cd-card) / 0.8);
+	border-radius: 10px 0 0 0;
 }
 .cd-map .leaflet-control-attribution,
 .cd-map .leaflet-control-attribution a {
 	color: rgb(var(--cd-muted));
 	font-size: 11px;
 }
-/* dark: zoom buttons and the attribution strip (leaflet.css paints them white) */
-html.dark .cd-map .leaflet-bar a {
-	background-color: #142231;
-	border-bottom-color: #1f2f3f;
-}
-html.dark .cd-map .leaflet-bar a:hover {
-	background-color: #111e2b;
-}
-html.dark .cd-map .leaflet-bar {
-	border-color: #1f2f3f;
-}
-html.dark .cd-map .leaflet-control-attribution {
-	background: rgba(11, 21, 32, 0.8);
-}
 
 @tailwind utilities;
+
+/* home: slide text rising in, and sections fading up as they scroll into view */
+@keyframes cd-rise {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.cd-reveal {
+	opacity: 0;
+	transform: translateY(28px);
+	transition: opacity 700ms ease-out, transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cd-reveal.is-visible {
+	opacity: 1;
+	transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.cd-reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
+
+/* home: blockchain ticker under the hero (two identical rows, shifted by half) */
+@keyframes cd-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* map tiles: OpenStreetMap colours, a touch calmer; dark mode inverts them into a night map */
+/* filter on the whole tile pane, not each tile, so no seams show between tiles */
+.cd-map .leaflet-tile-pane {
+	filter: saturate(0.85) contrast(0.96);
+}
+html.dark .cd-map .leaflet-tile-pane {
+	filter: invert(1) hue-rotate(180deg) brightness(0.88) contrast(0.92) saturate(0.7);
+}
+.cd-map .cd-pin.label-left .cd-pin-label {
+	left: auto;
+	right: 14px;
+}
+.cd-map .cd-pin.label-bottom .cd-pin-label {
+	left: 0;
+	top: 12px;
+	transform: translateX(-50%);
+}
+/* hide the hairline gaps between tiles at fractional zoom: overlap tiles by 1px and turn off
+   leaflet.css's plus-lighter blend, which otherwise brightens the overlap into white lines */
+.cd-map .leaflet-tile-container img.leaflet-tile {
+	width: 257px !important;
+	height: 257px !important;
+	mix-blend-mode: normal;
+}

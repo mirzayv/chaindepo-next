@@ -1,0 +1,71 @@
+{
+  "badge": "Every event anchored on Ethereum",
+  "hero": {
+    "track": { "title1": "Shipments", "title2": "you can verify", "text": "Follow freight across Korea. Every tracking event is hash-chained and anchored on Ethereum." },
+    "ship": { "title1": "Ship it.", "title2": "Share one code", "text": "Post a shipment, pick a carrier and give your customer a single tracking code." },
+    "verify": { "title1": "History no one", "title2": "can rewrite", "text": "Each status change is linked to the one before it, so anyone can check the full record." },
+    "createCta": "Create a shipment",
+    "howCta": "See how it works",
+    "pause": "Pause slides",
+    "play": "Play slides",
+    "prev": "Previous slide",
+    "next": "Next slide"
+  },
+  "proof": {
+    "example": "Example record",
+    "verified": "Verified",
+    "pickedUp": "Picked up",
+    "inTransit": "In transit",
+    "arrived": "Arrived",
+    "seoul": "Seoul",
+    "daejeon": "Daejeon",
+    "busan": "Busan",
+    "anchored": "Anchored on Ethereum"
+  },
+  "ticker": {
+    "hashed": "Every tracking event is SHA-256 hashed",
+    "linked": "Each hash links to the one before it",
+    "anchored": "Anchored on Ethereum Sepolia",
+    "contract": "Contract",
+    "etherscan": "Verify any record on Etherscan",
+    "tamper": "Tamper-evident shipment history"
+  },
+  "paths": {
+    "title": "Move freight with proof",
+    "sub": "Tracking that shippers trust, work that carriers can show",
+    "shippers": "Shippers",
+    "carriers": "Carriers",
+    "ship": { "label": "For shippers", "title": "Ship with one tracking code", "text": "Post a shipment, pick a carrier and share a single code with your customer.", "cta": "Create a shipment" },
+    "public": { "label": "Public tracking", "title": "Anyone can follow the parcel", "text": "Your customer opens the tracking page with the code. No account needed.", "cta": "Track a shipment" },
+    "carrier": { "label": "For carriers", "title": "Take on shipments across Korea", "text": "Claim shipments between Korean cities and grow a record customers can check.", "cta": "Join as a carrier" },
+    "proof": { "label": "Proof of delivery", "title": "Every update, on the record", "text": "Log each pickup, transfer and delivery. Each one is hash-chained to the last.", "cta": "See how it works" }
+  },
+  "how": {
+    "title": "A tracking record that can't be quietly rewritten",
+    "sub": "Every status change is hashed, linked to the one before it and anchored on Ethereum.",
+    "create": { "title": "Create", "text": "The shipper posts the shipment and gets a tracking code to share." },
+    "track": { "title": "Track", "text": "Every carrier update is SHA-256 hashed and linked to the hash of the event before it." },
+    "verify": { "title": "Verify", "text": "Each event hash is anchored on Ethereum Sepolia, so anyone can re-check the chain." }
+  },
+  "recent": {
+    "title": "Recent shipments",
+    "sub": "The latest shipments posted on ChainDepo",
+    "viewAll": "View all",
+    "error": "Shipments could not be loaded right now.",
+    "empty": "No shipments yet."
+  },
+  "types": {
+    "title": "What we move",
+    "sub": "Browse open shipments by type",
+    "browse": "Browse",
+    "document": { "title": "Document", "text": "Contracts, certificates and paperwork." },
+    "parcel": { "title": "Parcel", "text": "Boxes and packages up to a few dozen kg." },
+    "pallet": { "title": "Pallet", "text": "Stacked goods moved by forklift." },
+    "container": { "title": "Container", "text": "Full containers between ports and depots." }
+  },
+  "network": {
+    "title": "Nine cities, one record",
+    "text": "Shipments run between nine Korean cities. Pick a city on the map, or below, to see shipments leaving it.",
+    "link": "See shipments from here"
+  }
+}

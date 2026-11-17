@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="408" height="72" viewBox="0 0 136 24">
+  <g transform="scale(0.5)">
+    <path d="M24 3 43 13v22L24 45 5 35V13Z" fill="#FFFFFF"/>
+    <path d="M5 13l19 10 19-10M24 23v22" stroke="#0B1520" stroke-width="2.5" fill="none" opacity="0.2"/>
+    <circle cx="36" cy="36" r="10" fill="#2F8FB5" stroke="#0B1520" stroke-width="3"/>
+    <path d="m31.5 36 3.2 3.2 5.8-6.4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="31" y="18.5" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="20" letter-spacing="-0.8">chaindepo</text>
+</svg>

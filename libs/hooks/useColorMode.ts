@@ -36,25 +36,20 @@ const applyMode = (mode: ColorMode, persist: boolean) => {
 /**
  * Light / dark mode shared by every component (header toggle, MUI theme in _app).
  * The class on <html> is the source of truth; it is set before paint by _document's inline script.
- * Until the user picks a mode, the OS setting is followed live.
+ * Light is the default; dark only after the visitor picks it with the header toggle.
  */
 const useColorMode = () => {
 	// SSR renders light; the effect below syncs with the class the inline script already set
 	const [mode, setMode] = useState<ColorMode>('light');
 
 	useEffect(() => {
+		// light is the default look; dark only when the visitor picks it with the toggle (stored choice)
+		if (!storedMode() && currentMode() === 'dark') applyMode('light', false);
 		setMode(currentMode());
 		listeners.add(setMode);
 
-		const media = window.matchMedia('(prefers-color-scheme: dark)');
-		const onSystemChange = (e: MediaQueryListEvent) => {
-			if (!storedMode()) applyMode(e.matches ? 'dark' : 'light', false);
-		};
-		media.addEventListener('change', onSystemChange);
-
 		return () => {
 			listeners.delete(setMode);
-			media.removeEventListener('change', onSystemChange);
 		};
 	}, []);
 

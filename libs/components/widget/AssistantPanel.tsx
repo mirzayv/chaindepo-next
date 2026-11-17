@@ -29,6 +29,9 @@ const AssistantPanel = ({ isLoggedIn, active, onLoginClick }: AssistantPanelProp
 	const messages = useReactiveVar(assistantMessagesVar);
 	const [draft, setDraft] = useState<string>('');
 	const [pending, setPending] = useState<boolean>(false);
+	// the guest note uses <Trans>, which server-renders in the default language; render it after mount to avoid a hydration mismatch on /ru and /kr
+	const [mounted, setMounted] = useState<boolean>(false);
+	useEffect(() => setMounted(true), []);
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 	const listEndRef = useRef<HTMLDivElement>(null);
 
@@ -185,7 +188,7 @@ const AssistantPanel = ({ isLoggedIn, active, onLoginClick }: AssistantPanelProp
 						</svg>
 					</button>
 				</form>
-				{!isLoggedIn && (
+				{mounted && !isLoggedIn && (
 					<p className="m-0 mt-2 text-[0.75rem] leading-snug text-muted">
 						<Trans
 							t={t}

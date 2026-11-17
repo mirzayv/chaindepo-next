@@ -45,6 +45,7 @@ module.exports = {
 				card: 'rgb(var(--cd-card) / <alpha-value>)',
 				page: 'rgb(var(--cd-page) / <alpha-value>)',
 				navy: 'rgb(var(--cd-navy) / <alpha-value>)',
+				hero: 'rgb(var(--cd-hero) / <alpha-value>)',
 				accent: {
 					DEFAULT: 'rgb(var(--cd-accent) / <alpha-value>)',
 					hover: 'rgb(var(--cd-accent-hover) / <alpha-value>)',
@@ -54,24 +55,26 @@ module.exports = {
 				bad: 'rgb(var(--cd-bad) / <alpha-value>)',
 			},
 			borderRadius: {
-				card: '6px',
+				card: '20px',
 			},
 			boxShadow: {
 				card: '0 1px 2px rgba(11, 34, 54, 0.04)',
 			},
 			fontFamily: {
-				sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+				sans: ['var(--font-sans)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
 				mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
 			},
 			fontSize: {
-				display: ['clamp(2.25rem, 4.5vw, 3.5rem)', { lineHeight: '1.05', letterSpacing: '-0.02em' }],
-				h2: ['1.75rem', { lineHeight: '1.15', letterSpacing: '-0.015em' }],
-				h3: ['1.125rem', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
-				body: ['1rem', { lineHeight: '1.55', letterSpacing: '0' }],
+				display: ['clamp(2.75rem, 6vw, 5rem)', { lineHeight: '1', letterSpacing: '-0.035em' }],
+				h2: ['1.75rem', { lineHeight: '1.15', letterSpacing: '-0.02em' }],
+				// big Salmon-style section headings on the home page
+				section: ['clamp(2.25rem, 4.6vw, 4rem)', { lineHeight: '1.02', letterSpacing: '-0.035em' }],
+				h3: ['1.25rem', { lineHeight: '1.25', letterSpacing: '-0.01em' }],
+				body: ['1.0625rem', { lineHeight: '1.55', letterSpacing: '-0.005em' }],
 				small: ['0.8125rem', { lineHeight: '1.45', letterSpacing: '0.005em' }],
 			},
 			maxWidth: {
-				page: '1200px',
+				page: '1280px',
 			},
 		},
 	},

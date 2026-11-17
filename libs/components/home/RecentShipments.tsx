@@ -6,6 +6,7 @@ import { Direction } from '../../enums/common.enum';
 import { Shipment } from '../../types/shipment/shipment';
 import { ShipmentsInquiry } from '../../types/shipment/shipment.input';
 import ShipmentTile from '../ui/ShipmentTile';
+import { useTranslation } from 'next-i18next';
 
 const RECENT_INPUT: ShipmentsInquiry = {
 	page: 1,
@@ -27,6 +28,7 @@ const SkeletonTile = () => (
 );
 
 const RecentShipments = () => {
+	const { t } = useTranslation('home');
 	const { data, loading, error } = useQuery(GET_SHIPMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: RECENT_INPUT },
@@ -37,17 +39,17 @@ const RecentShipments = () => {
 
 	return (
 		<section className="w-full bg-page">
-			<div className="mx-auto max-w-page px-4 py-14 md:px-6 md:py-20">
-				<div className="mb-8 flex items-end justify-between gap-4">
-					<div className="flex min-w-0 flex-col gap-2">
-						<h2 className="m-0 text-h2 font-semibold text-ink">Recent shipments</h2>
-						<p className="m-0 text-body text-muted">The latest shipments posted on ChainDepo.</p>
+			<div className="mx-auto max-w-[1440px] px-4 py-20 md:px-10 md:py-28">
+				<div className="mb-12 flex items-end justify-between gap-4">
+					<div className="flex min-w-0 flex-col gap-3">
+						<h2 className="m-0 text-section font-extrabold text-ink">{t('recent.title')}</h2>
+						<p className="m-0 text-[1.1875rem] font-medium text-ink/75">{t('recent.sub')}</p>
 					</div>
 					<Link
 						href={'/shipment'}
-						className="shrink-0 text-[0.9375rem] font-semibold leading-snug text-accent transition-colors duration-150 hover:text-accent-hover"
+						className="hidden h-12 shrink-0 items-center rounded-full border-[1.5px] border-ink px-6 text-[1rem] font-medium text-ink transition duration-150 hover:bg-ink hover:text-page sm:inline-flex"
 					>
-						View all →
+						{t('recent.viewAll')}
 					</Link>
 				</div>
 
@@ -67,7 +69,7 @@ const RecentShipments = () => {
 					</ul>
 				) : (
 					<p className="m-0 rounded-card border border-line bg-surface px-5 py-8 text-center text-body text-muted">
-						{error ? 'Shipments could not be loaded right now.' : 'No shipments yet.'}
+						{error ? t('recent.error') : t('recent.empty')}
 					</p>
 				)}
 			</div>

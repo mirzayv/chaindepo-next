@@ -28,11 +28,11 @@ const Footer = () => {
 	const shortContract = `${CHAINDEPO_CONTRACT.slice(0, 6)}…${CHAINDEPO_CONTRACT.slice(-4)}`;
 
 	return (
-		<footer className="cd-ui w-full border-t border-line bg-surface">
-			<div className="mx-auto grid max-w-page gap-10 px-4 py-12 md:grid-cols-[1.5fr_1fr_1fr] md:px-6 md:py-14">
+		<footer className="cd-ui w-full bg-surface">
+			<div className="mx-auto grid max-w-[1440px] gap-10 px-4 py-16 md:grid-cols-[1.5fr_1fr_1fr] md:px-10 md:py-20">
 				<div className="flex max-w-sm flex-col gap-4">
 					<Link href={'/'} aria-label="ChainDepo home" className="w-fit">
-						<Logo size={22} />
+						<Logo size={28} />
 					</Link>
 					<p className="m-0 text-[0.9375rem] leading-relaxed text-muted">
 						{t('Shipment tracking across Korea. Every event is hash-chained and anchored on Ethereum Sepolia.')}
@@ -53,13 +53,13 @@ const Footer = () => {
 
 				{FOOTER_COLUMNS.map((column) => (
 					<div key={column.title} className="flex flex-col gap-3">
-						<h2 className="m-0 text-small font-semibold leading-snug text-ink">{t(column.title)}</h2>
+						<h2 className="m-0 text-[1rem] font-bold leading-snug text-ink">{t(column.title)}</h2>
 						<ul className="m-0 flex list-none flex-col gap-2 p-0">
 							{column.links.map((link) => (
 								<li key={link.href}>
 									<Link
 										href={link.href}
-										className="text-[0.9375rem] leading-relaxed text-muted transition-colors duration-150 ease-out hover:text-ink"
+										className="text-[1rem] font-medium leading-relaxed text-ink/65 transition-colors duration-150 ease-out hover:text-ink"
 									>
 										{t(link.label)}
 									</Link>
@@ -71,7 +71,7 @@ const Footer = () => {
 			</div>
 			<div className="border-t border-line">
 				{/* mobile: extra bottom room so the floating chat button (48px + safe area) never covers the last line */}
-				<div className="mx-auto flex max-w-page px-4 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5 sm:pb-5 md:px-6">
+				<div className="mx-auto flex max-w-[1440px] px-4 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5 sm:pb-5 md:px-10">
 					<span className="text-small leading-snug text-muted">© {new Date().getFullYear()} ChainDepo</span>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -10,6 +10,7 @@ import { REACT_APP_API_URL } from '../config';
 import { MemberType } from '../enums/member.enum';
 import Logo from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
+import LanguageMenu, { LanguageOption } from './ui/LanguageMenu';
 
 interface NavItem {
 	label: string;
@@ -56,10 +57,10 @@ const accountLinksFor = (type?: string): AccountLink[] => {
 
 const myPageHref = (link: AccountLink) => (link.category ? `/mypage?category=${link.category}` : '/mypage');
 
-const LANGUAGES = [
-	{ code: 'en', label: 'EN' },
-	{ code: 'kr', label: 'KR' },
-	{ code: 'ru', label: 'RU' },
+const LANGUAGES: LanguageOption[] = [
+	{ code: 'en', label: 'EN', name: 'English' },
+	{ code: 'kr', label: 'KR', name: '한국어' },
+	{ code: 'ru', label: 'RU', name: 'Русский' },
 ];
 
 const Top = () => {
@@ -91,11 +92,12 @@ const Top = () => {
 		if (jwt) updateUserInfo(jwt);
 	}, []);
 
+	// the menu shows the language the page is actually in (the URL locale), and remembers it
 	useEffect(() => {
-		const stored = localStorage.getItem('locale');
-		if (stored === null) localStorage.setItem('locale', 'en');
-		setLang(stored ?? 'en');
-	}, [router]);
+		const locale = router.locale ?? 'en';
+		localStorage.setItem('locale', locale);
+		setLang(locale);
+	}, [router.locale]);
 
 	// the mobile menu is portalled to <body>, which only exists after mount
 	useEffect(() => {
@@ -171,29 +173,28 @@ const Top = () => {
 		setAccountOpen((prev) => !prev);
 	};
 
-	const langChangeHandler = async (e: ChangeEvent<HTMLSelectElement>) => {
-		const locale = e.target.value;
+	const langChangeHandler = async (locale: string) => {
 		setLang(locale);
 		localStorage.setItem('locale', locale);
 		await router.push(router.asPath, router.asPath, { locale });
 	};
 
 	const navLinkClass = (active: boolean) =>
-		`relative flex h-16 items-center text-[0.9375rem] font-medium transition-colors duration-150 ease-out ${
-			active ? 'text-ink' : 'text-muted hover:text-ink'
-		} after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent after:transition-opacity after:duration-150 ${
-			active ? 'after:opacity-100' : 'after:opacity-0'
+		`relative flex h-[76px] items-center text-[1rem] font-medium tracking-[-0.01em] text-ink transition-opacity duration-150 ease-out ${
+			active ? "opacity-100" : "opacity-70 hover:opacity-100"
+		} after:absolute after:inset-x-0 after:bottom-[22px] after:h-[2px] after:rounded-full after:bg-accent after:transition-opacity after:duration-150 ${
+			active ? "after:opacity-100" : "after:opacity-0"
 		}`;
 
 	return (
-		<header className="cd-ui sticky top-0 z-50 w-full border-b border-line bg-card">
-			<div className="mx-auto flex h-16 max-w-page items-center gap-8 px-4 md:px-6">
-				<Link href={'/'} className="shrink-0" aria-label="ChainDepo home">
-					<Logo size={22} />
+		<header className="cd-ui sticky top-0 z-50 w-full bg-page/90 backdrop-blur-md">
+			<div className="mx-auto flex h-[76px] max-w-[1440px] items-center gap-8 px-4 md:px-10">
+				<Link href={"/"} className="shrink-0 md:flex md:flex-1" aria-label="ChainDepo home">
+					<Logo size={28} />
 				</Link>
 
 				{/* desktop nav */}
-				<nav className="hidden h-16 items-center gap-7 md:flex" aria-label="Main">
+				<nav className="hidden h-[76px] shrink-0 items-center justify-center gap-10 md:flex" aria-label="Main">
 					{NAV_ITEMS.map((item) => {
 						const active = item.isActive(router.pathname);
 						return (
@@ -218,22 +219,14 @@ const Top = () => {
 					)}
 				</nav>
 
-				<div className="ml-auto flex items-center gap-3">
-					<label className="sr-only" htmlFor="cd-lang">
-						{t('Language')}
-					</label>
-					<select
-						id="cd-lang"
+				<div className="ml-auto flex items-center justify-end gap-3 md:ml-0 md:flex-1">
+					<LanguageMenu
 						value={lang}
+						options={LANGUAGES}
 						onChange={langChangeHandler}
-						className="hidden h-9 cursor-pointer rounded-card border border-transparent px-2 text-small font-medium text-muted transition-colors duration-150 ease-out hover:border-line hover:text-ink sm:block"
-					>
-						{LANGUAGES.map((item) => (
-							<option key={item.code} value={item.code}>
-								{item.label}
-							</option>
-						))}
-					</select>
+						label={t('Language')}
+						className="hidden sm:block"
+					/>
 
 					<ThemeToggle className="hidden md:flex" />
 
@@ -254,7 +247,7 @@ const Top = () => {
 					) : (
 						<Link
 							href={'/account/join'}
-							className="hidden h-9 items-center px-2 text-[0.9375rem] font-medium text-ink transition-colors duration-150 ease-out hover:text-accent sm:flex"
+							className="hidden h-11 items-center px-2 text-[1rem] font-medium text-ink transition-opacity duration-150 ease-out hover:opacity-70 sm:flex"
 						>
 							{t('Log in')}
 						</Link>
@@ -263,7 +256,7 @@ const Top = () => {
 					{canCreateShipment && (
 						<Link
 							href={createShipmentHref}
-							className="hidden h-9 items-center rounded-card bg-accent px-4 text-[0.875rem] font-semibold text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-[0.98] motion-reduce:transform-none md:flex"
+							className="hidden h-11 shrink-0 items-center whitespace-nowrap rounded-full border-[1.5px] border-ink px-5 text-[1rem] font-medium text-ink transition duration-150 ease-out hover:bg-ink hover:text-page active:scale-[0.98] motion-reduce:transform-none md:flex"
 						>
 							{t('Create shipment')}
 						</Link>
@@ -432,7 +425,7 @@ const Top = () => {
 								<Link
 									href={createShipmentHref}
 									onClick={closeMenu}
-									className="flex h-11 items-center justify-center rounded-card bg-accent text-[0.9375rem] font-semibold text-white active:scale-[0.98] motion-reduce:transform-none"
+									className="flex h-12 items-center justify-center rounded-full bg-accent text-[1rem] font-semibold text-white active:scale-[0.98] motion-reduce:transform-none"
 								>
 									{t('Create shipment')}
 								</Link>
@@ -447,18 +440,13 @@ const Top = () => {
 								)}
 								<div className="flex items-center gap-2">
 									<ThemeToggle />
-									<select
-										aria-label={t('Language')}
+									<LanguageMenu
 										value={lang}
+										options={LANGUAGES}
 										onChange={langChangeHandler}
-										className="h-9 rounded-card border border-line px-2 text-small font-medium text-ink"
-									>
-										{LANGUAGES.map((item) => (
-											<option key={item.code} value={item.code}>
-												{item.label}
-											</option>
-										))}
-									</select>
+										label={t('Language')}
+										placement="up"
+									/>
 								</div>
 							</div>
 						</div>
