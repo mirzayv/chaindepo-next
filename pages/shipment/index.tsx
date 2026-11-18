@@ -145,7 +145,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 								id="shipment-sort"
 								value={sortIdOf(searchFilter)}
 								onChange={sortingHandler}
-								className="h-10 cursor-pointer rounded-card border border-line bg-card px-3 text-small font-medium text-ink outline-none transition-colors duration-150 ease-out hover:border-accent focus:border-accent"
+								className="cd-select h-10 cursor-pointer rounded-card border border-line bg-card px-4 text-small font-medium text-ink outline-none transition-colors duration-150 ease-out hover:border-accent focus:border-accent"
 							>
 								{SORTS.map((item) => (
 									<option key={item.id} value={item.id}>

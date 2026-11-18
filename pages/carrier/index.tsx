@@ -134,7 +134,7 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 						<label htmlFor="carrier-sort" className="text-small text-muted">
 							{t('Sort by')}
 						</label>
-						<select id="carrier-sort" value={sortId} onChange={sortingHandler} className={`${inputClass} cursor-pointer font-medium`}>
+						<select id="carrier-sort" value={sortId} onChange={sortingHandler} className={`cd-select ${inputClass} cursor-pointer font-medium`}>
 							{SORTS.map((item) => (
 								<option key={item.id} value={item.id}>
 									{t(item.label)}

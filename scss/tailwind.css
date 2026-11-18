@@ -273,3 +273,17 @@ html.dark .cd-map .leaflet-tile-pane {
 	height: 257px !important;
 	mix-blend-mode: normal;
 }
+
+/* selects in the Tailwind UI: hide the native arrow (it hugs the rounded edge) and draw a chevron inset from the edge */
+.cd-ui select.cd-select {
+	-webkit-appearance: none;
+	appearance: none;
+	padding-right: 2.75rem;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='m3 4.5 3 3 3-3' stroke='%236A6D71' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 1.1rem center;
+	background-size: 12px 12px;
+}
+html.dark .cd-ui select.cd-select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='m3 4.5 3 3 3-3' stroke='%239A9DA3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
