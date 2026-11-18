@@ -339,5 +339,12 @@
   "Log in to join the community chat": "커뮤니티 채팅에 참여하려면 로그인하세요",
   "Guest": "게스트",
   "Close assistant and chat": "어시스턴트와 채팅 닫기",
-  "Open assistant and chat": "어시스턴트와 채팅 열기"
+  "Open assistant and chat": "어시스턴트와 채팅 열기",
+  "Daily assistant limit reached. Try again tomorrow.": "오늘의 질문 한도에 도달했습니다. 내일 다시 시도하세요.",
+  "You've reached the guest limit for today. Log in to ask more questions.": "오늘의 게스트 한도에 도달했습니다. 더 물어보려면 로그인하세요.",
+  "The assistant is busy today. Log in to keep asking.": "오늘은 어시스턴트가 바쁩니다. 계속하려면 로그인하세요.",
+  "The assistant is not configured yet.": "어시스턴트가 아직 설정되지 않았습니다.",
+  "The assistant is busy right now, please try again in a minute.": "어시스턴트가 지금 바쁩니다. 잠시 후 다시 시도하세요.",
+  "Sorry, something went wrong.": "죄송합니다. 문제가 발생했습니다.",
+  "Sorry, I couldn't answer that. Please rephrase.": "답변하지 못했습니다. 다르게 질문해 주세요."
 }

@@ -345,5 +345,12 @@
   "Log in to join the community chat": "Log in to join the community chat",
   "Guest": "Guest",
   "Close assistant and chat": "Close assistant and chat",
-  "Open assistant and chat": "Open assistant and chat"
+  "Open assistant and chat": "Open assistant and chat",
+  "Daily assistant limit reached. Try again tomorrow.": "Daily assistant limit reached. Try again tomorrow.",
+  "You've reached the guest limit for today. Log in to ask more questions.": "You've reached the guest limit for today. Log in to ask more questions.",
+  "The assistant is busy today. Log in to keep asking.": "The assistant is busy today. Log in to keep asking.",
+  "The assistant is not configured yet.": "The assistant is not configured yet.",
+  "The assistant is busy right now, please try again in a minute.": "The assistant is busy right now, please try again in a minute.",
+  "Sorry, something went wrong.": "Sorry, something went wrong.",
+  "Sorry, I couldn't answer that. Please rephrase.": "Sorry, I couldn't answer that. Please rephrase."
 }

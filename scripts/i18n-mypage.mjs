@@ -58,3 +58,19 @@ for (const [lang, col] of [['en', 0], ['ru', 1], ['kr', 2]]) {
 	for (const row of WIDGET) if (lang !== 'en' || !(row[0] in dict)) dict[row[0]] = row[col];
 	fs.writeFileSync(file, JSON.stringify(dict, null, 2) + '\n');
 }
+// assistant service replies (backend AssistantService Reply)
+const ASSISTANT = [
+	['Daily assistant limit reached. Try again tomorrow.', 'Дневной лимит вопросов исчерпан. Попробуйте завтра.', '오늘의 질문 한도에 도달했습니다. 내일 다시 시도하세요.'],
+	["You've reached the guest limit for today. Log in to ask more questions.", 'Гостевой лимит на сегодня исчерпан. Войдите, чтобы задать больше вопросов.', '오늘의 게스트 한도에 도달했습니다. 더 물어보려면 로그인하세요.'],
+	['The assistant is busy today. Log in to keep asking.', 'Сегодня ассистент перегружен. Войдите, чтобы продолжить.', '오늘은 어시스턴트가 바쁩니다. 계속하려면 로그인하세요.'],
+	['The assistant is not configured yet.', 'Ассистент ещё не настроен.', '어시스턴트가 아직 설정되지 않았습니다.'],
+	['The assistant is busy right now, please try again in a minute.', 'Ассистент сейчас занят, попробуйте через минуту.', '어시스턴트가 지금 바쁩니다. 잠시 후 다시 시도하세요.'],
+	['Sorry, something went wrong.', 'Извините, что-то пошло не так.', '죄송합니다. 문제가 발생했습니다.'],
+	["Sorry, I couldn't answer that. Please rephrase.", 'Не получилось ответить. Попробуйте переформулировать.', '답변하지 못했습니다. 다르게 질문해 주세요.'],
+];
+for (const [lang, col] of [['en', 0], ['ru', 1], ['kr', 2]]) {
+	const file = `public/locales/${lang}/common.json`;
+	const dict = JSON.parse(fs.readFileSync(file, 'utf8'));
+	for (const row of ASSISTANT) if (lang !== 'en' || !(row[0] in dict)) dict[row[0]] = row[col];
+	fs.writeFileSync(file, JSON.stringify(dict, null, 2) + '\n');
+}

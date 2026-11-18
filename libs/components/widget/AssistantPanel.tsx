@@ -5,6 +5,17 @@ import { useMutation, useReactiveVar } from '@apollo/client';
 import { AssistantMessage, assistantMessagesVar } from '../../../apollo/store';
 import { ASK_ASSISTANT } from '../../../apollo/user/mutation';
 
+/** fixed replies from the backend AssistantService (Reply), translated in common.json */
+const SERVICE_REPLIES = [
+	'Daily assistant limit reached. Try again tomorrow.',
+	"You've reached the guest limit for today. Log in to ask more questions.",
+	'The assistant is busy today. Log in to keep asking.',
+	'The assistant is not configured yet.',
+	'The assistant is busy right now, please try again in a minute.',
+	'Sorry, something went wrong.',
+	"Sorry, I couldn't answer that. Please rephrase.",
+];
+
 const MAX_LENGTH = 500;
 /** how many earlier messages go to the backend as context */
 const HISTORY_SIZE = 6;
@@ -69,7 +80,9 @@ const AssistantPanel = ({ isLoggedIn, active, onLoginClick }: AssistantPanelProp
 			const { data } = await askAssistant({ variables: { input: { message, history } } });
 			const reply: string = data?.askAssistant?.reply ?? '';
 			if (!reply) throw new Error('empty reply');
-			assistantMessagesVar([...assistantMessagesVar(), { role: 'model', text: reply }]);
+			// the backend's fixed service replies (busy, limits, …) come in English; translate those, keep real answers as is
+			const text = SERVICE_REPLIES.includes(reply) ? t(reply) : reply;
+			assistantMessagesVar([...assistantMessagesVar(), { role: 'model', text }]);
 		} catch (err: any) {
 			console.log('ERROR, askAssistant:', err?.message);
 			assistantMessagesVar([

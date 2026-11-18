@@ -357,5 +357,12 @@
   "Log in to join the community chat": "Войдите, чтобы участвовать в чате сообщества",
   "Guest": "Гость",
   "Close assistant and chat": "Закрыть ассистента и чат",
-  "Open assistant and chat": "Открыть ассистента и чат"
+  "Open assistant and chat": "Открыть ассистента и чат",
+  "Daily assistant limit reached. Try again tomorrow.": "Дневной лимит вопросов исчерпан. Попробуйте завтра.",
+  "You've reached the guest limit for today. Log in to ask more questions.": "Гостевой лимит на сегодня исчерпан. Войдите, чтобы задать больше вопросов.",
+  "The assistant is busy today. Log in to keep asking.": "Сегодня ассистент перегружен. Войдите, чтобы продолжить.",
+  "The assistant is not configured yet.": "Ассистент ещё не настроен.",
+  "The assistant is busy right now, please try again in a minute.": "Ассистент сейчас занят, попробуйте через минуту.",
+  "Sorry, something went wrong.": "Извините, что-то пошло не так.",
+  "Sorry, I couldn't answer that. Please rephrase.": "Не получилось ответить. Попробуйте переформулировать."
 }
