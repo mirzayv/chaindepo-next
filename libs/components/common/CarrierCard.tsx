@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
 import { REACT_APP_API_URL } from '../../config';
@@ -12,6 +13,7 @@ interface CarrierCardProps {
 
 /** small carrier card: avatar, name, shipment count, views and a like toggle */
 const CarrierCard = (props: CarrierCardProps) => {
+	const { t } = useTranslation('common');
 	const { carrier, likeMemberHandler } = props;
 	const user = useReactiveVar(userVar);
 	const imagePath: string = carrier?.memberImage
@@ -32,16 +34,16 @@ const CarrierCard = (props: CarrierCardProps) => {
 					{name}
 				</Link>
 				<span className="text-small text-muted">
-					Carrier · {carrier?.memberShipments ?? 0} shipment{carrier?.memberShipments === 1 ? '' : 's'}
+					{t('enum.CARRIER', { defaultValue: 'Carrier' })} · {t('shipmentsCount', { count: carrier?.memberShipments ?? 0 })}
 				</span>
-				<span className="text-small text-muted">{carrier?.memberViews ?? 0} views</span>
+				<span className="text-small text-muted">{t('viewsCount', { count: carrier?.memberViews ?? 0 })}</span>
 			</div>
 
 			<button
 				type="button"
 				onClick={() => likeMemberHandler?.(user, carrier?._id)}
 				aria-pressed={liked}
-				aria-label={liked ? `Unlike ${name}` : `Like ${name}`}
+				aria-label={liked ? t('Unlike') : t('Like')}
 				className={`inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-card border px-3 text-small font-medium transition-colors duration-150 ease-out ${
 					liked
 						? 'border-accent bg-accent text-white hover:bg-accent-hover'

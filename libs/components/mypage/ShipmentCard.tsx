@@ -1,10 +1,12 @@
 import { Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Shipment } from '../../types/shipment/shipment';
-import { formatKRW, labelOf } from '../../utils';
+import { formatKRW } from '../../utils';
+import useLabel from '../../hooks/useLabel';
 import { IMAGE_PLACEHOLDER } from '../../config';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
@@ -20,6 +22,8 @@ interface ShipmentCardProps {
 }
 
 export const ShipmentCard = (props: ShipmentCardProps) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const { shipment, deleteShipmentHandler, memberPage, updateShipmentHandler, children } = props;
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -66,7 +70,7 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 				<Stack className="information-box" onClick={() => pushShipmentDetail(shipment?._id)}>
 					<Typography className="name">{shipment.shipmentTitle}</Typography>
 					<Typography className="address">
-						{shipment.shipmentTrackingCode} · {labelOf(shipment.shipmentOrigin)} → {labelOf(shipment.shipmentDestination)}
+						{shipment.shipmentTrackingCode} · {label(shipment.shipmentOrigin)} → {label(shipment.shipmentDestination)}
 					</Typography>
 					<Typography className="price">
 						<strong>{formatKRW(shipment?.shipmentPrice)}</strong>
@@ -80,7 +84,7 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 				<Stack className="status-box">
 					<Stack className="coloured-box" sx={{ background: 'rgba(47, 143, 181, 0.1)' }} onClick={handleClick}>
 						<Typography className="status" sx={{ color: '#2F8FB5' }}>
-							{labelOf(shipment.shipmentStatus)}
+							{label(shipment.shipmentStatus)}
 						</Typography>
 					</Stack>
 				</Stack>
@@ -112,7 +116,7 @@ export const ShipmentCard = (props: ShipmentCardProps) => {
 								updateShipmentHandler(ShipmentStatus.CANCELLED, shipment?._id);
 							}}
 						>
-							Cancel
+							{t('Cancel')}
 						</MenuItem>
 					</Menu>
 				)}

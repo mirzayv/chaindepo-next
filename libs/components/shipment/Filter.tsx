@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { ShipmentLocation, ShipmentStatus, ShipmentType } from '../../enums/shipment.enum';
 import { ShipmentsInquiry } from '../../types/shipment/shipment.input';
 import { shipmentWeights } from '../../config';
-import { labelOf } from '../../utils';
+import { useTranslation } from 'next-i18next';
+import useLabel from '../../hooks/useLabel';
 
 /** statuses a visitor can filter by (DELETE is never listed publicly) **/
 const filterStatuses = Object.values(ShipmentStatus).filter((status) => status !== ShipmentStatus.DELETE);
@@ -30,6 +31,8 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 const Filter = (props: FilterType) => {
 	const { searchFilter, setSearchFilter, initialInput } = props;
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const router = useRouter();
 	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text ?? '');
 	const [trackingCode, setTrackingCode] = useState<string>('');
@@ -139,7 +142,7 @@ const Filter = (props: FilterType) => {
 							checked={((searchFilter?.search?.[key] as string[]) || []).includes(value)}
 							onChange={(e) => listSelectHandler(key, e)}
 						/>
-						<span className="truncate">{labelOf(value)}</span>
+						<span className="truncate">{label(value)}</span>
 					</label>
 				);
 			})}
@@ -149,13 +152,13 @@ const Filter = (props: FilterType) => {
 	return (
 		<div className="flex flex-col gap-4 rounded-card border border-line bg-card p-4 md:p-5">
 			<div className="flex items-center justify-between gap-3">
-				<h2 className="m-0 text-h3 font-semibold text-ink">Filters</h2>
+				<h2 className="m-0 text-h3 font-semibold text-ink">{t('Filters')}</h2>
 				<button
 					type="button"
 					onClick={refreshHandler}
 					className="cursor-pointer border-0 bg-transparent p-0 text-small font-medium text-accent hover:text-accent-hover hover:underline"
 				>
-					Reset
+					{t('Reset')}
 				</button>
 			</div>
 
@@ -168,13 +171,13 @@ const Filter = (props: FilterType) => {
 				}}
 			>
 				<label htmlFor="shipment-search" className="sr-only">
-					Search shipments
+					{t('Search shipments')}
 				</label>
 				<input
 					id="shipment-search"
 					type="search"
 					className={inputClass}
-					placeholder="Title or tracking code"
+					placeholder={t('Title or tracking code')}
 					value={searchText}
 					onChange={(e) => {
 						setSearchText(e.target.value);
@@ -183,7 +186,7 @@ const Filter = (props: FilterType) => {
 				/>
 			</form>
 
-			<Section title="Track by code">
+			<Section title={t('Track by code')}>
 				<form
 					className="flex gap-2"
 					onSubmit={(e) => {
@@ -192,7 +195,7 @@ const Filter = (props: FilterType) => {
 					}}
 				>
 					<label htmlFor="filter-tracking-code" className="sr-only">
-						Tracking code
+						{t('Tracking code')}
 					</label>
 					<input
 						id="filter-tracking-code"
@@ -206,20 +209,20 @@ const Filter = (props: FilterType) => {
 						type="submit"
 						className="h-10 shrink-0 cursor-pointer rounded-card border-0 bg-accent px-3 text-small font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
 					>
-						Track
+						{t('Track button')}
 					</button>
 				</form>
 			</Section>
 
-			<Section title="Origin">{renderChecklist('originList', shipmentLocations, 2)}</Section>
-			<Section title="Destination">{renderChecklist('destinationList', shipmentLocations, 2)}</Section>
-			<Section title="Shipment type">{renderChecklist('typeList', shipmentTypes)}</Section>
-			<Section title="Status">{renderChecklist('statusList', filterStatuses)}</Section>
+			<Section title={t('Origin')}>{renderChecklist('originList', shipmentLocations, 2)}</Section>
+			<Section title={t('Destination')}>{renderChecklist('destinationList', shipmentLocations, 2)}</Section>
+			<Section title={t('Shipment type')}>{renderChecklist('typeList', shipmentTypes)}</Section>
+			<Section title={t('Status')}>{renderChecklist('statusList', filterStatuses)}</Section>
 
-			<Section title="Weight (kg)">
+			<Section title={t('Weight (kg)')}>
 				<div className="flex items-center gap-2">
 					<label htmlFor="weight-min" className="sr-only">
-						Minimum weight
+						{t('Minimum weight')}
 					</label>
 					<select
 						id="weight-min"
@@ -237,7 +240,7 @@ const Filter = (props: FilterType) => {
 						–
 					</span>
 					<label htmlFor="weight-max" className="sr-only">
-						Maximum weight
+						{t('Maximum weight')}
 					</label>
 					<select
 						id="weight-max"
@@ -254,16 +257,16 @@ const Filter = (props: FilterType) => {
 				</div>
 			</Section>
 
-			<Section title="Price (₩)">
+			<Section title={t('Price (₩)')}>
 				<div className="flex items-center gap-2">
 					<label htmlFor="price-min" className="sr-only">
-						Minimum price
+						{t('Minimum price')}
 					</label>
 					<input
 						id="price-min"
 						type="number"
 						className={inputClass}
-						placeholder="Min"
+						placeholder={t('Min')}
 						min={0}
 						value={searchFilter?.search?.pricesRange?.start ?? 0}
 						onChange={(e) => {
@@ -274,13 +277,13 @@ const Filter = (props: FilterType) => {
 						–
 					</span>
 					<label htmlFor="price-max" className="sr-only">
-						Maximum price
+						{t('Maximum price')}
 					</label>
 					<input
 						id="price-max"
 						type="number"
 						className={inputClass}
-						placeholder="Max"
+						placeholder={t('Max')}
 						min={0}
 						value={searchFilter?.search?.pricesRange?.end ?? 0}
 						onChange={(e) => {

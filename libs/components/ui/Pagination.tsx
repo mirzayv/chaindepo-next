@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 
 interface PaginationProps {
 	page: number;
@@ -25,16 +26,17 @@ const baseButton =
 
 /** accent pagination for the Tailwind pages */
 const Pagination = ({ page, count, onChange, className = '' }: PaginationProps) => {
+	const { t } = useTranslation('common');
 	if (count <= 1) return null;
 
 	return (
-		<nav aria-label="Pagination" className={`flex flex-wrap items-center justify-center gap-1.5 ${className}`}>
+		<nav aria-label={t('Pagination')} className={`flex flex-wrap items-center justify-center gap-1.5 ${className}`}>
 			<button
 				type="button"
 				className={`${baseButton} border-line bg-card text-ink hover:border-accent hover:text-accent`}
 				onClick={() => onChange(page - 1)}
 				disabled={page <= 1}
-				aria-label="Previous page"
+				aria-label={t('Previous page')}
 			>
 				←
 			</button>
@@ -64,7 +66,7 @@ const Pagination = ({ page, count, onChange, className = '' }: PaginationProps) 
 				className={`${baseButton} border-line bg-card text-ink hover:border-accent hover:text-accent`}
 				onClick={() => onChange(page + 1)}
 				disabled={page >= count}
-				aria-label="Next page"
+				aria-label={t('Next page')}
 			>
 				→
 			</button>

@@ -202,10 +202,11 @@
 							}
 							.divider {
 								position: absolute;
-								height: 46px;
+								// anchored to the bottom of the select (the last item in the column), so a taller title never shifts it
+								height: 31px;
 								border-left: 1px solid var(--lg-ln-ddd);
 								right: 52px;
-								top: 42px;
+								bottom: 8px;
 							}
 							.arrow-down {
 								position: absolute;
@@ -213,7 +214,7 @@
 								height: 7px;
 								color: var(--lg-tx-ddd);
 								right: 18px;
-								top: 62px;
+								bottom: 20px;
 							}
 						}
 					}
@@ -435,10 +436,11 @@
 						}
 						.divider {
 							position: absolute;
-							height: 46px;
+							// anchored to the bottom of the select (the last item in the column), so a taller title never shifts it
+							height: 31px;
 							border-left: 1px solid var(--lg-ln-ddd);
 							right: 52px;
-							top: 42px;
+							bottom: 8px;
 						}
 						.arrow-down {
 							position: absolute;
@@ -446,7 +448,7 @@
 							height: 7px;
 							color: var(--lg-tx-ddd);
 							right: 18px;
-							top: 62px;
+							bottom: 20px;
 						}
 					}
 				}
@@ -512,10 +514,11 @@
 						}
 						.divider {
 							position: absolute;
-							height: 46px;
+							// anchored to the bottom of the select (the last item in the column), so a taller title never shifts it
+							height: 31px;
 							border-left: 1px solid var(--lg-ln-ddd);
 							right: 52px;
-							top: 42px;
+							bottom: 8px;
 						}
 						.arrow-down {
 							position: absolute;
@@ -523,7 +526,7 @@
 							height: 7px;
 							color: var(--lg-tx-ddd);
 							right: 18px;
-							top: 62px;
+							bottom: 20px;
 						}
 						.year-built-input {
 							width: 270px;

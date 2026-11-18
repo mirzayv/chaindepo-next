@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -19,6 +20,7 @@ const TABS = [
 
 /** Help center: static notices and FAQ (title band comes from LayoutBasic) */
 const CS: NextPage = () => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const tab = router.query.tab === 'faq' ? 'faq' : 'notice';
 
@@ -30,7 +32,7 @@ const CS: NextPage = () => {
 	return (
 		<div className="cd-ui w-full bg-surface">
 			<div className="mx-auto flex max-w-[880px] flex-col gap-6 px-4 py-8 md:px-6 md:py-12">
-				<div role="tablist" aria-label="Help center sections" className="inline-flex gap-1 self-start rounded-card border border-line bg-card p-1">
+				<div role="tablist" aria-label={t('Help center sections')} className="inline-flex gap-1 self-start rounded-card border border-line bg-card p-1">
 					{TABS.map((item) => {
 						const selected = item.id === tab;
 						return (
@@ -44,7 +46,7 @@ const CS: NextPage = () => {
 									selected ? 'bg-accent text-white' : 'bg-transparent text-ink hover:text-accent'
 								}`}
 							>
-								{item.label}
+								{t(item.label)}
 							</button>
 						);
 					})}

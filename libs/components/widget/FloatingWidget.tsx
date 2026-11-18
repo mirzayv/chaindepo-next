@@ -116,7 +116,7 @@ const FloatingWidget = () => {
 				ref={panelRef}
 				id="cd-widget-panel"
 				role="dialog"
-				aria-label="Assistant and community chat"
+				aria-label={t('Assistant and community chat')}
 				aria-hidden={!open}
 				tabIndex={-1}
 				className={`fixed inset-0 z-[1300] flex h-[100dvh] flex-col overflow-hidden bg-card outline-none transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-opacity sm:inset-auto sm:bottom-[5.5rem] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-7.5rem)] sm:w-[380px] sm:origin-bottom-right sm:rounded-card sm:border sm:border-line sm:shadow-[0_8px_24px_rgba(11,34,54,0.12)] ${
@@ -226,7 +226,7 @@ const FloatingWidget = () => {
 												<div className={`flex max-w-[75%] flex-col ${mine ? 'items-end' : 'items-start'}`}>
 													{!mine && (
 														<span className="mb-0.5 px-1 text-[0.75rem] leading-snug text-muted">
-															{message.memberData?.memberNick ?? 'Guest'}
+															{message.memberData?.memberNick ?? t('Guest')}
 														</span>
 													)}
 													<span
@@ -249,7 +249,7 @@ const FloatingWidget = () => {
 								className="flex shrink-0 items-center gap-2 border-t border-line p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3"
 							>
 								<label htmlFor="cd-chat-input" className="sr-only">
-									Message
+									{t('Message')}
 								</label>
 								<input
 									id="cd-chat-input"
@@ -258,14 +258,14 @@ const FloatingWidget = () => {
 									maxLength={500}
 									value={draft}
 									onChange={(e) => setDraft(e.target.value)}
-									placeholder="Write a message"
+									placeholder={t('Write a message')}
 									// 16px on mobile: iOS Safari zooms into inputs smaller than that
 									className="h-10 min-w-0 flex-1 rounded-card border border-line bg-card px-3 text-[1rem] text-ink outline-none transition-colors duration-150 placeholder:text-muted focus:border-accent sm:text-[0.9375rem]"
 								/>
 								<button
 									type="submit"
 									disabled={!draft.trim()}
-									aria-label="Send"
+									aria-label={t('Send')}
 									className="flex h-10 w-10 shrink-0 items-center justify-center rounded-card bg-accent p-0 text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"
 								>
 									<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -281,13 +281,13 @@ const FloatingWidget = () => {
 						</>
 					) : (
 						<div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10 pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-center sm:pb-10">
-							<p className="m-0 text-[0.9375rem] leading-relaxed text-muted">Log in to join the community chat</p>
+							<p className="m-0 text-[0.9375rem] leading-relaxed text-muted">{t('Log in to join the community chat')}</p>
 							<Link
 								href={'/account/join'}
 								onClick={() => setOpen(false)}
 								className="inline-flex h-10 items-center justify-center rounded-card bg-accent px-5 text-[0.875rem] font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
 							>
-								Log in
+								{t('Log in')}
 							</Link>
 						</div>
 					)}
@@ -301,7 +301,7 @@ const FloatingWidget = () => {
 				onClick={() => setOpen((prev) => !prev)}
 				aria-expanded={open}
 				aria-controls="cd-widget-panel"
-				aria-label={open ? 'Close assistant and chat' : 'Open assistant and chat'}
+				aria-label={open ? t('Close assistant and chat') : t('Open assistant and chat')}
 				// mobile: 48px, lifted above the iOS home indicator; desktop unchanged
 				className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[61] h-12 w-12 items-center justify-center rounded-full bg-accent p-0 text-white shadow-[0_2px_8px_rgba(11,34,54,0.18)] transition duration-150 ease-out hover:bg-accent-hover active:scale-95 motion-reduce:transform-none sm:bottom-6 sm:right-6 sm:h-[52px] sm:w-[52px] ${
 					open ? 'hidden sm:flex' : 'flex'

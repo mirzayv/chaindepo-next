@@ -26,6 +26,7 @@ import { useRouter } from 'next/router';
 import { ShipmentsInquiry } from '../../libs/types/shipment/shipment.input';
 import { Shipment } from '../../libs/types/shipment/shipment';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { Direction } from '../../libs/enums/common.enum';
 // Direction — ENUM: saralash yo'nalishi (ASC = o'suvchi, DESC = kamayuvchi).
 import { GET_SHIPMENTS } from '../../apollo/user/query';
@@ -55,6 +56,7 @@ const sortIdOf = (filter: ShipmentsInquiry): string =>
 
 const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 	const router = useRouter();
+	const { t } = useTranslation('common');
 
 	const [searchFilter, setSearchFilter] = useState<ShipmentsInquiry>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
@@ -132,12 +134,12 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 					{/* the page title comes from the LayoutBasic band */}
 					<div className="flex flex-wrap items-center justify-between gap-3">
 						<p className="m-0 text-small text-muted" aria-live="polite">
-							{total} shipment{total === 1 ? '' : 's'} found
+							{t('shipmentsFound', { count: total })}
 						</p>
 						{/* ─── SARALASH (Sort by) ─── */}
 						<div className="flex items-center gap-2">
 							<label htmlFor="shipment-sort" className="text-small text-muted">
-								Sort by
+								{t('Sort by')}
 							</label>
 							<select
 								id="shipment-sort"
@@ -147,7 +149,7 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 							>
 								{SORTS.map((item) => (
 									<option key={item.id} value={item.id}>
-										{item.label}
+										{t(item.label)}
 									</option>
 								))}
 							</select>
@@ -156,8 +158,8 @@ const ShipmentList: NextPage = ({ initialInput, ...props }: any) => {
 
 					{shipments?.length === 0 ? (
 						<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
-							<p className="m-0 text-h3 font-semibold text-ink">No shipments found</p>
-							<p className="m-0 mt-1 text-small text-muted">Try fewer filters or reset them.</p>
+							<p className="m-0 text-h3 font-semibold text-ink">{t('No shipments found')}</p>
+							<p className="m-0 mt-1 text-small text-muted">{t('Try fewer filters or reset them.')}</p>
 						</div>
 					) : (
 						<ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 xl:grid-cols-3">

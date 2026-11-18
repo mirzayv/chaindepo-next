@@ -1,4 +1,6 @@
 import React from 'react';
+import useLabel from '../../hooks/useLabel';
+import { useTranslation } from 'next-i18next';
 import { ShipmentStatus } from '../../enums/shipment.enum';
 
 const STEPS: { status: ShipmentStatus; label: string }[] = [
@@ -14,10 +16,12 @@ interface ProgressStepsProps {
 
 /** 4-step bar; a cancelled shipment shows a red notice instead */
 const ProgressSteps = ({ status }: ProgressStepsProps) => {
+	const label = useLabel();
+	const { t } = useTranslation('common');
 	if (status === ShipmentStatus.CANCELLED || status === ShipmentStatus.DELETE) {
 		return (
 			<p className="m-0 rounded-card border border-bad/40 bg-bad/5 px-4 py-3 text-[0.9375rem] font-medium leading-snug text-bad">
-				This shipment was cancelled. No further events will be added.
+				{t('This shipment was cancelled. No further events will be added.')}
 			</p>
 		);
 	}
@@ -29,7 +33,7 @@ const ProgressSteps = ({ status }: ProgressStepsProps) => {
 	const delivered = status === ShipmentStatus.DELIVERED;
 
 	return (
-		<ol className="m-0 grid list-none grid-cols-4 gap-2 p-0" aria-label="Shipment progress">
+		<ol className="m-0 grid list-none grid-cols-4 gap-2 p-0" aria-label={t('Shipment progress')}>
 			{STEPS.map((step, index) => {
 				const done = index <= current;
 				const isCurrent = index === current;
@@ -46,7 +50,7 @@ const ProgressSteps = ({ status }: ProgressStepsProps) => {
 								isCurrent ? 'font-semibold text-ink' : done ? 'text-ink' : 'text-muted'
 							}`}
 						>
-							{step.label}
+							{label(step.status)}
 						</span>
 					</li>
 				);

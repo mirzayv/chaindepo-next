@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Shipment } from '../../types/shipment/shipment';
 import { REACT_APP_API_URL } from '../../config';
-import { formatKRW, labelOf } from '../../utils';
+import { formatKRW } from '../../utils';
+import useLabel from '../../hooks/useLabel';
 import StatusPill from './StatusPill';
 import ImageWithFallback from './ImageWithFallback';
 
@@ -12,6 +13,7 @@ interface ShipmentTileProps {
 
 /** compact shipment card: photo, title, route, status, tracking code and price */
 const ShipmentTile = ({ shipment }: ShipmentTileProps) => {
+	const label = useLabel();
 	const image = shipment.shipmentImages?.[0] ? `${REACT_APP_API_URL}/${shipment.shipmentImages[0]}` : null;
 
 	return (
@@ -33,7 +35,7 @@ const ShipmentTile = ({ shipment }: ShipmentTileProps) => {
 					<StatusPill status={shipment.shipmentStatus} className="shrink-0" />
 				</div>
 				<p className="m-0 text-[0.9375rem] font-medium text-ink/65">
-					{labelOf(shipment.shipmentOrigin)} → {labelOf(shipment.shipmentDestination)} · {labelOf(shipment.shipmentType)}
+					{label(shipment.shipmentOrigin)} → {label(shipment.shipmentDestination)} · {label(shipment.shipmentType)}
 				</p>
 				<div className="mt-auto flex items-center justify-between gap-3 pt-2">
 					<span className="truncate font-mono text-small text-muted">{shipment.shipmentTrackingCode}</span>

@@ -5,6 +5,7 @@ import CarrierCard from '../../libs/components/common/CarrierCard';
 import Pagination from '../../libs/components/ui/Pagination';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { Member } from '../../libs/types/member/member';
 import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
 import { useMutation, useQuery } from '@apollo/client';
@@ -31,6 +32,7 @@ const inputClass =
 	'h-10 rounded-card border border-line bg-card px-3 text-small text-ink outline-none transition-colors duration-150 ease-out placeholder:text-muted hover:border-accent focus:border-accent';
 
 const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
@@ -113,12 +115,12 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 						}}
 					>
 						<label htmlFor="carrier-search" className="sr-only">
-							Search carriers
+							{t('Search carriers')}
 						</label>
 						<input
 							id="carrier-search"
 							type="search"
-							placeholder="Search for a carrier"
+							placeholder={t('Search for a carrier')}
 							className={`${inputClass} w-full`}
 							value={searchText}
 							onChange={(e) => {
@@ -130,12 +132,12 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 					</form>
 					<div className="flex items-center gap-2">
 						<label htmlFor="carrier-sort" className="text-small text-muted">
-							Sort by
+							{t('Sort by')}
 						</label>
 						<select id="carrier-sort" value={sortId} onChange={sortingHandler} className={`${inputClass} cursor-pointer font-medium`}>
 							{SORTS.map((item) => (
 								<option key={item.id} value={item.id}>
-									{item.label}
+									{t(item.label)}
 								</option>
 							))}
 						</select>
@@ -143,7 +145,7 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 				</div>
 
 				<p className="m-0 text-small text-muted" aria-live="polite">
-					{total} carrier{total === 1 ? '' : 's'}
+					{t('carriersCount', { count: total })}
 				</p>
 
 				{carriers?.length === 0 ? (
@@ -151,7 +153,7 @@ const CarrierList: NextPage = ({ initialInput, ...props }: any) => {
 						className="rounded-card border border-line bg-card px-6 py-14 text-center"
 						aria-busy={getCarriersLoading}
 					>
-						<p className="m-0 text-h3 font-semibold text-ink">No carriers found</p>
+						<p className="m-0 text-h3 font-semibold text-ink">{t('No carriers found')}</p>
 					</div>
 				) : (
 					<ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">

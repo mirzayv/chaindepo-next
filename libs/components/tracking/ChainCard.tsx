@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { useTranslation } from 'next-i18next';
 import { ChainVerification } from '../../types/tracking-event/tracking-event';
 import { CHAINDEPO_CONTRACT, SEPOLIA_ADDRESS_URL } from '../../config';
 
@@ -21,31 +22,32 @@ const TONE_CLASS: Record<Tone, { box: string; icon: string; title: string }> = {
 };
 
 const ChainCard = ({ chain, loading, failed, verifying, checkedAt, onVerify }: ChainCardProps) => {
+	const { t } = useTranslation('common');
 	const shortContract = `${CHAINDEPO_CONTRACT.slice(0, 6)}…${CHAINDEPO_CONTRACT.slice(-4)}`;
 
 	let tone: Tone = 'neutral';
-	let title = 'Checking chain…';
-	let detail = 'Recomputing every event hash.';
+	let title = t('Checking chain…');
+	let detail = t('Recomputing every event hash.');
 
 	if (failed && !chain) {
-		title = 'Could not check the chain';
-		detail = 'The verification service did not answer. Try again.';
+		title = t('Could not check the chain');
+		detail = t('The verification service did not answer. Try again.');
 	} else if (chain && chain.totalEvents === 0) {
-		title = 'Nothing to verify yet';
-		detail = 'The chain starts with the first carrier event.';
+		title = t('Nothing to verify yet');
+		detail = t('The chain starts with the first carrier event.');
 	} else if (chain && chain.valid) {
 		tone = 'ok';
-		title = 'Chain verified';
-		detail = `${chain.totalEvents} of ${chain.totalEvents} events check out.`;
+		title = t('Chain verified');
+		detail = t('{{ok}} of {{total}} events check out.', { ok: chain.totalEvents, total: chain.totalEvents });
 	} else if (chain && !chain.valid) {
 		tone = 'bad';
 		const index = chain.brokenAtIndex ?? 0;
 		if (index >= chain.totalEvents) {
-			title = 'Chain tip does not match';
-			detail = `All ${chain.totalEvents} events link up, but the last hash differs from the shipment record.`;
+			title = t('Chain tip does not match');
+			detail = t('All {{total}} events link up, but the last hash differs from the shipment record.', { total: chain.totalEvents });
 		} else {
-			title = `Chain broken at event #${index}`;
-			detail = `${index} of ${chain.totalEvents} events check out. Events from #${index} on cannot be trusted.`;
+			title = t('Chain broken at event #{{index}}', { index });
+			detail = t('{{ok}} of {{total}} events check out. Events from #{{index}} on cannot be trusted.', { ok: index, total: chain.totalEvents, index });
 		}
 	}
 
@@ -53,15 +55,15 @@ const ChainCard = ({ chain, loading, failed, verifying, checkedAt, onVerify }: C
 		!chain || chain.totalEvents === 0
 			? null
 			: chain.anchoredEvents === null
-			? 'Anchoring off'
-			: `${chain.anchoredEvents} of ${chain.totalEvents} anchored on Sepolia`;
+			? t('Anchoring off')
+			: t('{{anchored}} of {{total}} anchored on Sepolia', { anchored: chain.anchoredEvents, total: chain.totalEvents });
 
 	const styles = TONE_CLASS[tone];
 
 	return (
 		<section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5" aria-labelledby="chain-card-title">
 			<h2 id="chain-card-title" className="m-0 text-h3 font-semibold text-ink">
-				Verification
+				{t('Verification')}
 			</h2>
 
 			<div className={`flex gap-3 rounded-card border p-4 ${styles.box}`} aria-live="polite">
@@ -104,15 +106,15 @@ const ChainCard = ({ chain, loading, failed, verifying, checkedAt, onVerify }: C
 					>
 						<path d="M13.5 8a5.5 5.5 0 11-1.6-3.9M13.5 2.5v3h-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 					</svg>
-					{verifying ? 'Verifying…' : 'Verify again'}
+					{verifying ? t('Verifying…') : t('Verify again')}
 				</button>
 				{checkedAt && (
-					<span className="text-small leading-snug text-muted">Checked {moment(checkedAt).format('HH:mm:ss')}</span>
+					<span className="text-small leading-snug text-muted">{t('Checked')} {moment(checkedAt).format('HH:mm:ss')}</span>
 				)}
 			</div>
 
 			<div className="flex flex-col gap-1 border-t border-line pt-4">
-				<span className="text-small leading-snug text-muted">Contract on Sepolia</span>
+				<span className="text-small leading-snug text-muted">{t('Contract on Sepolia')}</span>
 				<a
 					href={`${SEPOLIA_ADDRESS_URL}${CHAINDEPO_CONTRACT}`}
 					target="_blank"

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import useColorMode from '../../hooks/useColorMode';
 
 interface ThemeToggleProps {
@@ -7,6 +8,7 @@ interface ThemeToggleProps {
 
 /** sun / moon button: shows the mode you switch to */
 const ThemeToggle = ({ className = '' }: ThemeToggleProps) => {
+	const { t } = useTranslation('common');
 	const { mode, toggleMode } = useColorMode();
 	const isDark = mode === 'dark';
 
@@ -14,8 +16,8 @@ const ThemeToggle = ({ className = '' }: ThemeToggleProps) => {
 		<button
 			type="button"
 			onClick={toggleMode}
-			aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-			title={isDark ? 'Light mode' : 'Dark mode'}
+			aria-label={isDark ? t('Switch to light mode') : t('Switch to dark mode')}
+			title={isDark ? t('Light mode') : t('Dark mode')}
 			className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-card border border-transparent p-0 text-muted transition-colors duration-150 ease-out hover:border-line hover:text-ink ${className}`}
 		>
 			{isDark ? (

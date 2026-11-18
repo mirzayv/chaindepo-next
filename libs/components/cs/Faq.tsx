@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { CHAINDEPO_CONTRACT, SEPOLIA_ADDRESS_URL } from '../../config';
 
 type FaqTab = 'tracking' | 'shipments' | 'carriers' | 'verification' | 'account';
 
 interface FaqItem {
 	question: string;
-	answer: React.ReactNode;
+	/** plain text; `code` spans and the {contract} link are rendered by RichText */
+	answer: string;
 }
 
 const TABS: { id: FaqTab; label: string }[] = [
@@ -20,16 +22,34 @@ const Code = ({ children }: { children: React.ReactNode }) => (
 	<code className="rounded bg-surface px-1 py-0.5 font-mono text-[0.8125rem] text-ink">{children}</code>
 );
 
+/** renders `code` spans and the {contract} placeholder inside a (translated) answer */
+const RichText = ({ text }: { text: string }) => (
+	<>
+		{text.split(/(`[^`]+`|\{contract\})/g).map((part, i) => {
+			if (part === '{contract}')
+				return (
+					<a
+						key={i}
+						href={`${SEPOLIA_ADDRESS_URL}${CHAINDEPO_CONTRACT}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="break-all font-mono text-accent hover:text-accent-hover hover:underline"
+					>
+						{CHAINDEPO_CONTRACT}
+					</a>
+				);
+			if (part.startsWith('`') && part.endsWith('`')) return <Code key={i}>{part.slice(1, -1)}</Code>;
+			return <React.Fragment key={i}>{part}</React.Fragment>;
+		})}
+	</>
+);
+
 const FAQ: Record<FaqTab, FaqItem[]> = {
 	tracking: [
 		{
 			question: 'What does a tracking code look like?',
-			answer: (
-				<>
-					It starts with <Code>CD</Code>, then the creation date as YYMMDD, then 8 letters or digits, for example{' '}
-					<Code>CD261013A1B2C3D4</Code>. The shipper gets it when the shipment is created.
-				</>
-			),
+			answer:
+				'It starts with `CD`, then the creation date as YYMMDD, then 8 letters or digits, for example `CD261013A1B2C3D4`. The shipper gets it when the shipment is created.',
 		},
 		{
 			question: 'Do I need an account to track a shipment?',
@@ -88,29 +108,13 @@ const FAQ: Record<FaqTab, FaqItem[]> = {
 	verification: [
 		{
 			question: 'What is the hash chain?',
-			answer: (
-				<>
-					Every tracking event gets a SHA-256 hash of its data plus the hash of the previous event (<Code>prevHash</Code>{' '}
-					→ <Code>eventHash</Code>). Changing any past event changes its hash and breaks every link after it.
-				</>
-			),
+			answer:
+				'Every tracking event gets a SHA-256 hash of its data plus the hash of the previous event (`prevHash` → `eventHash`). Changing any past event changes its hash and breaks every link after it.',
 		},
 		{
 			question: 'What does "anchored on Sepolia" mean?',
-			answer: (
-				<>
-					Each event hash is also written to the ChainDepo contract on Ethereum Sepolia (
-					<a
-						href={`${SEPOLIA_ADDRESS_URL}${CHAINDEPO_CONTRACT}`}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="break-all font-mono text-accent hover:text-accent-hover hover:underline"
-					>
-						{CHAINDEPO_CONTRACT}
-					</a>
-					). The record then exists outside our database, so we cannot quietly rewrite it either.
-				</>
-			),
+			answer:
+				'Each event hash is also written to the ChainDepo contract on Ethereum Sepolia ({contract}). The record then exists outside our database, so we cannot quietly rewrite it either.',
 		},
 		{
 			question: 'How do I verify a shipment myself?',
@@ -145,11 +149,12 @@ const FAQ: Record<FaqTab, FaqItem[]> = {
 };
 
 const Faq = () => {
+	const { t } = useTranslation('common');
 	const [tab, setTab] = useState<FaqTab>('tracking');
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div role="tablist" aria-label="FAQ topics" className="flex gap-1 overflow-x-auto border-b border-line">
+			<div role="tablist" aria-label={t('FAQ topics')} className="flex gap-1 overflow-x-auto border-b border-line">
 				{TABS.map((item) => {
 					const selected = item.id === tab;
 					return (
@@ -165,7 +170,7 @@ const Faq = () => {
 								selected ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-ink'
 							}`}
 						>
-							{item.label}
+							{t(item.label)}
 						</button>
 					);
 				})}
@@ -179,7 +184,7 @@ const Faq = () => {
 						className="group rounded-card border border-line bg-card [&_summary::-webkit-details-marker]:hidden"
 					>
 						<summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-[0.9375rem] font-semibold text-ink hover:text-accent">
-							{item.question}
+							{t(item.question)}
 							<span
 								className="shrink-0 text-muted transition-transform duration-150 ease-out group-open:rotate-180 motion-reduce:transition-none"
 								aria-hidden="true"
@@ -187,7 +192,7 @@ const Faq = () => {
 								⌄
 							</span>
 						</summary>
-						<div className="px-4 pb-4 text-small leading-relaxed text-muted">{item.answer}</div>
+						<div className="px-4 pb-4 text-small leading-relaxed text-muted"><RichText text={t(item.answer)} /></div>
 					</details>
 				))}
 			</div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -41,6 +42,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const { query } = router;
 
@@ -247,10 +249,11 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 						<div className="community-detail-config">
 							<Stack className="title-box">
 								<Stack className="left">
-									<Typography className="title">{communityCategoryLabel(articleCategory)}</Typography>
+									<Typography className="title">{t(communityCategoryLabel(articleCategory))}</Typography>
 									<Typography className="sub-title">
-										{communityCategories.find((item) => item.value === articleCategory)?.desc ??
-											communityCategories[0].desc}
+										{t(
+											communityCategories.find((item) => item.value === articleCategory)?.desc ?? communityCategories[0].desc,
+											)}
 									</Typography>
 								</Stack>
 							</Stack>
@@ -330,11 +333,11 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									className="second-box-config"
 									sx={{ borderBottom: total > 0 ? 'none' : '1px solid #eee', border: '1px solid #eee' }}
 								>
-									<Typography className="title-text">Comments ({total})</Typography>
+									<Typography className="title-text">{t('Comments')} ({total})</Typography>
 									<Stack className="leave-comment">
 										<input
 											type="text"
-											placeholder="Leave a comment"
+											placeholder={t('Leave a comment')}
 											value={comment}
 											onChange={(e) => {
 												if (e.target.value.length > 100) return;
@@ -344,13 +347,13 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 										/>
 										<Stack className="button-box">
 											<Typography>{wordsCnt}/100</Typography>
-											<Button onClick={createCommentHandler}>comment</Button>
+											<Button onClick={createCommentHandler}>{t('Comment')}</Button>
 										</Stack>
 									</Stack>
 								</Stack>
 								{total > 0 && (
 									<Stack className="comments">
-										<Typography className="comments-title">Comments</Typography>
+										<Typography className="comments-title">{t('Comments')}</Typography>
 									</Stack>
 								)}
 								{comments?.map((commentData, index) => {
@@ -419,7 +422,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																	}}
 																>
 																	<Typography variant="h4" color={'var(--lg-tx-b9b9b9)'}>
-																		Update comment
+																		{t('Update comment')}
 																	</Typography>
 																	<Stack gap={'20px'}>
 																		<input
@@ -445,14 +448,14 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																					color="inherit"
 																					onClick={() => cancelButtonHandler()}
 																				>
-																					Cancel
+																					{t('Cancel')}
 																				</Button>
 																				<Button
 																					variant="contained"
 																					color="inherit"
 																					onClick={() => updateButtonHandler(updatedCommentId, undefined)}
 																				>
-																					Update
+																					{t('Update')}
 																				</Button>
 																			</Stack>
 																		</Stack>

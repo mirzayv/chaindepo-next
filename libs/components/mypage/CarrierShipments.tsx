@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import { Button, MenuItem, Pagination, Select, Stack, TextField, Typography } from '@mui/material';
 import { ShipmentCard } from './ShipmentCard';
@@ -15,7 +16,7 @@ import { CREATE_TRACKING_EVENT } from '../../../apollo/user/mutation';
 import { GET_CARRIER_SHIPMENTS } from '../../../apollo/user/query';
 import { sweetErrorHandling, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { carrierNextStatuses } from '../../config';
-import { labelOf } from '../../utils';
+import useLabel from '../../hooks/useLabel';
 
 const statusTabs: ShipmentStatus[] = [
 	ShipmentStatus.CREATED,
@@ -32,6 +33,8 @@ interface AddEventFormProps {
 
 /** inline form that appends the next tracking event to the hash chain **/
 const AddEventForm = (props: AddEventFormProps) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const { shipment, createEventHandler } = props;
 	const nextStatuses = carrierNextStatuses[shipment.shipmentStatus] ?? [];
 	const [eventStatus, setEventStatus] = useState<ShipmentStatus>(nextStatuses[0]);
@@ -45,20 +48,20 @@ const AddEventForm = (props: AddEventFormProps) => {
 			<Select size={'small'} value={eventStatus} onChange={(e: any) => setEventStatus(e.target.value)}>
 				{nextStatuses.map((status) => (
 					<MenuItem value={status} key={status}>
-						{labelOf(status)}
+						{label(status)}
 					</MenuItem>
 				))}
 			</Select>
 			<Select size={'small'} value={eventLocation} onChange={(e: any) => setEventLocation(e.target.value)}>
 				{Object.values(ShipmentLocation).map((location) => (
 					<MenuItem value={location} key={location}>
-						{labelOf(location)}
+						{label(location)}
 					</MenuItem>
 				))}
 			</Select>
 			<TextField
 				size={'small'}
-				placeholder={'Note (optional)'}
+				placeholder={t('Note (optional)')}
 				value={eventNote}
 				onChange={(e) => setEventNote(e.target.value)}
 				sx={{ width: '140px' }}
@@ -76,13 +79,15 @@ const AddEventForm = (props: AddEventFormProps) => {
 					setEventNote('');
 				}}
 			>
-				Add
+				{t('Add')}
 			</Button>
 		</Stack>
 	);
 };
 
 const CarrierShipments: NextPage = ({ initialInput, ...props }: any) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const [searchFilter, setSearchFilter] = useState<MyShipmentsInquiry>(initialInput);
 	const [carrierShipments, setCarrierShipments] = useState<Shipment[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -145,7 +150,7 @@ const CarrierShipments: NextPage = ({ initialInput, ...props }: any) => {
 								onClick={() => changeStatusHandler(status)}
 								className={searchFilter.search.shipmentStatus === status ? 'active-tab-name' : 'tab-name'}
 							>
-								{labelOf(status)}
+								{label(status)}
 							</Typography>
 						))}
 					</Stack>
@@ -160,7 +165,7 @@ const CarrierShipments: NextPage = ({ initialInput, ...props }: any) => {
 						{carrierShipments?.length === 0 ? (
 							<div className={'no-data'}>
 								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Shipment found!</p>
+								<p>{t('No Shipment found!')}</p>
 							</div>
 						) : (
 							carrierShipments.map((shipment: Shipment) => (

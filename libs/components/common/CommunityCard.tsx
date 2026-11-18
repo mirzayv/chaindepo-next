@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Moment from 'react-moment';
+import { useTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { BoardArticle } from '../../types/board-article/board-article';
 import { REACT_APP_API_URL } from '../../config';
@@ -13,6 +14,7 @@ interface CommunityCardProps {
 
 /** community article row: optional image, title, author, date, views and a like toggle */
 const CommunityCard = (props: CommunityCardProps) => {
+	const { t } = useTranslation('common');
 	const { boardArticle, likeArticleHandler } = props;
 	const user = useReactiveVar(userVar);
 	const imagePath: string | null = boardArticle?.articleImage
@@ -43,21 +45,21 @@ const CommunityCard = (props: CommunityCardProps) => {
 							{boardArticle?.memberData?.memberNick}
 						</Link>
 					) : (
-						'Member'
+						t('Member')
 					)}
 					{' · '}
 					<Moment format={'YYYY.MM.DD'}>{boardArticle?.createdAt}</Moment>
 					{' · '}
-					{boardArticle?.articleViews ?? 0} views
+					{t('viewsCount', { count: boardArticle?.articleViews ?? 0 })}
 					{' · '}
-					{boardArticle?.articleComments ?? 0} comments
+					{t('commentsCount', { count: boardArticle?.articleComments ?? 0 })}
 				</p>
 			</div>
 			<button
 				type="button"
 				onClick={(e) => likeArticleHandler?.(e, user, boardArticle?._id)}
 				aria-pressed={liked}
-				aria-label={liked ? 'Unlike article' : 'Like article'}
+				aria-label={liked ? t('Unlike') : t('Like')}
 				className={`inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 self-start rounded-card border px-3 text-small font-medium transition-colors duration-150 ease-out ${
 					liked
 						? 'border-accent bg-accent text-white hover:bg-accent-hover'

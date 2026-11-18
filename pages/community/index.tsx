@@ -8,6 +8,7 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { T } from '../../libs/types/common';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 import { BoardArticlesInquiry } from '../../libs/types/board-article/board-article.input';
 import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
@@ -28,6 +29,7 @@ const isShownCategory = (value?: string): value is BoardArticleCategory =>
 	communityCategories.some((item) => item.value === value);
 
 const Community: NextPage = ({ initialInput, ...props }: T) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const { query } = router;
 	const articleCategory = isShownCategory(query?.articleCategory as string)
@@ -94,8 +96,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 				<section className="flex min-w-0 flex-col gap-4" aria-busy={getBoardArticlesLoading}>
 					<div>
-						<h2 className="m-0 text-h3 font-semibold text-ink">{board.label}</h2>
-						<p className="m-0 mt-1 text-small text-muted">{board.desc}</p>
+						<h2 className="m-0 text-h3 font-semibold text-ink">{t(board.label)}</h2>
+						<p className="m-0 mt-1 text-small text-muted">{t(board.desc)}</p>
 					</div>
 
 					{totalCount ? (
@@ -108,8 +110,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 						</ul>
 					) : (
 						<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
-							<p className="m-0 text-h3 font-semibold text-ink">No posts yet</p>
-							<p className="m-0 mt-1 text-small text-muted">Be the first to write in {board.label}.</p>
+							<p className="m-0 text-h3 font-semibold text-ink">{t('No posts yet')}</p>
+							<p className="m-0 mt-1 text-small text-muted">{t('Be the first to write in {{board}}.', { board: t(board.label) })}</p>
 						</div>
 					)}
 

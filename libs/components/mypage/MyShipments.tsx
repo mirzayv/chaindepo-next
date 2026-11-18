@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { ShipmentCard } from './ShipmentCard';
@@ -13,7 +14,7 @@ import { useRouter } from 'next/router';
 import { UPDATE_SHIPMENT } from '../../../apollo/user/mutation';
 import { GET_MY_SHIPMENTS } from '../../../apollo/user/query';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
-import { labelOf } from '../../utils';
+import useLabel from '../../hooks/useLabel';
 
 /** tabs for the shipper's own shipments (DELETE is hidden) **/
 const statusTabs: ShipmentStatus[] = [
@@ -25,6 +26,8 @@ const statusTabs: ShipmentStatus[] = [
 ];
 
 const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const [searchFilter, setSearchFilter] = useState<MyShipmentsInquiry>(initialInput);
 	const [myShipments, setMyShipments] = useState<Shipment[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -81,7 +84,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 
 	const updateShipmentHandler = async (status: string, id: string) => {
 		try {
-			if (await sweetConfirmAlert(`Change the shipment to ${labelOf(status)}?`)) {
+			if (await sweetConfirmAlert(`Change the shipment to ${label(status)}?`)) {
 				await updateShipment({
 					variables: {
 						input: {
@@ -120,7 +123,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 								onClick={() => changeStatusHandler(status)}
 								className={searchFilter.search.shipmentStatus === status ? 'active-tab-name' : 'tab-name'}
 							>
-								{labelOf(status)}
+								{label(status)}
 							</Typography>
 						))}
 					</Stack>
@@ -138,7 +141,7 @@ const MyShipments: NextPage = ({ initialInput, ...props }: any) => {
 						{myShipments?.length === 0 ? (
 							<div className={'no-data'}>
 								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Shipment found!</p>
+								<p>{t('No Shipment found!')}</p>
 							</div>
 						) : (
 							myShipments.map((shipment: Shipment) => {

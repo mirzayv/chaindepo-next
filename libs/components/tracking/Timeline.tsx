@@ -2,10 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import { EventAnchorStatus, TrackingEvent } from '../../types/tracking-event/tracking-event';
 import { SEPOLIA_TX_URL } from '../../config';
-import { labelOf } from '../../utils';
+import { useTranslation } from 'next-i18next';
+import useLabel from '../../hooks/useLabel';
 import { DOT_CLASS } from '../ui/StatusPill';
 import CopyButton from '../ui/CopyButton';
-import { cityName } from '../ui/map/cities';
 
 interface TimelineProps {
 	events: TrackingEvent[];
@@ -18,16 +18,17 @@ interface TimelineProps {
 export const shortHash = (hash?: string | null) => (hash ? `${hash.slice(0, 8)}…${hash.slice(-6)}` : '');
 
 const AnchorTag = ({ anchored }: { anchored: boolean | null | undefined }) => {
+	const { t } = useTranslation('common');
 	if (anchored === true)
 		return (
 			<span className="inline-flex h-5 items-center rounded-full border border-ok/30 bg-ok/10 px-2 text-[0.75rem] font-medium leading-none text-ok">
-				Anchored
+				{t('Anchored')}
 			</span>
 		);
 	if (anchored === false)
 		return (
 			<span className="inline-flex h-5 items-center rounded-full border border-line bg-surface px-2 text-[0.75rem] font-medium leading-none text-muted">
-				Pending
+				{t('Pending')}
 			</span>
 		);
 	return null;
@@ -35,6 +36,8 @@ const AnchorTag = ({ anchored }: { anchored: boolean | null | undefined }) => {
 
 /** chronological list of hash-chained events, oldest first */
 const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: TimelineProps) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	if (loading && events.length === 0) {
 		return (
 			<div className="flex flex-col gap-4" aria-busy="true">
@@ -46,7 +49,7 @@ const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: 
 	}
 
 	if (events.length === 0) {
-		return <p className="m-0 text-body text-muted">No tracking events yet. The carrier adds them at pickup.</p>;
+		return <p className="m-0 text-body text-muted">{t('No tracking events yet. The carrier adds them at pickup.')}</p>;
 	}
 
 	return (
@@ -76,8 +79,8 @@ const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: 
 							{/* below 640px the date goes under the title instead of competing for the same line */}
 							<div className="flex flex-col gap-0.5 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 sm:gap-y-1">
 								<p className="m-0 min-w-0 break-words text-[0.9375rem] font-semibold leading-snug text-ink">
-									{labelOf(event.eventStatus)}
-									<span className="font-normal text-muted"> · {cityName(event.eventLocation)}</span>
+									{label(event.eventStatus)}
+									<span className="font-normal text-muted"> · {label(event.eventLocation)}</span>
 								</p>
 								<time
 									dateTime={moment(event.createdAt).toISOString()}
@@ -91,7 +94,7 @@ const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: 
 
 							{broken && (
 								<p className="m-0 text-small font-medium leading-snug text-bad">
-									This event's hash does not match the chain.
+									{t('This event\'s hash does not match the chain.')}
 								</p>
 							)}
 
@@ -111,7 +114,7 @@ const Timeline = ({ events, anchorMap, brokenAtIndex = null, loading = false }: 
 										rel="noreferrer"
 										className="text-small font-medium leading-snug text-accent transition-colors duration-150 hover:text-accent-hover hover:underline"
 									>
-										View on Etherscan ↗
+										{t('View on Etherscan')} ↗
 									</a>
 								)}
 							</div>

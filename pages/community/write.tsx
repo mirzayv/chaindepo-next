@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -18,6 +19,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 /** new community post (was the "Write Article" tab in My Page) */
 const CommunityWrite: NextPage = () => {
+	const { t } = useTranslation('common');
 	const user = useReactiveVar(userVar);
 
 	return (
@@ -25,8 +27,8 @@ const CommunityWrite: NextPage = () => {
 			<div className="mx-auto flex max-w-page flex-col gap-6 px-4 py-8 md:px-6 md:py-12">
 				<div className="flex flex-wrap items-end justify-between gap-3">
 					<div>
-						<h1 className="m-0 text-h2 font-semibold text-ink">Write a post</h1>
-						<p className="m-0 mt-1 text-small text-muted">Share a question, a tip or news with shippers and carriers.</p>
+						<h1 className="m-0 text-h2 font-semibold text-ink">{t('Write a post')}</h1>
+						<p className="m-0 mt-1 text-small text-muted">{t('Share a question, a tip or news with shippers and carriers.')}</p>
 					</div>
 					<Link href="/community" className="text-small font-medium text-accent hover:text-accent-hover hover:underline">
 						← Back to community
@@ -39,12 +41,12 @@ const CommunityWrite: NextPage = () => {
 					</div>
 				) : (
 					<div className="rounded-card border border-line bg-card px-6 py-14 text-center">
-						<p className="m-0 text-h3 font-semibold text-ink">Log in to write a post</p>
+						<p className="m-0 text-h3 font-semibold text-ink">{t('Log in to write a post')}</p>
 						<Link
 							href="/account/join"
 							className="mt-4 inline-flex h-10 items-center rounded-card bg-accent px-4 text-small font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
 						>
-							Log in
+							{t('Log in')}
 						</Link>
 					</div>
 				)}

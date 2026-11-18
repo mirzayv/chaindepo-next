@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'next-i18next';
+import useLabel from '../../hooks/useLabel';
 import { useRouter } from 'next/router';
 import { Button, Stack, Typography } from '@mui/material';
 import { ShipmentLocation, ShipmentStatus, ShipmentType } from '../../enums/shipment.enum';
@@ -28,10 +30,14 @@ const FieldError = ({ id, message }: { id: string; message?: string }) =>
 	) : null;
 
 const AddShipment = ({ initialValues, ...props }: any) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const router = useRouter();
 	const inputRef = useRef<any>(null);
 	const [dragging, setDragging] = useState<boolean>(false);
 	const [insertShipmentData, setInsertShipmentData] = useState<ShipmentInput>(initialValues);
+	// raw text of the weight field, so in-between values like "0." or "0,5" survive typing (the number lives in insertShipmentData)
+	const [weightText, setWeightText] = useState<string | null>(null);
 	const [shipmentTypes] = useState<ShipmentType[]>(Object.values(ShipmentType));
 	const [shipmentLocations] = useState<ShipmentLocation[]>(Object.values(ShipmentLocation));
 	const [carriers, setCarriers] = useState<Member[]>([]);
@@ -191,13 +197,13 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 		const title = insertShipmentData.shipmentTitle.trim();
 		const address = insertShipmentData.shipmentAddress.trim();
 		const desc = (insertShipmentData.shipmentDesc ?? '').trim();
-		if (title.length < 3) errors.shipmentTitle = 'Title must be at least 3 characters.';
-		else if (title.length > 100) errors.shipmentTitle = 'Title can be at most 100 characters.';
-		if (address.length < 3) errors.shipmentAddress = 'Pickup address must be at least 3 characters.';
-		else if (address.length > 100) errors.shipmentAddress = 'Pickup address can be at most 100 characters.';
-		if (!(insertShipmentData.shipmentWeight > 0)) errors.shipmentWeight = 'Weight must be greater than 0 kg.';
+		if (title.length < 3) errors.shipmentTitle = t('Title must be at least 3 characters.');
+		else if (title.length > 100) errors.shipmentTitle = t('Title can be at most 100 characters.');
+		if (address.length < 3) errors.shipmentAddress = t('Pickup address must be at least 3 characters.');
+		else if (address.length > 100) errors.shipmentAddress = t('Pickup address can be at most 100 characters.');
+		if (!(insertShipmentData.shipmentWeight > 0)) errors.shipmentWeight = t('Weight must be greater than 0 kg.');
 		if (desc && (desc.length < 5 || desc.length > 500))
-			errors.shipmentDesc = 'Description must be 5–500 characters, or leave it empty.';
+			errors.shipmentDesc = t('Description must be 5–500 characters, or leave it empty.');
 		return errors;
 	};
 	const errors = validate();
@@ -283,9 +289,9 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 		return (
 			<div id="add-property-page">
 				<Stack className="main-title-box">
-					<Typography className="main-title">{router.query.shipmentId ? 'Edit Shipment' : 'Create Shipment'}</Typography>
+					<Typography className="main-title">{router.query.shipmentId ? t('Edit shipment') : t('Create shipment')}</Typography>
 					<Typography className="sub-title">
-						{editLocked ? 'This shipment is already on its way and can no longer be edited.' : 'Tell us what you are sending'}
+						{editLocked ? t('This shipment is already on its way and can no longer be edited.') : t('Tell us what you are sending')}
 					</Typography>
 				</Stack>
 
@@ -293,11 +299,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 					<Stack className="config">
 						<Stack className="description-box">
 							<Stack className="config-column">
-								<Typography className="title">Title</Typography>
+								<Typography className="title">{t('Title')}</Typography>
 								<input
 									type="text"
 									className="description-input"
-									placeholder={'Title'}
+									placeholder={t('Title')}
 									value={insertShipmentData.shipmentTitle}
 									onChange={({ target: { value } }) =>
 										setInsertShipmentData({ ...insertShipmentData, shipmentTitle: value })
@@ -311,12 +317,12 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Stack className="config-row">
 								<Stack className="price-year-after-price">
-									<Typography className="title">Price (₩)</Typography>
+									<Typography className="title">{t('Price (₩)')}</Typography>
 									<input
 										type="text"
 										inputMode="numeric"
 										className="description-input"
-										placeholder={'Price in won'}
+										placeholder={t('Price in won')}
 										value={insertShipmentData.shipmentPrice}
 										onChange={({ target: { value } }) =>
 											setInsertShipmentData({ ...insertShipmentData, shipmentPrice: parseInt(value) || 0 })
@@ -324,7 +330,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									/>
 								</Stack>
 								<Stack className="price-year-after-price">
-									<Typography className="title">Select Type</Typography>
+									<Typography className="title">{t('Select Type')}</Typography>
 									<select
 										className={'select-description'}
 										value={insertShipmentData.shipmentType || 'select'}
@@ -335,11 +341,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									>
 										<>
 											<option disabled={true} value={'select'}>
-												Select
+												{t('Select')}
 											</option>
 											{shipmentTypes.map((type: any) => (
 												<option value={`${type}`} key={type}>
-													{type}
+													{label(type)}
 												</option>
 											))}
 										</>
@@ -351,7 +357,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Stack className="config-row">
 								<Stack className="price-year-after-price">
-									<Typography className="title">Origin</Typography>
+									<Typography className="title">{t('Origin')}</Typography>
 									<select
 										className={'select-description'}
 										value={insertShipmentData.shipmentOrigin || 'select'}
@@ -362,11 +368,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									>
 										<>
 											<option disabled={true} value={'select'}>
-												Select
+												{t('Select')}
 											</option>
 											{shipmentLocations.map((location: any) => (
 												<option value={`${location}`} key={location}>
-													{location}
+													{label(location)}
 												</option>
 											))}
 										</>
@@ -375,7 +381,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									<img src={'/img/icons/Vector.svg'} className={'arrow-down'} />
 								</Stack>
 								<Stack className="price-year-after-price">
-									<Typography className="title">Destination</Typography>
+									<Typography className="title">{t('Destination')}</Typography>
 									<select
 										className={'select-description'}
 										value={insertShipmentData.shipmentDestination || 'select'}
@@ -386,11 +392,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									>
 										<>
 											<option disabled={true} value={'select'}>
-												Select
+												{t('Select')}
 											</option>
 											{shipmentLocations.map((location: any) => (
 												<option value={`${location}`} key={location}>
-													{location}
+													{label(location)}
 												</option>
 											))}
 										</>
@@ -402,11 +408,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Stack className="config-row">
 								<Stack className="price-year-after-price">
-									<Typography className="title">Pickup Address</Typography>
+									<Typography className="title">{t('Pickup Address')}</Typography>
 									<input
 										type="text"
 										className="description-input"
-										placeholder={'Address'}
+										placeholder={t('Address')}
 										value={insertShipmentData.shipmentAddress}
 										onChange={({ target: { value } }) =>
 											setInsertShipmentData({ ...insertShipmentData, shipmentAddress: value })
@@ -418,17 +424,20 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									<FieldError id="shipment-address-error" message={errorOf('shipmentAddress')} />
 								</Stack>
 								<Stack className="price-year-after-price">
-									<Typography className="title">Weight (kg)</Typography>
+									<Typography className="title">{t('Weight (kg)')}</Typography>
 									<input
 										type="number"
 										min={0}
-										step={'0.1'}
+										step={'any'}
 										className="description-input"
-										placeholder={'Weight'}
-										value={insertShipmentData.shipmentWeight || ''}
-										onChange={({ target: { value } }) =>
-											setInsertShipmentData({ ...insertShipmentData, shipmentWeight: parseFloat(value) || 0 })
-										}
+										placeholder={t('Weight')}
+										value={weightText ?? (insertShipmentData.shipmentWeight ? String(insertShipmentData.shipmentWeight) : '')}
+										inputMode="decimal"
+										onChange={({ target: { value } }) => {
+											setWeightText(value);
+											const weight = parseFloat(value.replace(',', '.'));
+											setInsertShipmentData({ ...insertShipmentData, shipmentWeight: Number.isFinite(weight) ? weight : 0 });
+										}}
 										onBlur={() => touch('shipmentWeight')}
 										aria-invalid={Boolean(errorOf('shipmentWeight'))}
 										aria-describedby="shipment-weight-error"
@@ -439,7 +448,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 
 							<Stack className="config-row">
 								<Stack className="price-year-after-price">
-									<Typography className="title">Carrier (optional)</Typography>
+									<Typography className="title">{t('Carrier (optional)')}</Typography>
 									<select
 										className={'select-description'}
 										value={insertShipmentData.carrierId || ''}
@@ -447,7 +456,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 											setInsertShipmentData({ ...insertShipmentData, carrierId: value })
 										}
 									>
-										<option value={''}>Any carrier can claim it</option>
+										<option value={''}>{t('Any carrier can claim it')}</option>
 										{carriers.map((carrier: Member) => (
 											<option value={carrier._id} key={carrier._id}>
 												{carrier.memberNick}
@@ -459,9 +468,9 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 								</Stack>
 							</Stack>
 
-							<Typography className="property-title">Shipment Description</Typography>
+							<Typography className="property-title">{t('Shipment Description')}</Typography>
 							<Stack className="config-column">
-								<Typography className="title">Description (optional)</Typography>
+								<Typography className="title">{t('Description (optional)')}</Typography>
 								<textarea
 									name=""
 									id=""
@@ -478,7 +487,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 							</Stack>
 						</Stack>
 
-						<Typography className="upload-title">Upload photos of your cargo</Typography>
+						<Typography className="upload-title">{t('Upload photos of your cargo')}</Typography>
 						<Stack className="images-box">
 							<Stack
 								className={`upload-box ${dragging ? 'dragging' : ''}`}
@@ -529,8 +538,8 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									</defs>
 								</svg>
 								<Stack className="text-box">
-									<Typography className="drag-title">Drag and drop images here</Typography>
-									<Typography className="format-title">Photos must be JPEG or PNG format and least 2048x768</Typography>
+									<Typography className="drag-title">{t('Drag and drop images here')}</Typography>
+									<Typography className="format-title">{t('Photos must be JPEG or PNG format and least 2048x768')}</Typography>
 								</Stack>
 								<Button
 									className="browse-button"
@@ -538,7 +547,7 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 										inputRef.current.click();
 									}}
 								>
-									<Typography className="browse-button-text">Browse Files</Typography>
+									<Typography className="browse-button-text">{t('Browse Files')}</Typography>
 									<input
 										ref={inputRef}
 										type="file"
@@ -590,11 +599,11 @@ const AddShipment = ({ initialValues, ...props }: any) => {
 									disabled={doDisabledCheck() || editLocked}
 									onClick={updateShipmentHandler}
 								>
-									<Typography className="next-button-text">Save</Typography>
+									<Typography className="next-button-text">{t('Save')}</Typography>
 								</Button>
 							) : (
 								<Button className="next-button" disabled={doDisabledCheck()} onClick={insertShipmentHandler}>
-									<Typography className="next-button-text">Save</Typography>
+									<Typography className="next-button-text">{t('Save')}</Typography>
 								</Button>
 							)}
 						</Stack>

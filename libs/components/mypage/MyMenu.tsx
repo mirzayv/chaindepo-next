@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
@@ -32,6 +33,7 @@ const itemClass = (active: boolean) =>
 	}`;
 
 const MyMenu = () => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const category = (router.query?.category as string) ?? 'myProfile';
 	const user = useReactiveVar(userVar);
@@ -54,7 +56,7 @@ const MyMenu = () => {
 				aria-current={category === item.category ? 'page' : undefined}
 				className={itemClass(category === item.category)}
 			>
-				{item.label}
+				{t(item.label)}
 			</Link>
 		</li>
 	);
@@ -72,7 +74,7 @@ const MyMenu = () => {
 					{user?.memberPhone && <span className="text-small text-muted">{user.memberPhone}</span>}
 					{user?.memberType === MemberType.ADMIN ? (
 						<a href="/_admin/users" target="_blank" rel="noopener noreferrer" className="text-small font-medium text-accent hover:underline">
-							Admin panel
+							{t('Admin panel')}
 						</a>
 					) : (
 						<span className="text-small text-muted">{user?.memberType === MemberType.USER ? 'Shipper' : labelOf(user?.memberType)}</span>
@@ -88,7 +90,7 @@ const MyMenu = () => {
 			)}
 
 			<div className="flex flex-col gap-1.5">
-				<span className="px-3 text-small font-semibold text-muted">Account</span>
+				<span className="px-3 text-small font-semibold text-muted">{t('Account')}</span>
 				<ul className="m-0 flex list-none flex-col gap-0.5 p-0">
 					{renderItem({ category: 'myProfile', label: 'My profile' })}
 					<li>
@@ -97,7 +99,7 @@ const MyMenu = () => {
 							onClick={logoutHandler}
 							className={`${itemClass(false)} cursor-pointer border-0 bg-transparent text-left`}
 						>
-							Log out
+							{t('Log out')}
 						</button>
 					</li>
 				</ul>

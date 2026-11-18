@@ -3,7 +3,8 @@ import moment from 'moment';
 import { ShipmentLocation, ShipmentStatus } from '../../enums/shipment.enum';
 import { Shipment } from '../../types/shipment/shipment';
 import { TrackingEvent } from '../../types/tracking-event/tracking-event';
-import { labelOf } from '../../utils';
+import { useTranslation } from 'next-i18next';
+import useLabel from '../../hooks/useLabel';
 import MapView, { MapMarker } from '../ui/map/MapView';
 import { CITIES } from '../ui/map/cities';
 
@@ -24,6 +25,8 @@ const compact = (locations: ShipmentLocation[]) =>
  * Solid line for the part travelled so far, dashed for what is still ahead.
  */
 const RouteMap = ({ shipment, events, className = '' }: RouteMapProps) => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const { markers, path, pendingPath } = useMemo(() => {
 		const origin = shipment.shipmentOrigin;
 		const destination = shipment.shipmentDestination;
@@ -41,7 +44,7 @@ const RouteMap = ({ shipment, events, className = '' }: RouteMapProps) => {
 		const add = (location: ShipmentLocation, line: string) => lines.set(location, [...(lines.get(location) ?? []), line]);
 		add(origin, 'Origin');
 		events.forEach((event) =>
-			add(event.eventLocation, `${labelOf(event.eventStatus)} · ${moment(event.createdAt).format('MM.DD HH:mm')}`),
+			add(event.eventLocation, `${label(event.eventStatus)} · ${moment(event.createdAt).format('MM.DD HH:mm')}`),
 		);
 		if (destination !== origin) add(destination, 'Destination');
 
@@ -50,7 +53,7 @@ const RouteMap = ({ shipment, events, className = '' }: RouteMapProps) => {
 			id: location,
 			lat: CITIES[location].lat,
 			lng: CITIES[location].lng,
-			title: CITIES[location].name,
+			title: label(location),
 			lines: popupLines,
 			tone: reached.has(location) ? 'accent' : 'muted',
 		}));
@@ -60,7 +63,7 @@ const RouteMap = ({ shipment, events, className = '' }: RouteMapProps) => {
 			path: travelled.map(coords),
 			pendingPath: ahead.map(coords),
 		};
-	}, [shipment, events]);
+	}, [shipment, events, label]);
 
 	return (
 		<MapView
@@ -68,7 +71,7 @@ const RouteMap = ({ shipment, events, className = '' }: RouteMapProps) => {
 			path={path}
 			pendingPath={pendingPath}
 			className={className}
-			ariaLabel={`Route map from ${CITIES[shipment.shipmentOrigin].name} to ${CITIES[shipment.shipmentDestination].name}`}
+			ariaLabel={t('Route map from {{from}} to {{to}}', { from: label(shipment.shipmentOrigin), to: label(shipment.shipmentDestination) })}
 		/>
 	);
 };

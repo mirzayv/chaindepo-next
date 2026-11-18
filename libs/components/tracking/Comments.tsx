@@ -1,6 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import moment from 'moment';
+import { useTranslation } from 'next-i18next';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { GET_COMMENTS } from '../../../apollo/user/query';
@@ -27,6 +28,7 @@ const inquiryFor = (shipmentId: string | null, page = 1): CommentsInquiry => ({
 });
 
 const Comments = ({ shipmentId }: CommentsProps) => {
+	const { t } = useTranslation('common');
 	const user = useReactiveVar(userVar);
 	const isLoggedIn = Boolean(user?._id);
 	const [inquiry, setInquiry] = useState<CommentsInquiry>(inquiryFor(shipmentId));
@@ -69,7 +71,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 			if (inquiry.page !== 1) setInquiry(inquiryFor(shipmentId));
 			else await refetch({ input: inquiry });
 		} catch (err: any) {
-			setPostError(err.message ?? 'Could not post the comment.');
+			setPostError(err.message ?? t('Could not post the comment.'));
 		} finally {
 			setPosting(false);
 		}
@@ -86,7 +88,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 			{loading && comments.length === 0 ? (
 				<div className="h-16 animate-pulse rounded-card bg-surface motion-reduce:animate-none" aria-busy="true" />
 			) : comments.length === 0 ? (
-				<p className="m-0 text-body text-muted">No comments yet.</p>
+				<p className="m-0 text-body text-muted">{t('No comments yet.')}</p>
 			) : (
 				<ul className="m-0 flex list-none flex-col p-0">
 					{comments.map((comment) => {
@@ -104,7 +106,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 											href={memberHref}
 											className="text-[0.9375rem] font-semibold leading-snug text-ink transition-colors duration-150 hover:text-accent"
 										>
-											{member?.memberNick ?? 'Member'}
+											{member?.memberNick ?? t('Member')}
 										</Link>
 										<span className="text-small leading-snug text-muted">
 											{moment(comment.createdAt).format('YYYY.MM.DD HH:mm')}
@@ -121,17 +123,17 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 			)}
 
 			{pageCount > 1 && (
-				<nav className="flex items-center gap-3" aria-label="Comment pages">
+				<nav className="flex items-center gap-3" aria-label={t('Comment pages')}>
 					<button
 						type="button"
 						onClick={() => goToPage(inquiry.page - 1)}
 						disabled={inquiry.page <= 1}
 						className="h-9 rounded-card border border-line px-3 text-small font-medium text-ink transition-colors duration-150 hover:border-accent disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line"
 					>
-						← Newer
+						← {t('Newer')}
 					</button>
 					<span className="text-small leading-snug text-muted">
-						Page {inquiry.page} of {pageCount}
+						{t('Page {{page}} of {{count}}', { page: inquiry.page, count: pageCount })}
 					</span>
 					<button
 						type="button"
@@ -139,7 +141,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 						disabled={inquiry.page >= pageCount}
 						className="h-9 rounded-card border border-line px-3 text-small font-medium text-ink transition-colors duration-150 hover:border-accent disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line"
 					>
-						Older →
+						{t('Older')} →
 					</button>
 				</nav>
 			)}
@@ -147,14 +149,14 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 			{isLoggedIn ? (
 				<form onSubmit={submitHandler} className="flex flex-col gap-2">
 					<label htmlFor="comment-input" className="text-small font-medium text-ink">
-						Add a comment
+						{t('Add a comment')}
 					</label>
 					<textarea
 						id="comment-input"
 						value={content}
 						onChange={(e) => setContent(e.target.value.slice(0, MAX_LENGTH))}
 						rows={3}
-						placeholder="Ask about this shipment or leave a note"
+						placeholder={t('Ask about this shipment or leave a note')}
 						className="w-full resize-y rounded-card border border-line bg-card px-3 py-2.5 text-[0.9375rem] leading-relaxed text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-accent"
 					/>
 					<div className="flex items-center justify-between gap-3">
@@ -166,7 +168,7 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 							disabled={!content.trim() || posting}
 							className="h-10 rounded-card bg-accent px-5 text-[0.875rem] font-semibold text-white transition duration-150 ease-out hover:bg-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-accent motion-reduce:transform-none"
 						>
-							{posting ? 'Posting…' : 'Post comment'}
+							{posting ? t('Posting…') : t('Post comment')}
 						</button>
 					</div>
 					{postError && (
@@ -178,9 +180,9 @@ const Comments = ({ shipmentId }: CommentsProps) => {
 			) : (
 				<p className="m-0 rounded-card border border-line bg-surface px-4 py-3 text-[0.9375rem] leading-snug text-muted">
 					<Link href={'/account/join'} className="font-semibold text-accent hover:text-accent-hover">
-						Log in
+						{t('Log in')}
 					</Link>{' '}
-					to leave a comment.
+					{t('to leave a comment.')}
 				</p>
 			)}
 		</section>

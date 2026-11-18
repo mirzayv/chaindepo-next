@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 
 interface CopyButtonProps {
 	value: string;
@@ -9,6 +10,7 @@ interface CopyButtonProps {
 
 /** small icon button; shows "Copied" for 1.5s and announces it */
 const CopyButton = ({ value, label, className = '' }: CopyButtonProps) => {
+	const { t } = useTranslation('common');
 	const [copied, setCopied] = useState<boolean>(false);
 	const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -50,7 +52,7 @@ const CopyButton = ({ value, label, className = '' }: CopyButtonProps) => {
 				)}
 			</button>
 			<span aria-live="polite" className={`text-small leading-none text-ok ${copied ? '' : 'sr-only'}`}>
-				{copied ? 'Copied' : ''}
+				{copied ? t('Copied') : ''}
 			</span>
 		</span>
 	);

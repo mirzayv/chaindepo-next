@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { NextPage } from 'next';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import ShipmentBigCard from '../../libs/components/common/ShipmentBigCard';
@@ -28,6 +29,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [carrierId, setCarrierId] = useState<string | null>(null);
@@ -233,21 +235,21 @@ const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any
 										/>
 									</Stack>
 									<span>
-										Total {shipmentTotal} shipment{shipmentTotal > 1 ? 's' : ''} handled
+										{t('shipmentsHandled', { count: shipmentTotal })}
 									</span>
 								</>
 							) : (
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No shipments found!</p>
+									<p>{t('No shipments found')}</p>
 								</div>
 							)}
 						</Stack>
 					</Stack>
 					<Stack className={'review-box'}>
 						<Stack className={'main-intro'}>
-							<span>Reviews</span>
-							<p>we are glad to see you again</p>
+							<span>{t('Reviews')}</span>
+							<p>{t('We are glad to see you again!')}</p>
 						</Stack>
 						{commentTotal !== 0 && (
 							<Stack className={'review-wrap'}>
@@ -273,8 +275,8 @@ const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any
 						)}
 
 						<Stack className={'leave-review-config'}>
-							<Typography className={'main-title'}>Leave A Review</Typography>
-							<Typography className={'review-title'}>Review</Typography>
+							<Typography className={'main-title'}>{t('Leave a review')}</Typography>
+							<Typography className={'review-title'}>{t('Review')}</Typography>
 							<textarea
 								onChange={({ target: { value } }: any) => {
 									setInsertCommentData({ ...insertCommentData, commentContent: value });
@@ -287,7 +289,7 @@ const CarrierDetail: NextPage = ({ initialInput, initialComment, ...props }: any
 									disabled={insertCommentData.commentContent === '' || user?._id === ''}
 									onClick={createCommentHandler}
 								>
-									<Typography className={'title'}>Submit Review</Typography>
+									<Typography className={'title'}>{t('Submit review')}</Typography>
 									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
 										<g clipPath="url(#clip0_6975_3642)">
 											<path

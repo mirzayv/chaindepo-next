@@ -30,14 +30,15 @@ import { Member } from '../../libs/types/member/member';
 import { T } from '../../libs/types/common';
 import { Message } from '../../libs/enums/common.enum';
 import { REACT_APP_API_URL } from '../../libs/config';
-import { formatKRW, labelOf } from '../../libs/utils';
+import { formatKRW } from '../../libs/utils';
+import { useTranslation } from 'next-i18next';
+import useLabel from '../../libs/hooks/useLabel';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import useShipmentChain from '../../libs/hooks/useShipmentChain';
 import TrackForm from '../../libs/components/ui/TrackForm';
 import StatusPill from '../../libs/components/ui/StatusPill';
 import CopyButton from '../../libs/components/ui/CopyButton';
 import ImageWithFallback from '../../libs/components/ui/ImageWithFallback';
-import { cityName } from '../../libs/components/ui/map/cities';
 import ProgressSteps from '../../libs/components/tracking/ProgressSteps';
 import RouteMap from '../../libs/components/tracking/RouteMap';
 import Timeline from '../../libs/components/tracking/Timeline';
@@ -52,18 +53,21 @@ export const getStaticProps = async ({ locale }: any) => ({
 // Faqat tarjimalar (SSG). Yuk ma'lumoti brauzerda keladi (CSR).
 
 /** H1 + tracking form; used with no params and when a code or id is not found */
-const TrackEmptyState = ({ code, error }: { code?: string; error?: string }) => (
+const TrackEmptyState = ({ code, error }: { code?: string; error?: string }) => {
+	const { t } = useTranslation('common');
+	return (
 	<div className="mx-auto flex max-w-page flex-col px-4 py-16 md:px-6 md:py-24">
 		<div className="flex w-full max-w-xl flex-col gap-3">
-			<h1 className="m-0 text-display font-bold text-ink">Track a shipment</h1>
+			<h1 className="m-0 text-display font-bold text-ink">{t('Track a shipment')}</h1>
 			<p className="m-0 text-[1.0625rem] leading-relaxed text-muted">
-				Enter a tracking code to see every event, where it happened and whether the record still checks out on chain.
+				{t('Enter a tracking code to see every event, where it happened and whether the record still checks out on chain.')}
 			</p>
 			{/* key: remount with the new code when the URL changes */}
 			<TrackForm key={code ?? ''} defaultValue={code} error={error} className="mt-4" />
 		</div>
 	</div>
-);
+	);
+};
 
 const Fact = ({ label, children }: { label: string; children: React.ReactNode }) => (
 	<div className="flex min-w-0 flex-col gap-1">
@@ -73,6 +77,8 @@ const Fact = ({ label, children }: { label: string; children: React.ReactNode })
 );
 
 const ShipmentDetail: NextPage = () => {
+	const { t } = useTranslation('common');
+	const label = useLabel();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
@@ -169,7 +175,7 @@ const ShipmentDetail: NextPage = () => {
 		body = (
 			<TrackEmptyState
 				code={trackingCode ?? undefined}
-				error={codeError || 'We could not find that shipment. Check the link or enter the tracking code.'}
+				error={codeError || t('We could not find that shipment. Check the link or enter the tracking code.')}
 			/>
 		);
 	} else {
@@ -194,15 +200,15 @@ const ShipmentDetail: NextPage = () => {
 								<span className="font-mono text-[0.9375rem] font-medium leading-snug text-ink">
 									{shipment.shipmentTrackingCode}
 								</span>
-								<CopyButton value={shipment.shipmentTrackingCode} label="Copy tracking code" />
+								<CopyButton value={shipment.shipmentTrackingCode} label={t('Copy tracking code')} />
 							</div>
 							<div className="flex items-center gap-3">
-								<span className="text-small leading-snug text-muted">{shipment.shipmentViews} views</span>
+								<span className="text-small leading-snug text-muted">{t('viewsCount', { count: shipment.shipmentViews ?? 0 })}</span>
 								<button
 									type="button"
 									onClick={likeHandler}
 									aria-pressed={liked}
-									aria-label={liked ? 'Remove from favorites' : 'Add to favorites'}
+									aria-label={liked ? t('Remove from favorites') : t('Add to favorites')}
 									className="inline-flex h-8 items-center gap-1.5 rounded-full border border-line bg-card px-3 text-small font-medium text-ink transition-colors duration-150 ease-out hover:border-accent active:scale-95 motion-reduce:transform-none"
 								>
 									<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
@@ -227,8 +233,8 @@ const ShipmentDetail: NextPage = () => {
 								<StatusPill status={shipment.shipmentStatus} className="mt-1" />
 							</div>
 							<p className="m-0 text-[1.0625rem] font-medium leading-snug text-ink">
-								{cityName(shipment.shipmentOrigin)} <span className="text-muted">→</span>{' '}
-								{cityName(shipment.shipmentDestination)}
+								{label(shipment.shipmentOrigin)} <span className="text-muted">→</span>{' '}
+								{label(shipment.shipmentDestination)}
 							</p>
 							{shipment.shipmentAddress && (
 								<p className="m-0 text-small leading-snug text-muted">Pickup: {shipment.shipmentAddress}</p>
@@ -238,11 +244,11 @@ const ShipmentDetail: NextPage = () => {
 						<ProgressSteps status={shipment.shipmentStatus} />
 
 						<dl className="m-0 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line pt-6 sm:grid-cols-3 lg:grid-cols-6">
-							<Fact label="Weight">{shipment.shipmentWeight} kg</Fact>
-							<Fact label="Price">{formatKRW(shipment.shipmentPrice)}</Fact>
-							<Fact label="Type">{labelOf(shipment.shipmentType)}</Fact>
-							<Fact label="Created">{moment(shipment.createdAt).format('YYYY.MM.DD')}</Fact>
-							<Fact label="Shipper">
+							<Fact label={t('Weight')}>{shipment.shipmentWeight} kg</Fact>
+							<Fact label={t('Price')}>{formatKRW(shipment.shipmentPrice)}</Fact>
+							<Fact label={t('Type')}>{label(shipment.shipmentType)}</Fact>
+							<Fact label={t('Created')}>{moment(shipment.createdAt).format('YYYY.MM.DD')}</Fact>
+							<Fact label={t('Shipper')}>
 								{shipper?._id ? (
 									<Link
 										href={`/member?memberId=${shipper._id}`}
@@ -255,7 +261,7 @@ const ShipmentDetail: NextPage = () => {
 									'—'
 								)}
 							</Fact>
-							<Fact label="Carrier">
+							<Fact label={t('Carrier')}>
 								{shipment.carrierId ? (
 									<Link
 										href={`/carrier/detail?carrierId=${shipment.carrierId}`}
@@ -264,7 +270,7 @@ const ShipmentDetail: NextPage = () => {
 										{carrier?.memberNick ?? 'Assigned'}
 									</Link>
 								) : (
-									<span className="font-normal text-muted">Not assigned</span>
+									<span className="font-normal text-muted">{t('Not assigned')}</span>
 								)}
 							</Fact>
 						</dl>
@@ -275,7 +281,7 @@ const ShipmentDetail: NextPage = () => {
 					<div className="flex min-w-0 flex-col gap-10">
 						<section className="flex flex-col gap-4" aria-labelledby="route-title">
 							<h2 id="route-title" className="m-0 text-h3 font-semibold text-ink">
-								Route
+								{t('Route')}
 							</h2>
 							<div className="h-[300px] w-full md:h-[380px]">
 								<RouteMap shipment={shipment} events={events} className="h-full w-full" />
@@ -285,11 +291,11 @@ const ShipmentDetail: NextPage = () => {
 						<section className="flex flex-col gap-4" aria-labelledby="timeline-title">
 							<div className="flex flex-wrap items-baseline justify-between gap-2">
 								<h2 id="timeline-title" className="m-0 text-h3 font-semibold text-ink">
-									Tracking events
+									{t('Tracking events')}
 								</h2>
 								{shipment.deliveredAt && (
 									<span className="text-small leading-snug text-muted">
-										Delivered {moment(shipment.deliveredAt).format('YYYY.MM.DD HH:mm')}
+										{t('Delivered')} {moment(shipment.deliveredAt).format('YYYY.MM.DD HH:mm')}
 									</span>
 								)}
 							</div>
@@ -304,7 +310,7 @@ const ShipmentDetail: NextPage = () => {
 						{images.length > 0 && (
 							<section className="flex flex-col gap-4" aria-labelledby="photos-title">
 								<h2 id="photos-title" className="m-0 text-h3 font-semibold text-ink">
-									Cargo photos
+									{t('Cargo photos')}
 								</h2>
 								<div className="aspect-[16/10] w-full overflow-hidden rounded-card border border-line bg-surface">
 									<ImageWithFallback
@@ -342,7 +348,7 @@ const ShipmentDetail: NextPage = () => {
 						{shipment.shipmentDesc && (
 							<section className="flex flex-col gap-3" aria-labelledby="desc-title">
 								<h2 id="desc-title" className="m-0 text-h3 font-semibold text-ink">
-									Description
+									{t('Description')}
 								</h2>
 								<p className="m-0 whitespace-pre-line break-words text-body text-ink">{shipment.shipmentDesc}</p>
 							</section>

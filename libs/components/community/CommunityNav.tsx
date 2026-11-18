@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 import { communityCategories } from '../../config';
 
 interface CommunityNavProps {
@@ -9,6 +10,7 @@ interface CommunityNavProps {
 
 /** board list + write button, shared by the community list and detail pages */
 const CommunityNav = ({ active }: CommunityNavProps) => {
+	const { t } = useTranslation('common');
 	return (
 		<nav aria-label="Community boards" className="flex flex-col gap-3">
 			<ul className="m-0 flex list-none gap-1 overflow-x-auto p-0 lg:flex-col">
@@ -23,7 +25,7 @@ const CommunityNav = ({ active }: CommunityNavProps) => {
 									isActive ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface hover:text-accent'
 								}`}
 							>
-								{category.label}
+								{t(category.label)}
 							</Link>
 						</li>
 					);
@@ -33,7 +35,7 @@ const CommunityNav = ({ active }: CommunityNavProps) => {
 				href="/community/write"
 				className="inline-flex h-10 items-center justify-center rounded-card bg-accent px-4 text-small font-semibold text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
 			>
-				Write a post
+				{t('Write a post')}
 			</Link>
 		</nav>
 	);
