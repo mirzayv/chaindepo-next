@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ShipmentLocation, ShipmentStatus, ShipmentType } from '../../enums/shipment.enum';
 import { ShipmentsInquiry } from '../../types/shipment/shipment.input';
-import { shipmentWeights } from '../../config';
 import { useTranslation } from 'next-i18next';
 import useLabel from '../../hooks/useLabel';
 
@@ -94,6 +93,34 @@ const Filter = (props: FilterType) => {
 		},
 		[searchFilter],
 	);
+
+	/**
+	 * Weight range typed by hand (decimals allowed, e.g. 0.5 kg). The text lives locally while typing
+	 * and is applied to the URL filter on blur or Enter, so half-typed values like "0." never trigger a search.
+	 */
+	const [weightText, setWeightText] = useState<{ start: string; end: string }>({
+		start: String(searchFilter?.search?.weightsRange?.start ?? 0),
+		end: String(searchFilter?.search?.weightsRange?.end ?? 5000),
+	});
+
+	useEffect(() => {
+		setWeightText({
+			start: String(searchFilter?.search?.weightsRange?.start ?? 0),
+			end: String(searchFilter?.search?.weightsRange?.end ?? 5000),
+		});
+	}, [searchFilter?.search?.weightsRange?.start, searchFilter?.search?.weightsRange?.end]);
+
+	const applyWeight = (type: 'start' | 'end') => {
+		const parsed = parseFloat(weightText[type].replace(',', '.'));
+		const fallback = type === 'start' ? 0 : 5000;
+		const value = Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+		const current = searchFilter?.search?.weightsRange?.[type];
+		if (value === current) {
+			setWeightText({ ...weightText, [type]: String(value) });
+			return;
+		}
+		shipmentWeightHandler(value, type);
+	};
 
 	const shipmentPriceHandler = useCallback(
 		async (value: number, type: 'start' | 'end') => {
@@ -224,36 +251,38 @@ const Filter = (props: FilterType) => {
 					<label htmlFor="weight-min" className="sr-only">
 						{t('Minimum weight')}
 					</label>
-					<select
+					<input
 						id="weight-min"
+						type="number"
+						inputMode="decimal"
+						min={0}
+						step="any"
 						className={inputClass}
-						value={searchFilter?.search?.weightsRange?.start ?? 0}
-						onChange={(e) => shipmentWeightHandler(Number(e.target.value), 'start')}
-					>
-						{shipmentWeights.map((weight: number) => (
-							<option value={weight} disabled={(searchFilter?.search?.weightsRange?.end || 0) < weight} key={weight}>
-								{weight}
-							</option>
-						))}
-					</select>
+						placeholder={t('Min')}
+						value={weightText.start}
+						onChange={(e) => setWeightText({ ...weightText, start: e.target.value })}
+						onBlur={() => applyWeight('start')}
+						onKeyDown={(e) => e.key === 'Enter' && applyWeight('start')}
+					/>
 					<span className="text-muted" aria-hidden="true">
 						–
 					</span>
 					<label htmlFor="weight-max" className="sr-only">
 						{t('Maximum weight')}
 					</label>
-					<select
+					<input
 						id="weight-max"
+						type="number"
+						inputMode="decimal"
+						min={0}
+						step="any"
 						className={inputClass}
-						value={searchFilter?.search?.weightsRange?.end ?? 5000}
-						onChange={(e) => shipmentWeightHandler(Number(e.target.value), 'end')}
-					>
-						{shipmentWeights.map((weight: number) => (
-							<option value={weight} disabled={(searchFilter?.search?.weightsRange?.start || 0) > weight} key={weight}>
-								{weight}
-							</option>
-						))}
-					</select>
+						placeholder={t('Max')}
+						value={weightText.end}
+						onChange={(e) => setWeightText({ ...weightText, end: e.target.value })}
+						onBlur={() => applyWeight('end')}
+						onKeyDown={(e) => e.key === 'Enter' && applyWeight('end')}
+					/>
 				</div>
 			</Section>
 
