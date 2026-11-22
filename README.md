@@ -12,7 +12,7 @@ Backend: [mirzayv/chaindepo](https://github.com/mirzayv/chaindepo) · Live: http
 - **Shipper, carrier and admin flows** — create shipments, add tracking events, carrier profiles, admin pages for shipments, users and community.
 - **AI assistant & real-time** — floating assistant widget (Gemini, via the backend) and live updates over WebSocket.
 - **Community** — articles with a rich-text editor, comments and likes; customer-service page.
-- **3 languages** — English, Korean and Russian (`next-i18next`).
+- **3 languages** — English, Korean and Russian (`next-i18next`), plus light and dark themes.
 
 ## Tech stack
 Next.js · React · TypeScript · Apollo Client (GraphQL + WebSocket subscriptions, token refresh) · MUI · Tailwind CSS / SCSS · Leaflet · three.js · next-i18next · Docker
