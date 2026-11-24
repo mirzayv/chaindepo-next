@@ -4,6 +4,9 @@ Web app for **[ChainDepo](https://chaindepo.app)**: track freight across Korea, 
 
 Backend: [mirzayv/chaindepo](https://github.com/mirzayv/chaindepo) · Live: https://chaindepo.app
 
+![ChainDepo demo: enter a tracking code, see the route, every hash-chained event and the on-chain verification](docs/demo.gif)
+
+
 ## Features
 - **Public tracking** — look up a shipment by tracking code and see its full event timeline.
 - **Proof of integrity** — each event shows its hash, the link to the previous hash and the Ethereum Sepolia anchor, so the history can be verified.
