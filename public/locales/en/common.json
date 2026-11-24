@@ -352,5 +352,10 @@
   "The assistant is not configured yet.": "The assistant is not configured yet.",
   "The assistant is busy right now, please try again in a minute.": "The assistant is busy right now, please try again in a minute.",
   "Sorry, something went wrong.": "Sorry, something went wrong.",
-  "Sorry, I couldn't answer that. Please rephrase.": "Sorry, I couldn't answer that. Please rephrase."
+  "Sorry, I couldn't answer that. Please rephrase.": "Sorry, I couldn't answer that. Please rephrase.",
+  "No member with that member nick!": "We couldn't find that nickname.",
+  "Wrong password, try again!": "Wrong password, try again.",
+  "You have been blocked!": "This account has been blocked.",
+  "or check the spelling.": "or check the spelling.",
+  "Can't reach the server right now. Please try again in a moment.": "Can't reach the server right now. Please try again in a moment."
 }

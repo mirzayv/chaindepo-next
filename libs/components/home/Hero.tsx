@@ -24,8 +24,9 @@ interface Slide {
 const SLIDES: Slide[] = [
 	{
 		key: 'track',
-		photo: 'https://images.unsplash.com/photo-1601467995997-ac1ae9a8fff4?w=2000&q=85',
-		focus: '75% 65%',
+		// truck on a mountain road under a blue sky (the old black-and-white photo felt gloomy)
+		photo: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=2000&q=85',
+		focus: '74% 62%',
 	},
 	{
 		key: 'ship',

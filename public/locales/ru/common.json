@@ -364,5 +364,10 @@
   "The assistant is not configured yet.": "Ассистент ещё не настроен.",
   "The assistant is busy right now, please try again in a minute.": "Ассистент сейчас занят, попробуйте через минуту.",
   "Sorry, something went wrong.": "Извините, что-то пошло не так.",
-  "Sorry, I couldn't answer that. Please rephrase.": "Не получилось ответить. Попробуйте переформулировать."
+  "Sorry, I couldn't answer that. Please rephrase.": "Не получилось ответить. Попробуйте переформулировать.",
+  "No member with that member nick!": "Пользователь с таким никнеймом не найден.",
+  "Wrong password, try again!": "Неверный пароль, попробуйте ещё раз.",
+  "You have been blocked!": "Этот аккаунт заблокирован.",
+  "or check the spelling.": "или проверьте написание.",
+  "Can't reach the server right now. Please try again in a moment.": "Не удаётся связаться с сервером. Попробуйте чуть позже."
 }

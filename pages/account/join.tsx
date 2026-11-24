@@ -34,6 +34,12 @@ const MEMBER_TYPES = [
 
 type FieldName = 'nick' | 'password' | 'phone';
 
+/** the backend's Message.NO_MEMBER_NICK (apps/chaindepo-api/src/libs/enums/common.enum.ts) */
+const NO_MEMBER_NICK = 'No member with that member nick!';
+/** fetch failures: Safari "Load failed", Chrome "Failed to fetch", Firefox "NetworkError ..." */
+const NETWORK_ERROR_RE = /load failed|failed to fetch|networkerror|network request failed/i;
+const NETWORK_ERROR = "Can't reach the server right now. Please try again in a moment.";
+
 const STRENGTH: Record<PasswordStrength, { label: string; width: string; bar: string; text: string }> = {
 	weak: { label: 'Weak', width: 'w-1/3', bar: 'bg-bad', text: 'text-bad' },
 	fair: { label: 'Fair', width: 'w-2/3', bar: 'bg-warn', text: 'text-warn' },
@@ -159,8 +165,10 @@ const Join: NextPage = () => {
 			else await signUp(input.nick.trim(), input.password, normalizePhone(input.phone), input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			// the server's message as-is (e.g. a taken nickname or a DTO rule)
-			setServerError(err?.message ?? 'Something went wrong!');
+			// the server's message as-is (e.g. a taken nickname or a DTO rule), except a
+			// network failure, whose browser text ("Load failed", "Failed to fetch") means nothing to a user
+			const message: string = err?.message ?? 'Something went wrong!';
+			setServerError(NETWORK_ERROR_RE.test(message) ? NETWORK_ERROR : message);
 		} finally {
 			setSubmitting(false);
 		}
@@ -345,9 +353,22 @@ const Join: NextPage = () => {
 							)}
 
 							{serverError && (
-								<p role="alert" className="m-0 rounded-card border border-bad/40 bg-bad/5 px-3 py-2 text-small leading-snug text-bad">
-									{serverError}
-								</p>
+								<div role="alert" className="m-0 rounded-card border border-bad/40 bg-bad/5 px-3 py-2 text-small leading-snug text-bad">
+									<p className="m-0">{t(serverError)}</p>
+									{loginView && serverError === NO_MEMBER_NICK && (
+										// unknown nickname: offer signup with the typed nickname kept, or a retry
+										<p className="m-0 mt-1.5 text-ink">
+											<button
+												type="button"
+												onClick={() => setLoginView(false)}
+												className="cursor-pointer border-0 bg-transparent p-0 text-small font-semibold text-accent hover:text-accent-hover hover:underline"
+											>
+												{t('Create an account')}
+											</button>{' '}
+											{t('or check the spelling.')}
+										</p>
+									)}
+								</div>
 							)}
 
 							<button
