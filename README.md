@@ -14,6 +14,19 @@ Backend: [mirzayv/chaindepo](https://github.com/mirzayv/chaindepo) · Live: http
 - **Community** — articles with a rich-text editor, comments and likes; customer-service page.
 - **3 languages** — English, Korean and Russian (`next-i18next`), plus light and dark themes.
 
+## Architecture
+```mermaid
+flowchart LR
+    U["Browser"] -->|HTTPS| N["Nginx"]
+    N --> W["Next.js app<br/>pages + Apollo Client"]
+    W -->|"GraphQL queries & mutations<br/>WebSocket"| A["NestJS API"]
+    A --> M[("MongoDB")]
+    A -->|anchor + verify| E["Ethereum Sepolia"]
+    A --> G["Gemini assistant"]
+    W -->|"tx links"| X["Sepolia Etherscan"]
+```
+The frontend never talks to MongoDB or Ethereum directly: it calls the API, shows each event's hash, previous hash and anchor status, and links to the transaction on Etherscan. Full diagram and the hash-chain flow: [backend README](https://github.com/mirzayv/chaindepo#architecture).
+
 ## Tech stack
 Next.js · React · TypeScript · Apollo Client (GraphQL + WebSocket subscriptions, token refresh) · MUI · Tailwind CSS / SCSS · Leaflet · three.js · next-i18next · Docker
 
